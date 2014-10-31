@@ -51,3 +51,17 @@ var server = app.listen(3000, function () {
 
 // static files for client
 app.use(express.static(__dirname + '/client'));
+
+
+// make app availalbe outisde nodeos
+var localtunnel = require('localtunnel');
+
+localtunnel(3000, function(err, tunnel) {
+    if (err) {
+      console.log(err);
+    }
+
+    // the assigned public url for your tunnel
+    // i.e. https://abcdefgjhij.localtunnel.me
+    console.log("Go to " + tunnel.url + " to remotely access Silk");
+});
