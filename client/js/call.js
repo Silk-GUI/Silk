@@ -13,9 +13,9 @@ var socket;
       if (methods.queue.length > 0) {
         for (var i = 0; i < methods.queue.length; ++i) {
           if (methods.queue.hasOwnProperty(i)) {
-        
-          socket.send(methods.queue[i]);
-          console.log(methods.queue[i]);
+
+            socket.send(methods.queue[i]);
+            console.log(methods.queue[i]);
           }
         }
         methods.queue = [];
@@ -43,10 +43,10 @@ methods.sent = {};
 
 // function to call server method
 methods.call = function (name, data, callback) {
-  
+
   //id to find callback when returned data is received
   var id = Date.now() + "-" + Math.random();
-  
+
   var content = {
     id: id,
     name: name,
@@ -64,9 +64,12 @@ methods.call = function (name, data, callback) {
 }
 // calls callback and deletes item from methods.sent
 methods.receive = function (message) {
+
   message = JSON.parse(message.data);
-  methods.sent[message.id].callback(message.error, message.data);
-  delete methods.sent[message.id];
+  if (methods.sent[message.id] != undefined) {
+    methods.sent[message.id].callback(message.error, message.data);
+    delete methods.sent[message.id];
+  }
 }
 
 // test
