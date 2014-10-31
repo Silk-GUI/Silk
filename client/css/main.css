@@ -50,3 +50,34 @@
     margin-left: 0%
   }
 }
+#taskbar {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 50px;
+  background-color: #459fe0;
+  opacity: .7;
+  transition: .3s opacity;
+}
+#taskbar:hover{
+  opacity: 1;
+}
+
+#taskbar .app {
+display: inline-block;
+height: 50px;
+padding: 0px;
+width: 50px;
+transition: .17s background-color;
+margin: 0px;
+} 
+#taskbar .app:hover {
+background-color: #000;
+}
+
+#taskbar .app img {
+height: 40px;
+margin-top: 5px;
+margin-left: 5px;
+}
