@@ -1,0 +1,15 @@
+{
+  "name": "silk-gui",
+  "version": "0.0.1",
+  "description": "GUI for developers (and Node Os)",
+  "author": "zodern",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.10.1",
+    "ws": "~0.4.31"
+  },
+  "scripts": {
+    "start": "node server.js"
+  }
+  
+}

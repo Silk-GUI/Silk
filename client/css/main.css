@@ -1,0 +1,52 @@
+.loader {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+}
+.loader .first,
+.loader .second {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  -webkit-animation: load 3s;
+  -webkit-animation-iteration-count: infinite;
+}
+.loader .second {
+  -webkit-animation-delay: 1.5s;
+}
+@-webkit-keyframes load {
+  0% {
+    background-color: white;
+    width: 0px;
+    height: 0px;
+    top: 50%;
+    left: 50%;
+    margin-top: 0px;
+    margin-left: 0px;
+  }
+  40% {
+    background-color: lightGrey;
+  }
+  60% {
+    width: 500px;
+    height: 500px;
+    top: 50%;
+    left: 50%;
+    margin-top: -250px;
+    margin-left: -250px;
+  }
+  100% {
+    background-color: white;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    margin-top: 0%;
+    margin-left: 0%
+  }
+}
