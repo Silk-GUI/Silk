@@ -13,7 +13,8 @@ var windows = [{
     minimized: true,
     icon: "textEditor/logo.png",
     zIndex: 0
-               },
+               }
+
               ];
 
 // order of open windows.  Used to calculate z-index.
