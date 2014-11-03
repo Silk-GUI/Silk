@@ -4,29 +4,51 @@
   <title>Silk GUI</title>
   <link rel="stylesheet" href="css/normalize.css" type="text/css">
   <link rel="stylesheet" href="css/main.css" type="text/css">
-  </head>
-  <body>
-    <div class="window"><div class="title">File Explorer</div>
-    <iframe class="content" src="http://0.0.0.0:3000/fileExplorer/index.html"></iframe>
+
+</head>
+
+<body>
+
+  <div>Silk</div>
+  <div class="loader">
+    <div class="first"></div>
+    <div class="second"></div>
+  </div>
+  <div id="desktop">
+    <div v-repeat="windows" class="window" v-show="!minimized" v-style="z-index: zIndex">
+      <div class="title">{{title}} <span class="minimize" v-on="click: minimized = !minimized">-</span>
+      </div>
+
+      <iframe v-if="running" class="content" src="{{url}}"></iframe>
     </div>
-    <div>Silk</div>
-    <div class="loader">
-      <div class="first"></div>
-      <div class="second"></div>
+    <!--
+    <div class="window">
+      <div class="title">File Explorer</div>
+      <iframe class="content" src="/fileExplorer/index.html"></iframe>
     </div>
-    <div id="desktop">
-    
+-->
+  </div>
+
+  <div id="taskbar">
+    <div class="app" v-repeat="programs" v-on="click: open(this)">
+      <img v-attr="src: icon">
+
     </div>
-    
-    <div id="taskbar">
-      <div class="app"><img src="textEditor/logo.png"></div>
-      <div class="app"><img src="fileExplorer/logo.png"</div>
+    <!--
+    <div class="app open" data-open="false" data-min="false" data-url="http://jw.org">
+      <img src="textEditor/logo.png">
     </div>
-    
-    <!-- Scripts -->
-    <script src="js/libraries/jquery.js"></script>
-    <script src="js/load.js"></script>
-    <script src="js/libraries/vue.js"></script>
-    <script src="js/call.js"></script>
-  </body>
+<div class="app" data-open="true" data-min="false" data-url="http://0.0.0.0:3000/fileExplorer/index.html">
+      <img src="fileExplorer/logo.png" </div>
+-->
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/libraries/jquery.js"></script>
+  <script src="js/load.js"></script>
+  <script src="js/libraries/vue.js"></script>
+  <script src="js/call.js"></script>
+  <script src="js/windowManager.js"></script>
+</body>
+
 </html>

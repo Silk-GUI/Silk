@@ -50,7 +50,10 @@
     margin-left: 0%
   }
 }
+/* Task Bar */
+
 #taskbar {
+  z-index: 500;
   position: fixed;
   bottom: 0px;
   left: 0px;
@@ -60,24 +63,68 @@
   opacity: .7;
   transition: .3s opacity;
 }
-#taskbar:hover{
+#taskbar:hover {
   opacity: 1;
 }
-
 #taskbar .app {
-display: inline-block;
-height: 50px;
-padding: 0px;
-width: 50px;
-transition: .17s background-color;
-margin: 0px;
-} 
-#taskbar .app:hover {
-background-color: #000;
+  display: inline-block;
+  height: 50px;
+  padding: 0px;
+  width: 50px;
+  transition: .17s background-color;
+  margin: 0px;
+  border-top: 3px solid transparent;
+  cursor: pointer;
 }
-
+#taskbar .app:hover {
+  background-color: #000;
+}
 #taskbar .app img {
-height: 40px;
-margin-top: 5px;
-margin-left: 5px;
+  height: 40px;
+  margin-top: 2px;
+  margin-left: 5px;
+}
+/* Windows */
+
+#desktop .window {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding-bottom: 55px;
+  padding-top: 25px;
+}
+#desktop .window .title {
+  text-align: center;
+  margin-top: -25px;
+  width: 100%;
+  background-color: #459FE0;
+  height: 25px;
+  padding-top: 5px;
+}
+#desktop .window iframe {
+  background-color: white;
+  border: none;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  box-sizing: border-box;
+}
+#taskbar .app.open {
+  border-top: 3px solid #126eb1;
+}
+/* Desktop */
+#desktop{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background-image: url(http://upload.wikimedia.org/wikipedia/commons/2/2f/Yosemite_Falls_from_trail,_Yosemite_NP,_CA,_US_-_Diliff.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  background-position: center;
+  background-size: cover;
 }
