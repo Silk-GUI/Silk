@@ -4,6 +4,7 @@ var wss = new WebSocketServer({
   port: 9999
 });
 require('./methods.js');
+require('./fileExplorer.js');
 
 methods.add({
   "silk/apps/list": function (data) {
