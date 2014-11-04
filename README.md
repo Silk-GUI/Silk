@@ -34,5 +34,5 @@ There will be a simple text editor that will open when a file is opened in the f
 
 ##To Install
     npm i -g silk-gui 
-    npm install
+    cd silk
     npm start
