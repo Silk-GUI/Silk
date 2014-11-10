@@ -14,39 +14,22 @@ function parsePath(path){
     if(!files[i].isDir)
       files[i].mime = mime.lookup(files[i].path);
   }
-  return files;
 }
 
 
 
 methods.add({
-  "fe/list/path": function (path,ws,next) {
+  "fe/list/path": function (path,call_ob,next) {
     if(typeof path == "undefined")
       path = "/";
     else
       path = path[0];
     if(!/^\/$/.test(path))
       path += "/";
-    if(!fs.existsSync(path))
-      throw new Error(path+" doesn't exist");
-    var stats = fs.statSync(path);
-    if(!stats.isDirectory())
-      throw new Error(path+" is not a directory");
-
-    var watcher = fs.watch(path, function (event, filename) {
-      console.log('event is: ' + event);
-      if (filename) {
-        console.log('filename provided: ' + filename);
-      } else {
-        console.log('filename not provided');
-      }
-      next(void(0),parsePath(path));
-    })
-    ws.on("close",function(){
-      watcher.close();
-    })
-
-
+    if(!fs.exists(path))
+      throw new Error("path:"+path+" doesn't exist")
+    if(!fs.statSync(.path).isDirectory())
+      throw new Error("path:"+path+" is not a dirctory")
     return parsePath(path);
   }
 })
