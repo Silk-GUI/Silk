@@ -40,6 +40,7 @@ var methods = {};
 methods.queue = [];
 // method calls that are sent and waiting an answer
 methods.sent = {};
+methods.listeners = {};
 
 // function to call server method
 methods.call = function (name, data, callback) {
@@ -63,6 +64,9 @@ methods.call = function (name, data, callback) {
   }
 }
 methods.listen = function (name, callback) {
+  var args = Array.prototype.slice.call(arguments, 0);
+  callback = args.pop();
+  name = args.shift();
 
   //id to find callback when returned data is received
   var id = Date.now() + "-" + Math.random();
@@ -74,8 +78,9 @@ methods.listen = function (name, callback) {
   // save callback so we can call it when receiving the reply
   methods.listeners[id] = content;
   methods.listeners[id].callback = callback;
-  return {
+  var ret = {
     id:id,
+    name: name,
     send:function(data){
       var clone = {};
       for(var i in content)
@@ -85,10 +90,14 @@ methods.listen = function (name, callback) {
         socket.send(JSON.stringify(clone));
       } catch (e) {
         //if there is an error queue it for later when socket connects
-        methods.queue.push(JSON.stringify(content));
+        methods.queue.push(JSON.stringify(clone));
       }
     }
   };
+  for(var i=0;i<args.length;i++){
+    ret.send(args[i]);
+  }
+  return ret;
 }
 methods.remove = function(id){
   delete methods.listeners[id];
@@ -98,9 +107,11 @@ methods.remove = function(id){
 methods.receive = function (message) {
   message = JSON.parse(message.data);
   if (typeof methods.sent[message.id] != "undefined") {
+    console.log("called");
     methods.sent[message.id].callback(message.error, message.data);
     delete methods.sent[message.id];
   }else if(methods.listeners[message.id] != undefined) {
+    console.log("listened");
     methods.listeners[message.id].callback(message.error, message.data);
   }
 }

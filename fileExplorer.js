@@ -14,22 +14,44 @@ function parsePath(path){
     if(!files[i].isDir)
       files[i].mime = mime.lookup(files[i].path);
   }
+  return files;
 }
 
+var watchers = {};
 
+function setupWatcher(path,call_ob,next){
+  if(call_ob.id in watchers)
+    watchers[call_ob.id].close();
+  watchers[call_ob.id] = fs.watch(path, function (event, filename) {
+    console.log('event is: ' + event);
+    if (filename) {
+      console.log('filename provided: ' + filename);
+    } else {
+      console.log('filename not provided');
+    }
+    next(void(0),parsePath(path));
+  });
+  call_ob.ws.on("close", function(){
+    watchers[call_ob.id].close();
+    delete watchers[call_ob.id];
+  })
+}
 
 methods.add({
   "fe/list/path": function (path,call_ob,next) {
     if(typeof path == "undefined")
       path = "/";
     else
-      path = path[0];
-    if(!/^\/$/.test(path))
+      path = path;
+    if(!/\/$/.test(path))
       path += "/";
-    if(!fs.exists(path))
+    if(!fs.existsSync(path)){
       throw new Error("path:"+path+" doesn't exist")
-    if(!fs.statSync(.path).isDirectory())
+    }
+    if(!fs.statSync(path).isDirectory()){
       throw new Error("path:"+path+" is not a dirctory")
+    }
+    setupWatcher(path,call_ob,next);
     return parsePath(path);
   }
 })

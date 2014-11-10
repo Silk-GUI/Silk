@@ -17,14 +17,10 @@ methods.add({
 console.log("web socket is at: " + wss.options.host + ":" + wss.options.port);
 
 wss.on('connection', function (ws) {
-
   ws.on('message', function (message) {
     console.log("websocket message: " + message);
-
     methods.call(ws,message);
-
   });
-
 });
 
 var express = require('express')
@@ -35,27 +31,21 @@ app.get('/', function (req, res) {
 })
 
 var server = app.listen(3000, function () {
-
-  var host = server.address().address
-  var port = server.address().port
-
-  console.log('Silk at http://%s:%s', host, port)
-
+  var add = server.address()
+  console.log('Silk at http://%s:%s', add.address, add.port)
 });
 
 // static files for client
 app.use(express.static(__dirname + '/client'));
 
-
 // make app availalbe outisde nodeos
 var localtunnel = require('localtunnel');
 
 localtunnel(3000, function(err, tunnel) {
-    if (err) {
-      console.log(err);
-    }
-
-    // the assigned public url for your tunnel
-    // i.e. https://abcdefgjhij.localtunnel.me
-    console.log("Go to " + tunnel.url + " to remotely access Silk");
+  if (err) {
+    console.log(err);
+  }
+  // the assigned public url for your tunnel
+  // i.e. https://abcdefgjhij.localtunnel.me
+  console.log("Go to " + tunnel.url + " to remotely access Silk");
 });

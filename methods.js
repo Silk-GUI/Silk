@@ -4,13 +4,13 @@
 
 function MethodCall(ws,message){
   try{
-  message = JSON.parse(message);
-}catch(e){
-  console.log("ERROR")
-  console.log("err:"+e)
-  console.log("mess: "+message)
-  console.log("typeof: "+typeof message);
-}
+    message = JSON.parse(message);
+  }catch(e){
+    console.log("ERROR")
+    console.log("err:"+e)
+    console.log("mess: "+message)
+    console.log("typeof: "+typeof message);
+  }
   this.id = message.id;
   this.ws = ws;
   this.name = message.name;
@@ -23,6 +23,7 @@ MethodCall.prototype.exec = function(){
     var result = methods.list[this.name](this.data,this,function(e,result){
       if(e) return that.sendErr(e);
       if(result) return that.sendResult(result);
+      console.log("no error, no result");
     });
   }catch(e){
     return this.sendErr(e)
@@ -34,8 +35,8 @@ MethodCall.prototype.exec = function(){
 MethodCall.prototype.sendErr = function (e){
   this.ws.send(JSON.stringify({
     id: this.id,
-    error: e,
-    data: null,
+    error: e.toString(),
+    data: null
   }));
 }
 MethodCall.prototype.sendResult = function (result){
