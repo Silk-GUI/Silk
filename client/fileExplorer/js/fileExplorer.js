@@ -23,8 +23,8 @@ function file_explorer(elem){
 file_explorer.prototype.changeDirectory = function(href){
   // get files in / directory
   var that = this;
-  methods.call("fe/list/path", [href], function (err, list) {
-    if(err) return alert(err);
+  methods.listen("fe/list/path", [href], function (err, list) {
+    if(err) return alert(JSON.stringify(err));
     that.processList(href,list);
   });
 }

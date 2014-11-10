@@ -62,13 +62,46 @@ methods.call = function (name, data, callback) {
     methods.queue.push(JSON.stringify(content));
   }
 }
+methods.listen = function (name, callback) {
+
+  //id to find callback when returned data is received
+  var id = Date.now() + "-" + Math.random();
+
+  var content = {
+    id: id,
+    name: name,
+  };
+  // save callback so we can call it when receiving the reply
+  methods.listeners[id] = content;
+  methods.listeners[id].callback = callback;
+  return {
+    id:id,
+    send:function(data){
+      var clone = {};
+      for(var i in content)
+        clone[i] = content[i];
+      clone.data = data;
+      try {
+        socket.send(JSON.stringify(clone));
+      } catch (e) {
+        //if there is an error queue it for later when socket connects
+        methods.queue.push(JSON.stringify(content));
+      }
+    }
+  };
+}
+methods.remove = function(id){
+  delete methods.listeners[id];
+}
+
 // calls callback and deletes item from methods.sent
 methods.receive = function (message) {
-
   message = JSON.parse(message.data);
-  if (methods.sent[message.id] != undefined) {
+  if (typeof methods.sent[message.id] != "undefined") {
     methods.sent[message.id].callback(message.error, message.data);
     delete methods.sent[message.id];
+  }else if(methods.listeners[message.id] != undefined) {
+    methods.listeners[message.id].callback(message.error, message.data);
   }
 }
 

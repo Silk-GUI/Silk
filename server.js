@@ -21,15 +21,8 @@ wss.on('connection', function (ws) {
   ws.on('message', function (message) {
     console.log("websocket message: " + message);
 
-    try {
-      message = JSON.parse(message);
-      var result = methods.call(message.id, message.name, message.data);
-      console.log("result" + JSON.stringify(result));
-      ws.send(JSON.stringify(result));
-    } catch (e) {
-      console.log(e);
-    }
-   
+    methods.call(ws,message);
+
   });
 
 });
