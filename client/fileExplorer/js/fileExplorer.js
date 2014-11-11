@@ -6,6 +6,7 @@ function file_explorer(elem){
   this.elem = jQuery(elem);
   this.files = this.elem.find(".files");
   this.cd = this.elem.find(".current_path");
+  this.href = "";
   var that = this;
   jQuery(this.elem).on("click",".current_path a,.files .directory a", function(e){
     e.preventDefault();
@@ -17,16 +18,19 @@ function file_explorer(elem){
     alert("You're going to have to setup a default view for mimetype: "+$(this).parent().attr("data-mime"));
     return false;
   })
+  this.listener = methods.listen("fe/list/path", function (err, list) {
+    if(err) return alert(JSON.stringify(err));
+    that.processList(that.href,list);
+  });
+
   this.changeDirectory("/");
 }
 
 file_explorer.prototype.changeDirectory = function(href){
   // get files in / directory
-  var that = this;
-  methods.call("fe/list/path", [href], function (err, list) {
-    if(err) return alert(err);
-    that.processList(href,list);
-  });
+  console.log("sending href: "+href);
+  this.href = href;
+  this.listener.send(href)
 }
 
 file_explorer.prototype.processCD = function(href){
