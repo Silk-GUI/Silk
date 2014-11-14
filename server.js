@@ -5,6 +5,7 @@ var wss = new WebSocketServer({
 });
 require('./methods.js');
 require('./fileExplorer.js');
+require('./textEditor.js');
 
 methods.add({
   "silk/apps/list": function (data) {
