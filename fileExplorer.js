@@ -32,8 +32,15 @@ function setupWatcher(path,call_ob,next){
     next(void(0),parsePath(path));
   });
   call_ob.ws.on("close", function(){
+    try{
     watchers[call_ob.id].close();
     delete watchers[call_ob.id];
+    }
+    catch(e){
+      console.log(e);
+      console.log(call_ob.id);
+      console.log(watchers[call_ob.id]);
+    }
   })
 }
 
