@@ -22,11 +22,11 @@ Duplicate meteor.js methods to allow easy communication between the server and c
 
 This first version will have a taskbar on the bottom and allow opening, closing and minimizing windows.  Windows will be maximized and non resizable.  Apps are opened in iframes.
 
-**File Explorer**
+**File Explorer**  - Completed
 
 There will be a basic file explorer for navigating the files and folders.  It will allow going up one level, show the current path, and open folders when they are clicked.  It will try opening files in a text editor.
 
-**Text Editor**
+**Text Editor** - Completed
 
 There will be a simple text editor that will open when a file is opened in the file explorer.  It will be able to save the file after edited.
 
