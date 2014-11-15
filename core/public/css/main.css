@@ -1,0 +1,140 @@
+.loader {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  z-index: 600;
+  background-color: #026873;
+  background-size: 13px 13px, 29px 29px, 37px 37px, 53px 53px;
+  background-image: -webkit-linear-gradient(0, rgba(255, 255, 255, .07) 50%, transparent 50%), -webkit-linear-gradient(0, rgba(255, 255, 255, .13) 50%, transparent 50%), -webkit-linear-gradient(0, transparent 50%, rgba(255, 255, 255, .17) 50%), -webkit-linear-gradient(0, transparent 50%, rgba(255, 255, 255, .19) 50%);
+  background-image: -moz-linear-gradient(0, rgba(255, 255, 255, .07) 50%, transparent 50%), -moz-linear-gradient(0, rgba(255, 255, 255, .13) 50%, transparent 50%), -moz-linear-gradient(0, transparent 50%, rgba(255, 255, 255, .17) 50%), -moz-linear-gradient(0, transparent 50%, rgba(255, 255, 255, .19) 50%);
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, .07) 50%, transparent 50%), linear-gradient(90deg, rgba(255, 255, 255, .13) 50%, transparent 50%), linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .17) 50%), linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .19) 50%);
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 5px;
+}
+.loader h1 {
+  text-align: center;
+  width: 100%;
+  font-size: 50px;
+  font-family: arial;
+  position: absolute;
+  top: 50%;
+  margin-top: -25px;
+  -webkit-perspective: 200px;
+}
+.loader h1 span {
+    display: inline-block;
+    -webkit-animation: 3s flip;
+    -webkit-animation-iteration-count: infinite;
+}
+span:nth-child(1) {
+    -webkit-animation-delay: .5s !important;
+}
+span:nth-child(2) {
+    -webkit-animation-delay: .7s !important;
+}
+span:nth-child(3) {
+    -webkit-animation-delay: .9s !important;
+}
+span:nth-child(4) {
+    -webkit-animation-delay: 1.1s !important;
+}
+@-webkit-keyframes flip {
+    0% {
+        -webkit-transform: rotateX(0deg)
+    }
+    50%{  -webkit-transform: rotateX(0deg)
+    }
+    100% {
+        -webkit-transform: rotateX(360deg);
+        transform: rotateX(360deg);
+    }
+}
+/* Task Bar */
+
+#taskbar {
+  z-index: 500;
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 50px;
+  background-color: #459fe0;
+  opacity: .7;
+  transition: .3s opacity;
+}
+#taskbar:hover {
+  opacity: 1;
+}
+#taskbar .app {
+  display: inline-block;
+  height: 50px;
+  padding: 0px;
+  width: 50px;
+  transition: .17s background-color;
+  margin: 0px;
+  border-top: 3px solid transparent;
+  cursor: pointer;
+}
+#taskbar .app:hover {
+  background-color: #000;
+}
+#taskbar .app img {
+  height: 40px;
+  margin-top: 2px;
+  margin-left: 5px;
+}
+/* Windows */
+
+#desktop .window {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding-bottom: 55px;
+  padding-top: 25px;
+}
+#desktop .window .title {
+  text-align: center;
+  margin-top: -25px;
+  width: 100%;
+  background-color: #459FE0;
+  height: 25px;
+  padding-top: 5px;
+}
+#desktop .window iframe {
+  background-color: white;
+  border: none;
+  width: 100%;
+  height: 100%;
+  margin: 0px;
+  box-sizing: border-box;
+}
+#taskbar .app.open {
+  border-top: 3px solid #126eb1;
+}
+/* Desktop */
+
+#desktop {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  /*  background-image: url(http://upload.wikimedia.org/wikipedia/commons/2/2f/Yosemite_Falls_from_trail,_Yosemite_NP,_CA,_US_-_Diliff.jpg);*/
+  background-color: #026873;
+  background-size: 13px 13px, 29px 29px, 37px 37px, 53px 53px;
+  background-image: -webkit-linear-gradient(0, rgba(255, 255, 255, .07) 50%, transparent 50%), -webkit-linear-gradient(0, rgba(255, 255, 255, .13) 50%, transparent 50%), -webkit-linear-gradient(0, transparent 50%, rgba(255, 255, 255, .17) 50%), -webkit-linear-gradient(0, transparent 50%, rgba(255, 255, 255, .19) 50%);
+  background-image: -moz-linear-gradient(0, rgba(255, 255, 255, .07) 50%, transparent 50%), -moz-linear-gradient(0, rgba(255, 255, 255, .13) 50%, transparent 50%), -moz-linear-gradient(0, transparent 50%, rgba(255, 255, 255, .17) 50%), -moz-linear-gradient(0, transparent 50%, rgba(255, 255, 255, .19) 50%);
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, .07) 50%, transparent 50%), linear-gradient(90deg, rgba(255, 255, 255, .13) 50%, transparent 50%), linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .17) 50%), linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .19) 50%);
+  /*
+  background-repeat: no-repeat;
+  background-attachment: fixed; 
+  background-position: center;
+  background-size: cover;
+*/
+}
