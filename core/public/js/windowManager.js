@@ -3,67 +3,65 @@ var windows = [];
 // channel for each window
 var channels = {};
 
-function CreateChannel(windowName) {
-
+function CreateChannel(app) {
+  app.running = true;
+  var windowName = app.title;
   // allow html to be updated
-  window.setTimeout(function () {
-    console.log(windowName);
-    chan = Channel.build({
-      window: $("#desktop .window iframe[data-name='" + windowName + "']")[0].contentWindow,
-      origin: "*",
-      scope: "testScope",
-      onReady: function () {
-        console.log("channel is ready!");
-        console.log("ready");
+  console.log(windowName);
+  chan = Channel.build({
+    window: $("#desktop .window iframe[data-name='" + windowName + "']")[0].contentWindow,
+    origin: "*",
+    scope: "testScope",
+    onReady: function () {
+      console.log("channel is ready!");
+      console.log("ready");
 
-      }
-    })
+    }
+  })
 
-    chan.bind("openFile", function (context, params) {
-      console.log("=============")
-      console.log(context);
-      console.log(params);
+  chan.bind("openFile", function (context, params) {
+    console.log("=============")
+    console.log(context);
+    console.log(params);
 
-      // open text editor and include path in url
-      // find text editor
-      for (var i = 0; i < windows.length; ++i) {
+    // open text editor and include path in url
+    // find text editor
+    for (var i = 0; i < windows.length; ++i) {
 
-        if (windows[i].title === "Text Editor") {
-          if (windows[i].running == false) {
-            var url = windows[i].url;
-            url = url.split("?")[0];
-            windows[i].url = url + "?file=" + encodeURIComponent(params.path);
-            windows[i].running = true;
+      if (windows[i].title === "Text Editor") {
+        if (windows[i].running == false) {
+          var url = windows[i].url;
+          url = url.split("?")[0];
+          windows[i].url = url + "?file=" + encodeURIComponent(params.path);
+          windows[i].running = true;
+          windows[i].minimized = false;
+          CreateChannel(windows[i].title);
+          windowOrder.unshift(windows[i].title);
+        } else {
+          channels[windows[i].title].notify({
+            method: "fileToOpen",
+            params: {
+              path: params.path,
+              mime: params.mimie
+            }
+          });
+          if (windows[i].minimized == true) {
             windows[i].minimized = false;
-            CreateChannel(windows[i].title);
             windowOrder.unshift(windows[i].title);
           } else {
-            channels[windows[i].title].notify({
-              method: "fileToOpen",
-              params: {
-                path: params.path,
-                mime: params.mimie
-              }
-            });
-            if (windows[i].minimized == true) {
-              windows[i].minimized = false;
-              windowOrder.unshift(windows[i].title);
-            } else {
-              windowOrder.pop(windows[i].title);
-              windowOrder.unshift(windows[i].title);
-            }
+            windowOrder.pop(windows[i].title);
+            windowOrder.unshift(windows[i].title);
           }
-
-          updateOrder();
-
-          break;
         }
+
+        updateOrder();
+
+        break;
       }
-    });
+    }
+  });
 
-    channels[windowName] = chan;
-
-  }, 10);
+  channels[windowName] = chan;
 }
 
 // order of open windows.  Used to calculate z-index.
@@ -92,6 +90,9 @@ function initializeManager(_windows){
     el: '#desktop',
     data: {
       windows: windows
+    },
+    methods: {
+      buildChannel:CreateChannel
     }
   });
 
@@ -102,12 +103,7 @@ function initializeManager(_windows){
     },
     methods: {
       open: function (app) {
-        if (app.running === false) {
-          // create new channel
-          CreateChannel(app.title);
-        }
         app.running = true;
-
         app.minimized = !app.minimized;
         if (app.minimized === false) {
           windowOrder.unshift(app.title);

@@ -1,34 +1,31 @@
+var mime = require("mime");
+
 methods.add({
   "te/open": function(file, callObj, send){
     var fs = require("fs");
     var fileName = file;
     console.log("fileName");
-
-fs.exists(fileName, function(exists) {
-  if (exists) {
-    fs.stat(fileName, function(error, stats) {
-      fs.open(fileName, "r", function(error, fd) {
-        var buffer = new Buffer(stats.size);
-
-        fs.read(fd, buffer, 0, buffer.length, null, function(error, bytesRead, buffer) {
-          var data = buffer.toString("utf8", 0, buffer.length);
-
+    fs.exists(fileName, function(exists) {
+      if (!exists) return send("this file does not exist");
+      var mt = mime.lookup(fileName);
+      if(!/^text/.test(mt))
+        return send(new Error("Editing "+mt+" in a text editor is not currently supported"));
+      fs.stat(fileName, function(err, stats) {
+        if(err) return send(err);
+        if(stats.isDirectory())
+          return send(new Error("Editing directories in a text editor is not currently supported"));
+        fs.readFile(fileName,function(err,data){
+          if(err) return send(err);
           var ret = {
             state: "ready",
-            content: data
+            content: data.toString("utf-8")
           }
-          send(error, ret);
-          fs.close(fd);
-        });
+          send(void(0), ret);
+        })
       });
     });
+    return {state: "loading"}
   }
-});
-      return {
-  state: "loading"
-}
-  }
-
 });
 
 methods.add({
