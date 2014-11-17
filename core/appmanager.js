@@ -10,15 +10,21 @@ module.exports = function(app,wss){
       console.error(file+"'s window.json does not exist. Not loading.");
        return;
     }
-    console.log(file+"to be loaded");
+    console.log(file+" to be loaded");
     try{
-      require(__root+"/apps/"+file);
+      var path = require.resolve(__root+"/apps/"+file);
+      try{
+        require(__root+"/apps/"+file);
+      }catch(e){
+        console.error("app["+file+"] could not be loaded");
+        e.printStackTrace();
+        //Could implement logic to wait for user input unless --force
+        return;
+      }
     }catch(e){
-      console.log("app["+file+"] could not be loaded");
-      e.printStackTrace();
-      //Could implement logic to wait for user input unless --force
-      return;
+      console.log("this does not have serverside scripts. Thats ok though")
     }
+
     windows.push(JSON.parse(fs.readFileSync(__root+"/apps/"+file+"/window.json")));
     app.use("/"+file, express.static(__root+"/apps/"+file+"/public"));
   })
