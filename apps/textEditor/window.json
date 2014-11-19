@@ -4,5 +4,9 @@
   "running": false,
   "minimized": true,
   "icon": "textEditor/logo.png",
-  "zIndex": 0
+  "zIndex": 0,
+  "opens": [
+    "text/plain",
+    "*"
+  ]
 }

@@ -39,5 +39,7 @@ module.exports = function(app,wss){
 
   app.get("/windows.json",function(req,res,next){
     res.type("json").send(windows);
-  })
+  });
+  
+  return windows;
 }
