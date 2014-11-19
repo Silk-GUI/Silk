@@ -84,7 +84,7 @@ var updateOrder = function () {
 var wm;
 var taskbar;
 
-function initializeManager(_windows){
+function initializeManager(_windows) {
   windows = _windows;
   wm = new Vue({
     el: '#desktop',
@@ -92,7 +92,7 @@ function initializeManager(_windows){
       windows: windows
     },
     methods: {
-      buildChannel:CreateChannel
+      buildChannel: CreateChannel
     }
   });
 
@@ -104,6 +104,16 @@ function initializeManager(_windows){
     methods: {
       open: function (app) {
         app.running = true;
+        // move to top if behind
+        if (app.minimized == false) {
+          if (windowOrder.indexOf(app.title) > 0) {
+            // move to top
+            windowOrder.pop(app.title);
+            windowOrder.unshift(app.title);
+            updateOrder();
+            return
+          }
+        }
         app.minimized = !app.minimized;
         if (app.minimized === false) {
           windowOrder.unshift(app.title);
