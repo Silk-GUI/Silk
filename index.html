@@ -29,7 +29,7 @@
   </div>
 
   <div id="taskbar">
-    <div class="app" v-repeat="programs" v-on="click: open(this)">
+    <div class="app" v-repeat="programs" v-on="click: open(this)" v-class="running: running">
       <img v-attr="src: icon">
 
     </div>
