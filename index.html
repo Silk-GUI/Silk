@@ -18,7 +18,7 @@
       <div class="title">{{title}} <span class="minimize" v-on="click: minimized = !minimized">-</span>
       </div>
 
-      <iframe v-if="running" class="content" v-on="load: buildChannel(this)"v-attr="width: url"  data-name="{{title}}"></iframe>
+      <iframe v-if="running" class="content" v-on="load: buildChannel(this)"v-attr="src: url"  data-name="{{title}}"></iframe>
     </div>
     <!--
     <div class="window">
