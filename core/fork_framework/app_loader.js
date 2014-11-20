@@ -37,7 +37,8 @@ function AppFactory(folder,urlpath,app){
     router.get(urlpath+j.name, function(req,res,next){
       res.redirect(301,j.url);
     });
-    that.clean.push(j.clean);
+    if(j.url != "headless");
+      that.clean.push(j.clean);
     delete j.clean;
     that.hashmap[j.name] = j;
 
@@ -130,13 +131,14 @@ AppFactory.prototype.checkWindowJSON = function(file,next){
 AppFactory.prototype.checkURIs = function(j,next){
   var that = this;
   async.each(["url","icon"],function(ns,next){
+    if(j[url] == "headless") return next();
     j[ns] = url.resolve("http://localhost:3000"+that.urlpath+j.name+"/index.html",j[ns]);
     j.clean[ns] = j[ns];
     var parsed = url.parse(j[ns]);
     if(!url.host){
       fs.exists(j.path,function(boo){
         if(!boo) return next(new Error("local file does not exist"));
-        next(void(0),j);
+        next();
       })
       return;
     }

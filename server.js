@@ -25,15 +25,7 @@ app.get('/', function (req, res) {
 app.use(express.static(__dirname + '/core/public'));
 app.get("/bc/:component", require(__root + "/core/bower_static.js"));
 
-var Silk = {};
-// default programs to open files
-Silk.defaults = {};
-
-(function () {
-  var windows = require(__root + "/core/fork_framework")(app, wss);
-  require(__root + "/core/app-defaults.js")(windows, Silk);
-  console.log("Silk.defaults " + JSON.stringify(Silk.defaults));
-})();
+var windows = require(__root + "/core/fork_framework")(app, wss);
 
 var server = app.listen(3000, function () {
   var add = server.address();

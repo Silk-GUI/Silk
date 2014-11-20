@@ -7,6 +7,8 @@ require(__dirname+"/ws2fork_com.js");
 module.exports = function(app,wss){
   windows = new WL(__root+"/apps/","/",app);
   windows.on("finishedCompiling", function(results){
+    for(var i in windows.hashmap)
+      windows.hashmap[i].fork.send({name:"windows",data:windows.clean});
     console.log("\nThese Windows were completed: "+ JSON.stringify(results));
   });
   windows.on("forked", function(fork){

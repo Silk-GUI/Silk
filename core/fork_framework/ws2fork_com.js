@@ -5,6 +5,8 @@
 
 
 var methods = {
+  wflag:false,
+  windows:[],
   requests:{},
   user_reqs:{},
   users:{},
@@ -35,7 +37,6 @@ methods.removeFork = function(fork,code,signal){
   delete this.fork_resp[fork.pid];
   delete this.forks[fork.pid];
 }
-
 
 methods.addFork = function(fork){
   console.log("adding fork");

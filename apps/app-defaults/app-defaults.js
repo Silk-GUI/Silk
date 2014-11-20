@@ -1,9 +1,20 @@
 var defaults = {};
 
+var djson = __dirname + "/settings/app-defaults.json";
+var windows;
+var Silk = {defaults:{}};
+
+methods.add({
+  "windows": function (mime) {
+    initialize(windows);
+    console.log("Silk.defaults " + JSON.stringify(Silk.defaults));
+  }
+});
+
 // load defaults from file
 function loadDefaults() {
   var fs = require("fs");
-  var fileName = __root + "/core/settings/app-defaults.json"
+  var fileName = djson;
 
   fs.exists(fileName, function (exists) {
     // TODO create file if it doesn't exist
@@ -42,7 +53,7 @@ function loadDefaults() {
 // saves defaults in file
 function saveDefaults() {
   var fs = require("fs"),
-    path = __root + "/core/settings/app-defaults.json",
+    path = djson,
     contents = {},
     item;
   for (item in defaults) {
@@ -63,7 +74,7 @@ function saveDefaults() {
 
 }
 
-module.exports = function (windows, Silk) {
+function initialize(windows) {
 
   defaults = Silk.defaults;
   loadDefaults();
