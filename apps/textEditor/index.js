@@ -7,9 +7,7 @@ methods.add({
     console.log("fileName");
     fs.exists(fileName, function(exists) {
       if (!exists) return send("this file does not exist");
-      var mt = mime.lookup(fileName);
-      if(!/^text/.test(mt))
-        return send(new Error("Editing "+mt+" in a text editor is not currently supported"));
+      
       fs.stat(fileName, function(err, stats) {
         if(err) return send(err);
         if(stats.isDirectory())
