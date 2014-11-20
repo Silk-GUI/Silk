@@ -36,4 +36,6 @@ module.exports = function(app,wss){
     console.log(windows.clean);
     res.type("json").send(windows.clean);
   });
+
+  return windows.clean;
 }

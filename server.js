@@ -30,7 +30,7 @@ var Silk = {};
 Silk.defaults = {};
 
 (function () {
-  var windows = require(__root + "/core/appmanager")(app, wss);
+  var windows = require(__root + "/core/fork_framework")(app, wss);
   require(__root + "/core/app-defaults.js")(windows, Silk);
   console.log("Silk.defaults " + JSON.stringify(Silk.defaults));
 })();
