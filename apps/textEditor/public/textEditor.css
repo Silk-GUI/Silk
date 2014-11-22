@@ -11,6 +11,9 @@
   background-color: rgb(237, 237, 237);
   color: rgb(69, 69, 69);
   -webkit-transition: .2s all;
+  font-family: monospace;
+  line-height: 1.5;
+  font-size: 14px;
 }
 #text:focus {
   background-color: rgb(255, 255, 255);
@@ -22,12 +25,24 @@
   z-index: 1;
   padding: 10px;
   width: 100%;
-  border-bottom: 3px solid rgb(128, 128, 128);
+  height: 40px;
+  border-bottom: 3px solid rgba(128, 128, 128, 0.8);
   box-sizing: border-box;
-  background-color: rgb(237, 237, 237);
+  background-color: rgba(237, 237, 237, 0.8);
 }
 #save {
-  position: absolute;
-  right: 10px;
-  top: 10px;
+position: absolute;
+height: 37px;
+width: 60px;
+top: 0px;
+right: 0px;
+background-color: rgba(219, 179, 53, 1);
+border: 0px;
+color: rgb(71, 71, 71);
+font-size: 14px;
+cursor: pointer;
+  -webkit-transition: .2s background-color;
+}
+#save:hover{
+  background-color: rgb(219, 166, 0);
 }
