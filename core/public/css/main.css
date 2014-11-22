@@ -100,9 +100,52 @@ span:nth-child(4) {
   text-align: center;
   margin-top: -25px;
   width: 100%;
-  background-color: #459FE0;
-  height: 25px;
+  background-color: rgb(69, 159, 224);
+  height: 30px;
+  padding-top: 7px;
+  box-sizing: border-box;
+}
+.window .title .minimize {
+  display: inline-block;
+  position: absolute;
+  right: 30px;
+  box-sizing: border-box;
+  top: 0px;
+  color: rgb(255, 255, 255);
+  font-size: 16px;
+  margin-top: 0px;
+  padding: 0px;
+  width: 30px;
+  height: 30px;
   padding-top: 5px;
+  background-color: rgba(24, 70, 140, 0.57);
+  cursor: pointer;
+  -webkit-transition: .2s all;
+}
+.window .title .minimize:hover{
+  background-color: rgba(24, 70, 140, 0.32);
+}
+.window .title .close {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  top: 0px;
+  color: rgb(255, 255, 255);
+  font-size: 16px;
+  margin-top: 0px;
+  padding: 0px;
+  width: 30px;
+  height: 30px;
+  padding-top: 6px;
+  background-color: rgba(16, 67, 103, 0.72);
+  font-weight: 300;
+  cursor: pointer;
+  -webkit-transition: .2s background-color;
+}
+.window .title .close:hover {
+  background-color: rgba(16, 67, 103, 0.32);
 }
 #desktop .window iframe {
   background-color: white;

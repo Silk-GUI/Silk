@@ -92,7 +92,18 @@ function initializeManager(_windows) {
       windows: windows
     },
     methods: {
-      buildChannel: CreateChannel
+      buildChannel: CreateChannel,
+      minimize: function (app) {
+        // put window on top
+        app.minimized = !app.minimized;
+
+      },
+      close: function (app) {
+        app.running = false;
+        app.minimized = true;
+        windowOrder.pop(app.title);
+        updateOrder();
+      }
     }
   });
 
@@ -122,11 +133,6 @@ function initializeManager(_windows) {
           windowOrder.pop(app.title);
         }
         updateOrder();
-      },
-      minimize: function (app) {
-        // put window on top
-        app.minimized = !app.minimized;
-
       }
     }
   })
