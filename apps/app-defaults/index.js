@@ -5,7 +5,7 @@ var windows;
 var Silk = {defaults:{}};
 
 methods.add({
-  "windows": function (mime) {
+  "windows": function (windows) {
     initialize(windows);
     console.log("Silk.defaults " + JSON.stringify(Silk.defaults));
   }
@@ -31,20 +31,17 @@ function loadDefaults() {
           item;
 
         for (item in info) {
-
-          if (info[item].defaults != "") {
-            if (item in defaults) {
-              defaults[item].defaults = info[item].default;
-            } else {
-              defaults[item] = {};
-              defaults[item] = {
-                default: info[item].default,
-                available: []
-              };
-            }
+          if (info[item].defaults == "") continue;
+          if (item in defaults) {
+            defaults[item].defaults = info[item].default;
+          } else {
+            defaults[item] = {};
+            defaults[item] = {
+              default: info[item].default,
+              available: []
+            };
           }
         }
-
       })
     });
   });
@@ -80,29 +77,25 @@ function initialize(windows) {
   loadDefaults();
 
   for (var i = 0; i < windows.length; ++i) {
+    if (!("opens" in windows[i])) continue;
+    var opens = windows[i].opens;
 
-    if ("opens" in windows[i]) {
+    console.log("43 " + windows[i].title);
 
-      var opens = windows[i].opens;
+    //for each mime listed in windows
+    for (var x = 0; x < opens.length; ++x) {
+      if (opens[x] in Silk.defaults) {
+        console.log(opens[x] + " exists in Silk.defaults");
+        Silk.defaults[opens[x]].available.push(windows[i]);
 
-      console.log("43 " + windows[i].title);
+      } else {
+        // create object for defaults
 
-      //for each mime listed in windows
-      for (var x = 0; x < opens.length; ++x) {
-
-        if (opens[x] in Silk.defaults) {
-          console.log(opens[x] + " exists in Silk.defaults");
-          Silk.defaults[opens[x]].available.push(windows[i]);
-
-        } else {
-          // create object for defaults
-
-          Silk.defaults[opens[x]] = {};
-          Silk.defaults[opens[x]] = {
-            default: "",
-            available: [windows[i].title]
-          };
-        }
+        Silk.defaults[opens[x]] = {};
+        Silk.defaults[opens[x]] = {
+          default: "",
+          available: [windows[i].title]
+        };
       }
     }
   }

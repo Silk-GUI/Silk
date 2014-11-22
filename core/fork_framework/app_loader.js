@@ -238,7 +238,7 @@ AppFactory.prototype.createFork = function(j,next){
       j.fork = fork;
       var timeout = setTimeout(function(){
         fork.removeAllListeners();
-        fork.kill(9);
+        fork.kill();
         return next(new Error(j.title+"'s fork process timed out, this may be due to long syncrounous code on initialization'"));
       }, 5000);
 
@@ -246,7 +246,7 @@ AppFactory.prototype.createFork = function(j,next){
         clearTimeout(timeout);
         fork.removeAllListeners();
         if(m.cmd != "ready"){
-          fork.kill(9);
+          fork.kill();
           return next(new Error("fork process sending messages before initialization"));
         }
         console.log("forkready");
