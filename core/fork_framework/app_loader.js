@@ -37,8 +37,10 @@ function AppFactory(folder,urlpath,app){
     router.get(urlpath+j.name, function(req,res,next){
       res.redirect(301,j.url);
     });
-    if(j.url != "headless");
+    if(j.url != "headless"){
+      console.log("not headless")
       that.clean.push(j.clean);
+    }
     delete j.clean;
     that.hashmap[j.name] = j;
 
@@ -130,8 +132,11 @@ AppFactory.prototype.checkWindowJSON = function(file,next){
 
 AppFactory.prototype.checkURIs = function(j,next){
   var that = this;
+  if(j.url == "headless"){
+    console.log("headless");
+    return next(void(0),j);
+  }
   async.each(["url","icon"],function(ns,next){
-    if(j[url] == "headless") return next();
     j[ns] = url.resolve("http://localhost:3000"+that.urlpath+j.name+"/index.html",j[ns]);
     j.clean[ns] = j[ns];
     var parsed = url.parse(j[ns]);

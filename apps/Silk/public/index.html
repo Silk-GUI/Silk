@@ -1,0 +1,55 @@
+<html>
+
+<head>
+  <title>Silk GUI</title>
+  <link rel="stylesheet" href="css/normalize.css" type="text/css">
+  <link rel="stylesheet" href="css/main.css" type="text/css">
+
+</head>
+
+<body>
+
+  <div>Silk</div>
+  <div class="loader">
+    <h1><span>S</span><span>i</span><span>l</span><span>k</span></h1>
+  </div>
+  <div id="desktop">
+    <div v-repeat="windows" class="window" v-show="!minimized" v-style="z-index: zIndex">
+      <div class="title">{{title}} <span class="minimize" v-on="click: minimized = !minimized">-</span>
+      </div>
+
+      <iframe v-if="running" class="content" v-on="load: buildChannel(this)"   data-name="{{title}}" src="{{url}}"></iframe>
+    </div>
+    <!--
+    <div class="window">
+      <div class="title">File Explorer</div>
+      <iframe class="content" src="/fileExplorer/index.html"></iframe>
+    </div>
+-->
+  </div>
+
+  <div id="taskbar">
+    <div class="app" v-repeat="programs" v-on="click: open(this)">
+      <img v-attr="src: icon">
+
+    </div>
+    <!--
+    <div class="app open" data-open="false" data-min="false" data-url="http://jw.org">
+      <img src="textEditor/logo.png">
+    </div>
+<div class="app" data-open="true" data-min="false" data-url="http://0.0.0.0:3000/fileExplorer/index.html">
+      <img src="fileExplorer/logo.png" </div>
+-->
+  </div>
+  <div id="appNotifications"></div>
+
+  <!-- Scripts -->
+  <script src="/bc/jquery"></script>
+  <script src="js/load.js"></script>
+  <script src="/bc/vue"></script>
+  <script src="js/call.js"></script>
+  <script src="/bc/jschannel"></script>
+  <script src="js/windowManager.js"></script>
+</body>
+
+</html>
