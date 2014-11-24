@@ -1,3 +1,4 @@
+
 .loader {
   position: absolute;
   top: 0px;
@@ -66,6 +67,9 @@ span:nth-child(4) {
   opacity: .7;
   transition: .3s opacity;
 }
+#taskbar *{
+  -webkit-user-select: none;
+}
 #taskbar .app {
   display: inline-block;
   height: 50px;
@@ -95,6 +99,9 @@ span:nth-child(4) {
   box-sizing: border-box;
   padding-bottom: 55px;
   padding-top: 25px;
+}
+.window *{
+  -webkit-user-select: none;
 }
 #desktop .window .title {
   text-align: center;
@@ -178,4 +185,8 @@ span:nth-child(4) {
   background-position: center;
   background-size: cover;
 */
+}
+
+.window *{
+  -webkit-user-select: none;
 }
