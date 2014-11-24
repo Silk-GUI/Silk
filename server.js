@@ -1,4 +1,12 @@
 global.__root = __dirname;
+
+// debug mode
+if(global.debug == undefined){
+  global.debug = function(message){
+    console.log(message);
+  }
+}
+
 var path = require('path');
 var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({
@@ -7,11 +15,11 @@ var wss = new WebSocketServer({
 require('./methods.js');
 
 
-console.log("web socket is at: " + wss.options.host + ":" + wss.options.port);
+debug("web socket is at: " + wss.options.host + ":" + wss.options.port);
 
 wss.on('connection', function (ws) {
   ws.on('message', function (message) {
-    console.log("websocket message: " + message);
+    debug("websocket message: " + message);
     methods.call(ws,message);
   });
 });
