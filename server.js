@@ -34,14 +34,3 @@ var server = app.listen(3000, function () {
   console.log('Silk at http://%s:%s', add.address, add.port)
 });
 
-// make app availalbe outisde nodeos
-var localtunnel = require('localtunnel');
-
-localtunnel(3000, function(err, tunnel) {
-  if (err) {
-    console.log(err);
-  }
-  // the assigned public url for your tunnel
-  // i.e. https://abcdefgjhij.localtunnel.me
-  console.log("Go to " + tunnel.url + " to remotely access Silk");
-});
