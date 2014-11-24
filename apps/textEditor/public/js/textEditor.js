@@ -8,7 +8,21 @@ Silk.event("openFile", function (path) {
     $("#notifications").html("Please open a file using File Explorer");
     file.path == null;
   } else {
-
+    if(file.changed === true){
+      var fileName = path.split("/");
+      fileName = fileName[fileName.length - 1];
+      if(file.path != null){
+      file.name = file.path.split("/");
+      file.name = file.name[file.name.length - 1];
+      }
+      else{
+        file.name = "Untitled"
+      }
+      var answer = confirm("Are you sure you want to open " + fileName + "\n \n You will lose your changes to " + file.name);
+      if(answer === false){
+        return false;
+      }
+    }
     file.path = path;
     methods.listen("te/open", file.path, function (error, data) {
       if (error) {
