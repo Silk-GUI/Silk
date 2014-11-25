@@ -1,20 +1,14 @@
 /*
   Similar to meteor.methods
 */
+console.log("in the child");
 
-function MethodCall(ws,message){
-  try{
-    message = JSON.parse(message);
-  }catch(e){
-    console.log("ERROR")
-    console.log("err:"+e)
-    console.log("mess: "+message)
-    console.log("typeof: "+typeof message);
-  }
+function MethodCall(message){
   this.id = message.id;
-  this.ws = ws;
+  this.ws = message.ws;
   this.name = message.name;
   this.data = message.data;
+  this.exec();
 }
 
 MethodCall.prototype.exec = function(){
@@ -33,18 +27,20 @@ MethodCall.prototype.exec = function(){
 }
 
 MethodCall.prototype.sendErr = function (e){
-  this.ws.send(JSON.stringify({
+  process.send({cmd:"send",message:{
     id: this.id,
+    ws: this.ws.id,
     error: e.toString(),
     data: null
-  }));
+  }});
 }
 MethodCall.prototype.sendResult = function (result){
-  this.ws.send(JSON.stringify({
+  process.send({cmd:"send",message:{
     id: this.id,
+    ws: this.ws.id,
     error: null,
     data: result,
-  }));
+  }});
 }
 
 
@@ -52,12 +48,15 @@ var methods = {};
 
 // object of all methods
 methods.list = {};
+methods.users = {};
+
 
 // function to add method to methods.list
 methods.add = function (array) {
 
   for (var method in array) {
     methods.list[method] = array[method];
+    process.send({cmd:"add",name:method});
   }
 
 }
@@ -71,6 +70,35 @@ methods.call = function(ws,message){
   }
   meth.exec();
 }
+var User = require(__dirname+"/ws_puppet.js");
+process.on("message",function(message){
+  if(!(message.ws in methods.users))
+    methods.users[message.ws] = new User(message.ws);
+  message.ws  = methods.users[message.ws];
+  /*
+  Commands:
+    disconnect: Head is closed
+
+  */
+  if(!("cmd" in message)){
+    var meth = new MethodCall(message);
+    return meth.exec();
+  }
+  switch(message.cmd){
+    case "disconnect": message.ws.emit("close"); break;
+    case "close": break; //expected to close, will close forcfully in 5 seconds
+    case "sleep": break; //Head is removed from the window manager so updates are impossible
+    case "minimize": break; //Head is not removed but updates to the head will not be seen
+
+  }
+});
 
 // make global because it will be used in most files.
 global.methods = methods;
+
+
+process.nextTick(function(){
+  require(process.env.start);
+})
+
+process.send({cmd:"ready"});

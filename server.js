@@ -4,15 +4,13 @@ var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({
   port: 9999
 });
-require('./methods.js');
-
 
 console.log("web socket is at: " + wss.options.host + ":" + wss.options.port);
 
 wss.on('connection', function (ws) {
   ws.on('message', function (message) {
     console.log("websocket message: " + message);
-    methods.call(ws,message);
+    methods.call(ws, message);
   });
 });
 
@@ -25,9 +23,9 @@ app.get('/', function (req, res) {
 
 // static files for client
 app.use(express.static(__dirname + '/core/public'));
-app.get("/bc/:component",require(__root+"/core/bower_static.js"));
+app.get("/bc/:component", require(__root + "/core/bower_static.js"));
 
-require(__root+"/core/appmanager")(app,wss);
+var windows = require(__root + "/core/fork_framework")(app, wss);
 
 var server = app.listen(3000, function () {
   var add = server.address();
@@ -37,7 +35,7 @@ var server = app.listen(3000, function () {
 // make app availalbe outisde nodeos
 var localtunnel = require('localtunnel');
 
-localtunnel(3000, function(err, tunnel) {
+localtunnel(3000, function (err, tunnel) {
   if (err) {
     console.log(err);
   }

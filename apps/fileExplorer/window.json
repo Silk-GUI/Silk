@@ -3,6 +3,6 @@
   "url": "http://0.0.0.0:3000/fileExplorer/index.html",
   "running": false,
   "minimized": true,
-  "icon": "fileExplorer/logo.png",
+  "icon": "/fileExplorer/logo.png",
   "zIndex": 0
 }
