@@ -18,7 +18,7 @@ function file_explorer(elem) {
     e.preventDefault();
 
     Silk.openFile($(this).attr("href"), $(this).parent().attr("data-mime"));
-   // alert("You're going to have to setup a default view for mimetype: " + $(this).parent().attr("data-mime"));
+    // alert("You're going to have to setup a default view for mimetype: " + $(this).parent().attr("data-mime"));
     return false;
   })
   this.listener = methods.listen("fe/list/path", function (err, list) {
@@ -49,23 +49,37 @@ file_explorer.prototype.processCD = function (href) {
       name = "root";
     } else
       netref += "/" + name
-    this.cd.append("/<a href='" + netref + "'>" + name + "</a>");
+    this.cd.append("<i class='fa fa-caret-right'></i><span>/</span><a href='" + netref + "'>" + name + "</a>");
   }
 }
 file_explorer.prototype.processList = function (href, list) {
+  var files = [];
   this.processCD(href);
   this.files.empty();
+  
+  // add folders and separate files
   for (var i = 0; i < list.length; i++) {
     var item = list[i];
-    var el = jQuery("<li><a href='" + item.path + "'>" + item.name + "</a></li>");
-    this.files.append(el);
     if (item.isDir) {
+      var el = jQuery("<li><a href='" + item.path + "'><i class='fa fa-folder'></i>" + item.name + "</a></li>");
+      this.files.append(el);
       el.addClass("directory");
+      
     } else {
-      el.addClass("file");
-      el.attr("data-mime", item.mime);
+      files.push(item);
     }
   }
+  
+  // add files
+  for(var i = 0; i < files.length; i++){
+    var item = list[i];
+        var el = jQuery("<li><a href='" + item.path + "'><i class='fa fa-file-o'></i>" + item.name + "</a></li>");
+        this.files.append(el);
+        el.addClass("file");
+        el.attr("data-mime", item.mime);
+      
+  }
+  
 }
 
 jQuery(function ($) {
