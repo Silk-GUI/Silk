@@ -190,3 +190,16 @@ span:nth-child(4) {
 .window *{
   -webkit-user-select: none;
 }
+
+#clock {
+position: absolute;
+right: 0px;
+bottom: 0px;
+height: 50px;
+font-size: 16px;
+color: rgb(255, 255, 255);
+padding-right: 5px;
+padding-top: 17px;
+box-sizing: border-box;
+  cursor: default; 
+}
