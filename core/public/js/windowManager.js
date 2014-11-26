@@ -35,7 +35,7 @@ function CreateChannel(app) {
           windows[i].url = url + "?file=" + encodeURIComponent(params.path);
           windows[i].running = true;
           windows[i].minimized = false;
-          CreateChannel(windows[i].title);
+          //CreateChannel(windows[i].title);
           windowOrder.unshift(windows[i].title);
         } else {
           channels[windows[i].title].notify({
