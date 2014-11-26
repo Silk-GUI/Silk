@@ -2,7 +2,9 @@ var defaults = {};
 
 var djson = __dirname + "/settings/app-defaults.json";
 var windows;
-var Silk = {defaults:{}};
+var Silk = {
+  defaults: {}
+};
 
 methods.add({
   "windows": function (windows) {
@@ -31,9 +33,9 @@ function loadDefaults() {
           item;
 
         for (item in info) {
-          if (info[item].defaults == "") continue;
+          if (info[item].default == "") continue;
           if (item in defaults) {
-            defaults[item].defaults = info[item].default;
+            defaults[item].default = info[item].default;
           } else {
             defaults[item] = {};
             defaults[item] = {
@@ -74,21 +76,24 @@ function saveDefaults() {
 function initialize(windows) {
 
   defaults = Silk.defaults;
-  loadDefaults();
 
+ 
   for (var i = 0; i < windows.length; ++i) {
     if (!("opens" in windows[i])) continue;
     var opens = windows[i].opens;
 
-    console.log("43 " + windows[i].title);
-
     //for each mime listed in windows
     for (var x = 0; x < opens.length; ++x) {
+
       if (opens[x] in Silk.defaults) {
-        console.log(opens[x] + " exists in Silk.defaults");
-        Silk.defaults[opens[x]].available.push(windows[i]);
+
+        // don't add duplicate apps
+        if (Silk.defaults[opens[x]].available.indexOf(windows[i].title) < 0) {
+          Silk.defaults[opens[x]].available.push(windows[i].title);
+        }
 
       } else {
+       
         // create object for defaults
 
         Silk.defaults[opens[x]] = {};
@@ -100,7 +105,8 @@ function initialize(windows) {
     }
   }
 
-
+  loadDefaults();
+ console.log(JSON.stringify(defaults, null, 4));
   methods.add({
     "Silk/appDefaults": function (mime) {
       if (mime in Silk.defaults) {
