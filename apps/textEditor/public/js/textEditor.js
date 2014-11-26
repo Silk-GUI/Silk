@@ -55,6 +55,8 @@ $("#save").click(function () {
       path: file.path,
       contents: $("#text").val()
     }, function (err, result) {
+        $("#toolBar").css("borderBottomColor", " rgba(128, 128, 128, 0.8)");
+     
     })
           file.changed = false;
 
