@@ -3,6 +3,10 @@
   "url": "http://0.0.0.0:3000/textEditor/index.html",
   "running": false,
   "minimized": true,
-  "icon": "textEditor/logo.png",
-  "zIndex": 0
+  "icon": "logo.png",
+  "zIndex": 0,
+  "opens": [
+    "text/plain",
+    "*"
+  ]
 }

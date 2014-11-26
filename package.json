@@ -1,6 +1,6 @@
 {
   "name": "silk-gui",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "GUI for developers (and Node Os)",
   "author": "zodern",
   "license": "MIT",
@@ -9,7 +9,8 @@
     "ws": "~0.4.31",
     "localtunnel": "1.5.0",
     "mime": "~1.2.11",
-    "commander": "2.5.0"
+    "commander": "2.5.0",
+    "async": "~0.9.0"
   },
   "scripts": {
     "start": "node server.js"

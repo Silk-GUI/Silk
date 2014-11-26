@@ -12,14 +12,14 @@ var WebSocketServer = require('ws').Server;
 var wss = new WebSocketServer({
   port: 9999
 });
-require('./methods.js');
-
 
 debug("web socket is at: " + wss.options.host + ":" + wss.options.port);
 
 wss.on('connection', function (ws) {
   ws.on('message', function (message) {
+
     debug("websocket message: " + message);
+
     methods.call(ws, message);
   });
 });
@@ -35,9 +35,10 @@ app.get('/', function (req, res) {
 app.use(express.static(__dirname + '/core/public'));
 app.get("/bc/:component", require(__root + "/core/bower_static.js"));
 
-require(__root + "/core/appmanager")(app, wss);
+var windows = require(__root + "/core/fork_framework")(app, wss);
 
 var server = app.listen(3000, function () {
   var add = server.address();
   console.log('Silk at http://%s:%s', add.address, add.port)
+
 });

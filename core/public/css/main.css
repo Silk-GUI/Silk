@@ -203,3 +203,26 @@ padding-top: 17px;
 box-sizing: border-box;
   cursor: default; 
 }
+
+#appNotifications {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  margin-top: -125px;
+  margin-left: -125px;
+  height: 250px;
+  width: 250px;
+  z-index: 300;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0px 0px 20px rgb(136, 136, 136);
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: scroll;
+  display: none;
+}
+#appNotifications .content li {
+  color: rgb(0, 0, 255);
+  text-decoration: underline;
+  cursor: pointer;
+
+}
