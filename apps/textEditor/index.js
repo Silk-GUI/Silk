@@ -7,6 +7,7 @@ methods.add({
     console.log("fileName");
     fs.exists(fileName, function(exists) {
       if (!exists) return send("this file does not exist");
+
       fs.stat(fileName, function(err, stats) {
         if(err) return send(err);
         if(stats.isDirectory())

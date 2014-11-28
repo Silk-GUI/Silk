@@ -13,6 +13,7 @@ var wss = new WebSocketServer({
   port: 9999
 });
 
+<<<<<<< HEAD
 debug("web socket is at: " + wss.options.host + ":" + wss.options.port);
 
 wss.on('connection', function (ws) {
@@ -20,6 +21,13 @@ wss.on('connection', function (ws) {
 
     debug("websocket message: " + message);
 
+=======
+console.log("web socket is at: " + wss.options.host + ":" + wss.options.port);
+
+wss.on('connection', function (ws) {
+  ws.on('message', function (message) {
+    console.log("websocket message: " + message);
+>>>>>>> master
     methods.call(ws, message);
   });
 });
@@ -41,4 +49,17 @@ var server = app.listen(3000, function () {
   var add = server.address();
   console.log('Silk at http://%s:%s', add.address, add.port)
 
+<<<<<<< HEAD
+=======
+// make app availalbe outisde nodeos
+var localtunnel = require('localtunnel');
+
+localtunnel(3000, function (err, tunnel) {
+  if (err) {
+    console.log(err);
+  }
+  // the assigned public url for your tunnel
+  // i.e. https://abcdefgjhij.localtunnel.me
+  console.log("Go to " + tunnel.url + " to remotely access Silk");
+>>>>>>> master
 });
