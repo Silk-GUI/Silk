@@ -33,7 +33,7 @@ function CreateChannel(app) {
         for (var i = 0; i < windows.length; ++i) {
 
           if (windows[i].title === title) {
-            
+
             // start the app
             if (windows[i].running == false) {
               var url = windows[i].url;
@@ -42,9 +42,9 @@ function CreateChannel(app) {
               windows[i].running = true;
               windows[i].minimized = false;
               windowOrder.unshift(windows[i].title);
-              
+
             } else {
-              
+
               channels[windows[i].title].notify({
                 method: "fileToOpen",
                 params: {
@@ -52,7 +52,7 @@ function CreateChannel(app) {
                   mime: params.mime
                 }
               });
-              
+
               if (windows[i].minimized == true) {
                 windows[i].minimized = false;
                 windowOrder.unshift(windows[i].title);
@@ -70,7 +70,7 @@ function CreateChannel(app) {
           }
         }
       }
-      
+
       console.log(data);
 
       // open using default program
@@ -78,7 +78,7 @@ function CreateChannel(app) {
         openWindow(data.default);
       }
       // if one app use it if it is not for *.
-      else if(data.available.length < 2 && data.mime != "*"){
+      else if (data.available.length < 2 && data.mime != "*") {
         openWindow(data.available[0]);
       }
       // let user choose program
@@ -94,10 +94,10 @@ function CreateChannel(app) {
         html += '</ul> <lable><input type="checkbox" checked> Always Use This App </label><div><button>Cancel</button></div></div>'
         $("#appNotifications").append(html);
         $("#appNotifications").css("display", "block");
-        
+
         // set up click hander
-        $("#appNotifications .content button").click(function(e){
-           $("#appNotifications").css("display", "none");
+        $("#appNotifications .content button").click(function (e) {
+          $("#appNotifications").css("display", "none");
           $("#appNotifications").html("");
         });
         $("#appNotifications .content li").click(function (e) {
@@ -105,7 +105,10 @@ function CreateChannel(app) {
           openWindow($(e.target).html());
           // if chewckbox is checked, set up default app
           if ($('#appNotifications input').is(':checked') == true) {
-methods.call("Silk/setDefault", {mime: params.mime, app: $(e.target).html()}, function(){})
+            methods.call("Silk/setDefault", {
+              mime: params.mime,
+              app: $(e.target).html()
+            }, function () {})
           }
           $("#appNotifications").css("display", "none");
           $("#appNotifications").html("");
@@ -153,6 +156,8 @@ function initializeManager(_windows) {
 
       },
       close: function (app) {
+        // reset url
+        app.url = app.url.split("?")[0];
         app.running = false;
         app.minimized = true;
         windowOrder.pop(app.title);
