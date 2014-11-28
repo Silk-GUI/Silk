@@ -9,10 +9,7 @@
     "ws": "~0.4.31",
     "localtunnel": "1.5.0",
     "mime": "~1.2.11",
-<<<<<<< HEAD
     "commander": "2.5.0",
-=======
->>>>>>> master
     "async": "~0.9.0"
   },
   "scripts": {

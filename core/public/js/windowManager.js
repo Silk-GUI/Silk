@@ -26,10 +26,7 @@ function CreateChannel(app) {
 
     // open text editor and include path in url
     // find text editor
-<<<<<<< HEAD
 
-=======
->>>>>>> master
     methods.call("Silk/appDefaults", params.mime, function (err, data) {
       function openWindow(title) {
         // find window index
@@ -64,10 +61,7 @@ function CreateChannel(app) {
                 windowOrder.pop(windows[i].title);
                 windowOrder.unshift(windows[i].title);
               }
-<<<<<<< HEAD
 
-=======
->>>>>>> master
             }
 
             updateOrder();
@@ -152,8 +146,6 @@ function initializeManager(_windows) {
       windows: windows
     },
     methods: {
-<<<<<<< HEAD
-
       buildChannel: CreateChannel,
       minimize: function (app) {
         // put window on top
@@ -166,10 +158,6 @@ function initializeManager(_windows) {
         windowOrder.pop(app.title);
         updateOrder();
       }
-
-=======
-      buildChannel: CreateChannel
->>>>>>> master
     }
   });
 

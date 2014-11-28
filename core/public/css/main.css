@@ -186,7 +186,6 @@ span:nth-child(4) {
   background-size: cover;
 */
 }
-<<<<<<< HEAD
 
 .window *{
   -webkit-user-select: none;
@@ -205,8 +204,6 @@ box-sizing: border-box;
   cursor: default; 
 }
 
-=======
->>>>>>> master
 #appNotifications {
   position: fixed;
   left: 50%;
@@ -227,8 +224,4 @@ box-sizing: border-box;
   color: rgb(0, 0, 255);
   text-decoration: underline;
   cursor: pointer;
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 }
