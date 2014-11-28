@@ -26,13 +26,14 @@ function CreateChannel(app) {
 
     // open text editor and include path in url
     // find text editor
+
     methods.call("Silk/appDefaults", params.mime, function (err, data) {
       function openWindow(title) {
         // find window index
         for (var i = 0; i < windows.length; ++i) {
 
           if (windows[i].title === title) {
-            
+
             // start the app
             if (windows[i].running == false) {
               var url = windows[i].url;
@@ -41,9 +42,9 @@ function CreateChannel(app) {
               windows[i].running = true;
               windows[i].minimized = false;
               windowOrder.unshift(windows[i].title);
-              
+
             } else {
-              
+
               channels[windows[i].title].notify({
                 method: "fileToOpen",
                 params: {
@@ -51,7 +52,7 @@ function CreateChannel(app) {
                   mime: params.mime
                 }
               });
-              
+
               if (windows[i].minimized == true) {
                 windows[i].minimized = false;
                 windowOrder.unshift(windows[i].title);
@@ -60,6 +61,7 @@ function CreateChannel(app) {
                 windowOrder.pop(windows[i].title);
                 windowOrder.unshift(windows[i].title);
               }
+
             }
 
             updateOrder();
@@ -68,7 +70,7 @@ function CreateChannel(app) {
           }
         }
       }
-      
+
       console.log(data);
 
       // open using default program
@@ -76,7 +78,7 @@ function CreateChannel(app) {
         openWindow(data.default);
       }
       // if one app use it if it is not for *.
-      else if(data.available.length < 2 && data.mime != "*"){
+      else if (data.available.length < 2 && data.mime != "*") {
         openWindow(data.available[0]);
       }
       // let user choose program
@@ -92,10 +94,10 @@ function CreateChannel(app) {
         html += '</ul> <lable><input type="checkbox" checked> Always Use This App </label><div><button>Cancel</button></div></div>'
         $("#appNotifications").append(html);
         $("#appNotifications").css("display", "block");
-        
+
         // set up click hander
-        $("#appNotifications .content button").click(function(e){
-           $("#appNotifications").css("display", "none");
+        $("#appNotifications .content button").click(function (e) {
+          $("#appNotifications").css("display", "none");
           $("#appNotifications").html("");
         });
         $("#appNotifications .content li").click(function (e) {
@@ -103,7 +105,10 @@ function CreateChannel(app) {
           openWindow($(e.target).html());
           // if chewckbox is checked, set up default app
           if ($('#appNotifications input').is(':checked') == true) {
-methods.call("Silk/setDefault", {mime: params.mime, app: $(e.target).html()}, function(){})
+            methods.call("Silk/setDefault", {
+              mime: params.mime,
+              app: $(e.target).html()
+            }, function () {})
           }
           $("#appNotifications").css("display", "none");
           $("#appNotifications").html("");
@@ -144,7 +149,20 @@ function initializeManager(_windows) {
       windows: windows
     },
     methods: {
-      buildChannel: CreateChannel
+      buildChannel: CreateChannel,
+      minimize: function (app) {
+        // put window on top
+        app.minimized = !app.minimized;
+
+      },
+      close: function (app) {
+        // reset url
+        app.url = app.url.split("?")[0];
+        app.running = false;
+        app.minimized = true;
+        windowOrder.pop(app.title);
+        updateOrder();
+      }
     }
   });
 
@@ -156,6 +174,16 @@ function initializeManager(_windows) {
     methods: {
       open: function (app) {
         app.running = true;
+        // move to top if behind
+        if (app.minimized == false) {
+          if (windowOrder.indexOf(app.title) > 0) {
+            // move to top
+            windowOrder.pop(app.title);
+            windowOrder.unshift(app.title);
+            updateOrder();
+            return
+          }
+        }
         app.minimized = !app.minimized;
         if (app.minimized === false) {
           windowOrder.unshift(app.title);
@@ -164,11 +192,6 @@ function initializeManager(_windows) {
           windowOrder.pop(app.title);
         }
         updateOrder();
-      },
-      minimize: function (app) {
-        // put window on top
-        app.minimized = !app.minimized;
-
       }
     }
   })

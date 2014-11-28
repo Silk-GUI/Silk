@@ -9,9 +9,13 @@
     "ws": "~0.4.31",
     "localtunnel": "1.5.0",
     "mime": "~1.2.11",
+    "commander": "2.5.0",
     "async": "~0.9.0"
   },
   "scripts": {
     "start": "node server.js"
-  }
+  },
+  "bin": {
+        "silk": "bin.js"
+    }
 }

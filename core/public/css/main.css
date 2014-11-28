@@ -1,3 +1,4 @@
+
 .loader {
   position: absolute;
   top: 0px;
@@ -66,8 +67,8 @@ span:nth-child(4) {
   opacity: .7;
   transition: .3s opacity;
 }
-#taskbar:hover {
-  opacity: 1;
+#taskbar *{
+  -webkit-user-select: none;
 }
 #taskbar .app {
   display: inline-block;
@@ -80,7 +81,7 @@ span:nth-child(4) {
   cursor: pointer;
 }
 #taskbar .app:hover {
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.57);
 }
 #taskbar .app img {
   height: 40px;
@@ -99,13 +100,59 @@ span:nth-child(4) {
   padding-bottom: 55px;
   padding-top: 25px;
 }
+.window *{
+  -webkit-user-select: none;
+}
 #desktop .window .title {
   text-align: center;
   margin-top: -25px;
   width: 100%;
-  background-color: #459FE0;
-  height: 25px;
+  background-color: rgb(69, 159, 224);
+  height: 30px;
+  padding-top: 7px;
+  box-sizing: border-box;
+}
+.window .title .minimize {
+  display: inline-block;
+  position: absolute;
+  right: 30px;
+  box-sizing: border-box;
+  top: 0px;
+  color: rgb(255, 255, 255);
+  font-size: 16px;
+  margin-top: 0px;
+  padding: 0px;
+  width: 30px;
+  height: 30px;
   padding-top: 5px;
+  background-color: rgba(24, 70, 140, 0.57);
+  cursor: pointer;
+  -webkit-transition: .2s all;
+}
+.window .title .minimize:hover{
+  background-color: rgba(24, 70, 140, 0.32);
+}
+.window .title .close {
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  top: 0px;
+  color: rgb(255, 255, 255);
+  font-size: 16px;
+  margin-top: 0px;
+  padding: 0px;
+  width: 30px;
+  height: 30px;
+  padding-top: 6px;
+  background-color: rgba(16, 67, 103, 0.72);
+  font-weight: 300;
+  cursor: pointer;
+  -webkit-transition: .2s background-color;
+}
+.window .title .close:hover {
+  background-color: rgba(16, 67, 103, 0.32);
 }
 #desktop .window iframe {
   background-color: white;
@@ -115,8 +162,8 @@ span:nth-child(4) {
   margin: 0px;
   box-sizing: border-box;
 }
-#taskbar .app.open {
-  border-top: 3px solid #126eb1;
+#taskbar .app.running {
+  border-top: 4px solid rgb(255, 255, 255);
 }
 /* Desktop */
 
@@ -139,6 +186,24 @@ span:nth-child(4) {
   background-size: cover;
 */
 }
+
+.window *{
+  -webkit-user-select: none;
+}
+
+#clock {
+position: absolute;
+right: 0px;
+bottom: 0px;
+height: 50px;
+font-size: 16px;
+color: rgb(255, 255, 255);
+padding-right: 5px;
+padding-top: 17px;
+box-sizing: border-box;
+  cursor: default; 
+}
+
 #appNotifications {
   position: fixed;
   left: 50%;

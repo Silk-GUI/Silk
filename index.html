@@ -15,10 +15,10 @@
   </div>
   <div id="desktop">
     <div v-repeat="windows" class="window" v-show="!minimized" v-style="z-index: zIndex">
-      <div class="title">{{title}} <span class="minimize" v-on="click: minimized = !minimized">-</span>
+      <div class="title">{{title}} <span class="minimize" v-on="click: minimize(this)">_</span>  <span class="close" v-on="click: close(this)">&times;</span>
       </div>
 
-      <iframe v-if="running" class="content" v-on="load: buildChannel(this)"   data-name="{{title}}" src="{{url}}"></iframe>
+      <iframe v-if="running" class="content" v-on="load: buildChannel(this)" v-attr="src: url" data-name="{{title}}"></iframe>
     </div>
     <!--
     <div class="window">
@@ -29,7 +29,7 @@
   </div>
 
   <div id="taskbar">
-    <div class="app" v-repeat="programs" v-on="click: open(this)">
+    <div class="app" v-repeat="programs" v-on="click: open(this)" v-class="running: running">
       <img v-attr="src: icon">
 
     </div>
@@ -40,6 +40,7 @@
 <div class="app" data-open="true" data-min="false" data-url="http://0.0.0.0:3000/fileExplorer/index.html">
       <img src="fileExplorer/logo.png" </div>
 -->
+    <div id="clock"></div>
   </div>
   <div id="appNotifications"></div>
 
@@ -50,6 +51,7 @@
   <script src="js/call.js"></script>
   <script src="/bc/jschannel"></script>
   <script src="js/windowManager.js"></script>
+  <script src="js/clock.js"></script>
 </body>
 
 </html>
