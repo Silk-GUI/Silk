@@ -8,7 +8,6 @@ function MethodCall(message){
   this.ws = message.ws;
   this.name = message.name;
   this.data = message.data;
-  this.exec();
 }
 
 MethodCall.prototype.exec = function(){

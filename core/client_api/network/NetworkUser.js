@@ -9,12 +9,12 @@
   @param {NetworkHost} nethost - the network that initiated your connection
   @param {string} identity - your identity
 */
-function NetworkInstance(nethost, identity){
+function NetworkInstance(nethost, target){
   MessageDuplex.call(this, function(message){
-		message.identity = this.identity;
-    this.channel.send(message);
+		message.identity = this.target;
+    this.channel.send(JSON.stringify(message));
 	}.bind(this));
-	this.identity = identity;
+  this.target = target;
   this.nethost = nethost;
   this.pconn = new RTCPeerConnection(nethost.config,{
     optional: [
@@ -33,7 +33,7 @@ function NetworkInstance(nethost, identity){
     }
   })
 }
-NetworkInstance.prototype = Object.create(MessageWriter.prototype);
+NetworkInstance.prototype = Object.create(MessageDuplex.prototype);
 NetworkInstance.prototype.constructor = NetworkInstance;
 /**
   `netCallback` is a callback for when a {@link NetworkInstance} is done with work
@@ -50,7 +50,7 @@ NetworkInstance.prototype.constructor = NetworkInstance;
   @param {netCallback} cb
 */
 NetworkInstance.prototype.offer = function(identity,cb){
-	this.identity = identity;
+  this.target = identity;
   this.registerChannel(this.pconn.createDataChannel("sendDataChannel",this.nethost.sconfig));
   var that = this;
   this.pconn.createOffer(function(desc){
@@ -69,9 +69,11 @@ NetworkInstance.prototype.registerChannel = function(channel){
 	var that = this;
 	this.channel = channel;
   this.channel.onmessage = function(event){
+    console.log(event);
 		try{
 		  var message = JSON.parse(event.data);
 		}catch(e){
+      alert(e);
 		  event.target.close();
 			return;
 		}
@@ -79,7 +81,7 @@ NetworkInstance.prototype.registerChannel = function(channel){
 	};
 	this.channel.onopen = function(){
     that.ready();
-    that.nethost.emit("ready",this);
+    that.nethost.emit("ready",that);
   }
   this.channel.onclose = this.emit.bind(this,"close");
 }
@@ -118,7 +120,7 @@ NetworkInstance.prototype.ok = function(message){
 }
 
 NetworkInstance.prototype.remoteIce = function(message){
-  pc.addIceCandidate(new RTCIceCandidate({
+  this.pconn.addIceCandidate(new RTCIceCandidate({
       sdpMLineIndex: message.label,
       candidate: message.candidate
   }));
@@ -129,7 +131,7 @@ NetworkInstance.prototype.iceCB = function(event){
     return;
   this.nethost.RTCHandle.send({
     cmd:"ice",
-    identity:this.identity,
+    identity:this.target,
 		data:{
 	    type: 'candidate',
 	    label: event.candidate.sdpMLineIndex,

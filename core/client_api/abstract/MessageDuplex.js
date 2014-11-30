@@ -40,13 +40,10 @@ function MessageDuplex(wSendFn, rSendFn){
   };
   console.log("b4rout")
   MessageRouter.call(this, rSendFn);
-  this.rSendFn = this.rSendFn;
   console.log("b4writ")
   MessageWriter.call(this, wSendFn);
-  this.wSendFn = this.wSendFn;
 };
 MessageDuplex.prototype = Object.create(MessageWriter.prototype);
-delete MessageDuplex.prototype.sendFn;
 MessageDuplex.prototype.rSendFn = MessageRouter.prototype.rSendFn;
 MessageDuplex.prototype.add = MessageRouter.prototype.add;
 MessageDuplex.prototype.routeMessage = MessageRouter.prototype.routeMessage;
