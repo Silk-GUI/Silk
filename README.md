@@ -11,5 +11,10 @@ GUI For Developers (and Node OS)
 
 ##To Install
     npm i -g silk-gui 
-    cd silk
-    npm start
+    silk
+##Use
+`silk` - Starts silk
+
+`-d` - outputs more information to terminal.  Useful for debugging
+
+`-r` - gives you a url to visit to use silk remotely.
