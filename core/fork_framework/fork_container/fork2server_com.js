@@ -22,7 +22,7 @@ MethodCall.prototype.exec = function(){
   }catch(e){
     return this.sendErr(e)
   }
-  if(result != "undefined")
+  if(typeof result != "undefined")
     this.sendResult(result);
 }
 

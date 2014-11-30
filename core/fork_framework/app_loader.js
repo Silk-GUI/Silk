@@ -208,8 +208,8 @@ AppFactory.prototype.checkBowerDeps = function(j,next){
   var ai = [];
   var ni = [];
   async.each(Object.keys(j.bower_dependencies),function(dep,next){
-    bowerJSON.read(__root+"/bower_components/"+dep,function(err,file){
-      if(json){
+    bowerJson.read(__root+"/bower_components/"+dep,function(err,file){
+      if(file){
          ai.push(dep)
          return next(void(0),dep);
       }

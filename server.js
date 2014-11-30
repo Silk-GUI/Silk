@@ -35,7 +35,8 @@ app.get('/', function (req, res) {
 
 // static files for client
 app.use(express.static(__dirname + '/core/public'));
-app.get("/bc/:component", require(__root + "/core/bower_static.js"));
+app.get(/^\/bc\//, require(__root + "/core/bower_static.js"));
+app.get("/api.js", require(__root + "/core/client_api.js"));
 
 var windows = require(__root + "/core/fork_framework")(app, wss);
 
