@@ -3,29 +3,33 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Silk by zodern</title>
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <title>Silk - GUI for developers and NodeOS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gumby/2.6.0/css/gumby.css">
+    <link rel="stylesheet" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="javascripts/respond.js"></script>
-    <!--[if lt IE 9]>
-      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <!--[if lt IE 8]>
-    <link rel="stylesheet" href="stylesheets/ie.css">
-    <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
+    <script src="javascripts/modernizr-2.6.2.min.js"></script>
+    <script src="gumby.min.js"></script>
   </head>
   <body>
-      <div id="header">
-        <nav>
-          <li class="fork"><a href="https://github.com/zodern/Silk">View On GitHub</a></li>
+<nav class="row navbar" gumby-fixed="top">
+  <!-- Toggle for mobile navigation, targeting the <ul> -->
+  
+  <a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
+  <h1 class="four columns logo">
+    <a href="#">
+      <span>Silk</span>
+    </a>
+  </h1>
+  <ul class="eight columns">
+    <li><a href="#features">Features</a></li>
+    <li> <a href="#install">Install</a></li>
+    <li> <a href="#Use">Use</a></li>
+     <li class="fork"><a href="https://github.com/zodern/Silk">GitHub</a></li>
           <li class="downloads"><a href="https://github.com/zodern/Silk/zipball/master">ZIP</a></li>
-          <li class="downloads"><a href="https://github.com/zodern/Silk/tarball/master">TAR</a></li>
-          <li class="title">DOWNLOADS</li>
-        </nav>
-      </div><!-- end header -->
+  </ul>
+</nav>
+        
 
     <div class="wrapper">
 

@@ -1,0 +1,111 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'install' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.32
+4 warn package.json silk-gui@0.0.2 No repository field.
+5 verbose readDependencies using package.json deps
+6 verbose install where, deps [ '/Users/MicaiahNissen/Silk',
+6 verbose install   [ 'express', 'ws', 'localtunnel', 'mime', 'async' ] ]
+7 info preinstall silk-gui@0.0.2
+8 warn package.json bin-nsh@0.4.0 No repository field.
+9 warn package.json bin-fs@0.2.0 No repository field.
+10 verbose readDependencies using package.json deps
+11 verbose already installed skipping express@^4.10.1 /Users/MicaiahNissen/Silk
+12 verbose already installed skipping ws@~0.4.31 /Users/MicaiahNissen/Silk
+13 verbose already installed skipping localtunnel@1.5.0 /Users/MicaiahNissen/Silk
+14 verbose already installed skipping mime@~1.2.11 /Users/MicaiahNissen/Silk
+15 verbose already installed skipping async@~0.9.0 /Users/MicaiahNissen/Silk
+16 silly resolved []
+17 info build /Users/MicaiahNissen/Silk
+18 verbose linkStuff [ false, false, false, '/Users/MicaiahNissen' ]
+19 info linkStuff silk-gui@0.0.2
+20 verbose linkBins silk-gui@0.0.2
+21 verbose linkMans silk-gui@0.0.2
+22 verbose rebuildBundles silk-gui@0.0.2
+23 verbose rebuildBundles [ '.bin',
+23 verbose rebuildBundles   'async',
+23 verbose rebuildBundles   'bin-fs',
+23 verbose rebuildBundles   'bin-nsh',
+23 verbose rebuildBundles   'express',
+23 verbose rebuildBundles   'localtunnel',
+23 verbose rebuildBundles   'mime',
+23 verbose rebuildBundles   'optimist',
+23 verbose rebuildBundles   'pty.js',
+23 verbose rebuildBundles   'ws' ]
+24 verbose rebuild bundle /Users/MicaiahNissen/Silk/node_modules/bin-fs
+25 info build /Users/MicaiahNissen/Silk/node_modules/bin-fs
+26 info preinstall bin-fs@0.2.0
+27 verbose linkStuff [ false, false, false, '/Users/MicaiahNissen/Silk/node_modules' ]
+28 info linkStuff bin-fs@0.2.0
+29 verbose linkBins bin-fs@0.2.0
+30 verbose link bins [ { cat: 'bin/cat',
+30 verbose link bins     cp: 'bin/cp',
+30 verbose link bins     ln: 'bin/ln',
+30 verbose link bins     ls: 'bin/ls',
+30 verbose link bins     mkdir: 'bin/mkdir',
+30 verbose link bins     mv: 'bin/mv',
+30 verbose link bins     rm: 'bin/rm' },
+30 verbose link bins   '/Users/MicaiahNissen/Silk/node_modules/.bin',
+30 verbose link bins   false ]
+31 verbose linkMans bin-fs@0.2.0
+32 verbose rebuildBundles bin-fs@0.2.0
+33 info install bin-fs@0.2.0
+34 info postinstall bin-fs@0.2.0
+35 verbose rebuild bundle /Users/MicaiahNissen/Silk/node_modules/bin-nsh
+36 info build /Users/MicaiahNissen/Silk/node_modules/bin-nsh
+37 info preinstall bin-nsh@0.4.0
+38 verbose linkStuff [ false, false, false, '/Users/MicaiahNissen/Silk/node_modules' ]
+39 info linkStuff bin-nsh@0.4.0
+40 verbose linkBins bin-nsh@0.4.0
+41 verbose link bins [ { nsh: 'nsh.js' },
+41 verbose link bins   '/Users/MicaiahNissen/Silk/node_modules/.bin',
+41 verbose link bins   false ]
+42 verbose linkMans bin-nsh@0.4.0
+43 verbose rebuildBundles bin-nsh@0.4.0
+44 verbose rebuildBundles [ 'glob',
+44 verbose rebuildBundles   'lib-cmdparse',
+44 verbose rebuildBundles   'lib-pathcomplete',
+44 verbose rebuildBundles   'lib-pathsearch',
+44 verbose rebuildBundles   'mkdirp' ]
+45 info install bin-nsh@0.4.0
+46 info postinstall bin-nsh@0.4.0
+47 verbose rebuild bundle /Users/MicaiahNissen/Silk/node_modules/optimist
+48 info build /Users/MicaiahNissen/Silk/node_modules/optimist
+49 info preinstall optimist@0.6.1
+50 verbose linkStuff [ false, false, false, '/Users/MicaiahNissen/Silk/node_modules' ]
+51 info linkStuff optimist@0.6.1
+52 verbose linkBins optimist@0.6.1
+53 verbose linkMans optimist@0.6.1
+54 verbose rebuildBundles optimist@0.6.1
+55 verbose rebuildBundles [ 'minimist', 'wordwrap' ]
+56 info install optimist@0.6.1
+57 info postinstall optimist@0.6.1
+58 verbose rebuild bundle /Users/MicaiahNissen/Silk/node_modules/pty.js
+59 info build /Users/MicaiahNissen/Silk/node_modules/pty.js
+60 info preinstall pty.js@0.2.4
+61 verbose linkStuff [ false, false, false, '/Users/MicaiahNissen/Silk/node_modules' ]
+62 info linkStuff pty.js@0.2.4
+63 verbose linkBins pty.js@0.2.4
+64 verbose linkMans pty.js@0.2.4
+65 verbose rebuildBundles pty.js@0.2.4
+66 verbose rebuildBundles [ 'extend', 'nan' ]
+67 info install pty.js@0.2.4
+68 verbose unsafe-perm in lifecycle false
+69 info pty.js@0.2.4 Failed to exec install script
+70 error pty.js@0.2.4 install: `node-gyp rebuild`
+70 error Exit status 1
+71 error Failed at the pty.js@0.2.4 install script.
+71 error This is most likely a problem with the pty.js package,
+71 error not with npm itself.
+71 error Tell the author that this fails on your system:
+71 error     node-gyp rebuild
+71 error You can get their info via:
+71 error     npm owner ls pty.js
+71 error There is likely additional logging output above.
+72 error System Darwin 11.4.2
+73 error command "node" "/usr/local/bin/npm" "install"
+74 error cwd /Users/MicaiahNissen/Silk
+75 error node -v v0.10.32
+76 error npm -v 1.4.28
+77 error code ELIFECYCLE
+78 verbose exit [ 1, true ]
