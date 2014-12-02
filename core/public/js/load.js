@@ -4,7 +4,7 @@ $(document).ready(function () {
     initializeManager(data);
       window.setTimeout(function () {
     $(".loader").fadeOut();
-    }, 500)
+    }, 80)
   })
 
 

@@ -140,6 +140,7 @@ var updateOrder = function () {
 
 var wm;
 var taskbar;
+var menu;
 
 function initializeManager(_windows) {
   windows = _windows;
@@ -192,6 +193,89 @@ function initializeManager(_windows) {
           windowOrder.pop(app.title);
         }
         updateOrder();
+      },
+      menu: function () {
+        // toggle menu
+        if ($("#menu").css("display") == "block") {
+          $("#menu").css("overflow", "hidden");
+          $("#menu").animate({
+              height: 0,
+            },
+            100, 'swing', function () {
+              $("#menu").css({
+                "display": "none",
+                "height": "auto"
+              })
+            });
+          $("#taskbar").animate({
+            bottom: 0
+          }, {
+            duration: 100
+          });
+
+
+        } else {
+          var height = $("#menu").height();
+
+          // $("#taskbar").css("bottom", height);
+          $("#menu").css("display", "block");
+          $("#menu").css("height", 0);
+          $("#menu").css("overflow", "hidden");
+          $("#menu").animate({
+            height: height,
+            overflow: "scroll"
+          }, {
+            duration: 100
+          });
+          $("#taskbar").animate({
+            bottom: height
+          }, {
+            duration: 100
+          });
+        }
+      }
+    }
+  });
+
+  menu = new Vue({
+    el: '#menu',
+    data: {
+      apps: windows
+    },
+    methods: {
+      open: function (app) {
+        app.running = true;
+        
+        // hide menu
+        $("#menu").css("overflow", "hidden");
+        $("#menu").animate({
+            height: 0,
+          },
+          100, 'swing', function () {
+            $("#menu").css({
+              "display": "none",
+              "height": "auto"
+            })
+          });
+        
+        $("#taskbar").animate({
+          bottom: 0
+        }, {
+          duration: 100
+        });
+
+        // open window and move to top
+        if (app.minimized == false) {
+
+          windowOrder.pop(app.title);
+          windowOrder.unshift(app.title);
+          updateOrder();
+
+        } else {
+          app.minimized = false;
+          windowOrder.unshift(app.title);
+          updateOrder();
+        }
       }
     }
   })

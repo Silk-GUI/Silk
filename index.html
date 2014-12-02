@@ -29,21 +29,22 @@
   </div>
 
   <div id="taskbar">
-    <div class="app" v-repeat="programs" v-on="click: open(this)" v-class="running: running">
+    <div class="app menu" v-on="click: menu(this)"><img src="img/menu.png"></div>
+    <div class="app" v-show="running" v-repeat="programs" v-on="click: open(this)" v-class="running: running">
       <img v-attr="src: icon">
 
     </div>
-    <!--
-    <div class="app open" data-open="false" data-min="false" data-url="http://jw.org">
-      <img src="textEditor/logo.png">
-    </div>
-<div class="app" data-open="true" data-min="false" data-url="http://0.0.0.0:3000/fileExplorer/index.html">
-      <img src="fileExplorer/logo.png" </div>
--->
     <div id="clock"></div>
   </div>
   <div id="appNotifications"></div>
 
+  <div id="menu">
+  <h1>Apps</h1>
+    <ul>
+      <li v-repeat="apps" v-on="click: open(this)"><img v-attr="src: icon"> {{title}} </li>
+    </ul>
+  </div>
+  
   <!-- Scripts -->
   <script src="/bc/jquery"></script>
   <script src="js/load.js"></script>
