@@ -20,5 +20,8 @@
     "vue": "~0.11.0",
     "jquery": "~2.1.1",
     "fontawesome": "*"
+  },
+  "resolutions": {
+    "jquery": ">=1.9.1"
   }
 }

@@ -214,10 +214,14 @@ AppFactory.prototype.checkBowerDeps = function(j,next){
          return next(void(0),dep);
       }
       child_process.exec(
-      "bower install "+dep+"@"+j.bower_dependencies[dep],
+      "bower install "+dep
+      +(j.bower_dependencies[dep]=="latest"?
+        " --force-latest":
+        "#"+j.bower_dependencies[dep]
+      ),
       {cwd:__root}, function(err,stout,sterr){
         if(err) return next(err);
-        bowerJSON.read(__root+"/bower_components/"+dep,function(err,file){
+        bowerJson.read(__root+"/bower_components/"+dep,function(err,file){
           if(err) return next(err);
           ni.push(dep);
           return next(void(0),dep);
