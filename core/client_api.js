@@ -6,7 +6,9 @@ var fs = require("fs");
 module.exports = function(req,res,next){
   res.setHeader('content-type', 'application/javascript');
 	bowerstatic.raw("/bc/eventEmitter",function(ee){
+    console.log(ee);
 	bowerstatic.raw("/bc/rsvp",function(rsvp){
+    console.log(rsvp);
   async.eachSeries([
 		ee,
 		rsvp,
@@ -27,8 +29,8 @@ module.exports = function(req,res,next){
     temp.on('end',next);
     temp.on('error',next);
   },function(err){
-    res.end();
     if(err) return next(err);
+    res.end();
   });
 	});
 	});

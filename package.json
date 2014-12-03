@@ -11,7 +11,8 @@
     "mime": "~1.2.11",
     "commander": "2.5.0",
     "async": "~0.9.0",
-    "bower-json": "latest"
+    "bower-json": "latest",
+    "rsvp": "latest"
   },
   "scripts": {
     "start": "node server.js"
