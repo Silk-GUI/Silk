@@ -9,7 +9,7 @@ GUI For Developers (and Node OS)
 - Experiment with new ideas for GUI's
 - Client (window manager) doesn't care if it is on the same or a different computer than the host.
 
-[Roadmap]()
+[Roadmap](https://github.com/zodern/Silk/wiki/Roadmap)
 
 ##To Install
     npm i -g silk-gui 
@@ -21,6 +21,8 @@ GUI For Developers (and Node OS)
 `-d` - outputs more information to terminal.  Useful for debugging
 
 `-r` - gives you a url to visit to use silk remotely.
+
+[Available Apps](https://github.com/zodern/Silk/wiki/Apps)
 
 ##Create App
 [Getting Started](https://github.com/zodern/Silk/wiki/Basics-Of-Making-an-App)
