@@ -9,7 +9,6 @@ var Silk = {
 methods.add({
   "windows": function (windows) {
     initialize(windows);
-    console.log("Silk.defaults " + JSON.stringify(Silk.defaults));
   }
 });
 
@@ -58,7 +57,6 @@ function saveDefaults() {
   for (item in defaults) {
 
     // TODO only save items that have a default
-    console.log("contents: " + item);
     contents[item] = {};
     contents[item].default = defaults[item].default;
     contents[item].available = [];
@@ -106,7 +104,7 @@ function initialize(windows) {
   }
 
   loadDefaults();
- console.log(JSON.stringify(defaults, null, 4));
+ //console.log(JSON.stringify(defaults, null, 4));
   methods.add({
     "Silk/appDefaults": function (mime) {
       if (mime in Silk.defaults) {
