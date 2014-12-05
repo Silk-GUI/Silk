@@ -1,0 +1,8 @@
+{
+ "title" : "Terminal",
+  "url" : "//localhost:8000/",
+  "icon" : "//localhost:3000/terminal/icon.png",
+  "minimized": true,
+  "running": false,
+  "zIndex": 0
+}
