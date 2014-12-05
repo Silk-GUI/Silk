@@ -30,11 +30,16 @@ var express = require('express')
 var app = express()
 
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'index.html'));
-})
+  res.sendFile(__root + "/window-manager/public/index.html");
+});
+
+
 
 // static files for client
-app.use(express.static(__dirname + '/core/public'));
+app.use(express.static(__dirname + '/window-manager/public'));
+app.get("/js/call.js", function(req, res){
+  res.sendFile(__root + "/core/public/js/call.js");
+})
 app.get("/bc/:component", require(__root + "/core/bower_static.js"));
 
 var windows = require(__root + "/core/fork_framework")(app, wss);
