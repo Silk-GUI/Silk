@@ -40,7 +40,28 @@ app.get("/bc/:component", require(__root + "/core/bower_static.js"));
 var windows = require(__root + "/core/fork_framework")(app, wss);
 
 var server = app.listen(3000, function () {
+
   var add = server.address();
-  console.log('Silk at http://%s:%s', add.address, add.port)
+  var message = 'Silk at http://' + add.address + ":" + add.port;
+  var length = message.length;
+  var prespace = "   ";
+  // form box
+  var box = "";
+  for (var i = 0; i < length + 10; ++i) {
+    box += "=";
+  }
+  var space = "    ";
+  var empty = "";
+  for (var i = 0; i < length + 10 - 2; ++i) {
+    empty += " ";
+  }
+  console.log(prespace + box);
+  console.log(prespace + "|" + empty + "|");
+  console.log(prespace + "|" + space + message + space + "|");
+  console.log(prespace + "|" + empty + "|");
+  console.log(prespace + box);
+  console.log("");
+
+  // console.log('Silk at http://%s:%s', add.address, add.port)
 
 });
