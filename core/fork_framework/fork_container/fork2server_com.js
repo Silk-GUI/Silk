@@ -1,7 +1,7 @@
 /*
   Similar to meteor.methods
 */
-console.log("in the child");
+//console.log("in the child");
 
 function MethodCall(message){
   this.id = message.id;

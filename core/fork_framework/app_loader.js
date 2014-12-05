@@ -38,7 +38,7 @@ function AppFactory(folder,urlpath,app){
       res.redirect(301,j.url);
     });
     if(j.url != "headless"){
-      console.log("not headless")
+      debug("not headless")
       that.clean.push(j.clean);
     }
     delete j.clean;
@@ -69,7 +69,7 @@ AppFactory.prototype.compileFolder = function(app){
 }
 
 AppFactory.prototype.fsEvent = function(event, filename){
-  console.log(event);
+  debug(event);
 }
 AppFactory.prototype.closeSingle = function(window,next){
   if(!window.fork)
@@ -133,7 +133,7 @@ AppFactory.prototype.checkWindowJSON = function(file,next){
 AppFactory.prototype.checkURIs = function(j,next){
   var that = this;
   if(j.url == "headless"){
-    console.log("headless");
+    debug("headless");
     return next(void(0),j);
   }
   async.each(["url","icon"],function(ns,next){
@@ -254,7 +254,7 @@ AppFactory.prototype.createFork = function(j,next){
           fork.kill();
           return next(new Error("fork process sending messages before initialization"));
         }
-        console.log("forkready");
+        debug("forkready");
         that.emit("forked",fork,j);
         next(void(0),j);
       });
