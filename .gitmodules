@@ -1,9 +1,3 @@
-[submodule "apps/WebRTC-Example"]
-	path = apps/WebRTC-Example
-	url = git@github.com:formula1/Silk-WebRTC-Example.git
-[submodule "apps/task-monitor"]
-	path = apps/task-monitor
-	url = git@github.com:formula1/Silk-Task-Monitor.git
 [submodule "apps/tunnelclient"]
 	path = apps/tunnelclient
 	url = https://github.com/formula1/Silk-Tunnel-Client
