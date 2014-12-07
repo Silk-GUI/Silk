@@ -29,9 +29,14 @@ wss.on('connection', function (ws) {
 var express = require('express')
 var app = express()
 
-app.get('/', function (req, res) {
-  res.sendFile(__root + "/window-manager/public/index.html");
-});
+// check if wm is set up.
+// if note
+require("./core/setup/setup.js")(app);
+
+// else
+//app.get('/', function (req, res) {
+//  res.sendFile(__root + "/window-manager/public/index.html");
+//});
 
 
 
