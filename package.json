@@ -10,7 +10,9 @@
     "localtunnel": "1.5.0",
     "mime": "~1.2.11",
     "commander": "2.5.0",
-    "async": "~0.9.0"
+    "async": "~0.9.0",
+    "bower-json": "latest",
+    "rsvp": "latest"
   },
   "optionalDependencies" : {
     "tty.js" : "zodern/tty.js"

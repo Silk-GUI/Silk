@@ -41,11 +41,17 @@ require("./core/setup/setup.js")(app);
 
 
 // static files for client
+<<<<<<< HEAD
 app.use(express.static(__dirname + '/window-manager/public'));
 app.get("/js/call.js", function(req, res){
   res.sendFile(__root + "/core/public/js/call.js");
 })
 app.get("/bc/:component", require(__root + "/core/bower_static.js"));
+=======
+app.use(express.static(__dirname + '/core/public'));
+app.get(/^\/bc\//, require(__root + "/core/bower_static.js"));
+app.get("/api.js", require(__root + "/core/client_api.js"));
+>>>>>>> master
 
 var windows = require(__root + "/core/fork_framework")(app, wss);
 

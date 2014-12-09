@@ -1,0 +1,3 @@
+[submodule "apps/tunnelclient"]
+	path = apps/tunnelclient
+	url = https://github.com/formula1/Silk-Tunnel-Client

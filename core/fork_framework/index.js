@@ -12,7 +12,10 @@ module.exports = function(app,wss){
     console.log("\nThese Windows were completed: "+ JSON.stringify(results));
   });
   windows.on("forked", function(fork){
+<<<<<<< HEAD
     debug("emitted");
+=======
+>>>>>>> master
     methods.addFork(fork);
     fork.on("error",function(err){
       console.log(err);
