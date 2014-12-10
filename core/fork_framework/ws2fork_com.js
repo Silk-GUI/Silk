@@ -43,11 +43,8 @@ methods.addFork = function(fork){
   this.fork_resp[fork.pid] = [];
   this.forks[fork.pid] = fork;
   fork.on("message", function(message){
-<<<<<<< HEAD
     debug(JSON.stringify(message));
-=======
-//    console.log(JSON.stringify(message));
->>>>>>> master
+
     switch(message.cmd){
       case "send": methods.send(message.message);break;
       case "add": methods.add(message,fork);break;
