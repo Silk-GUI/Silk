@@ -8,7 +8,6 @@ function MethodCall(message){
   this.ws = message.ws;
   this.name = message.name;
   this.data = message.data;
-  this.exec();
 }
 
 MethodCall.prototype.exec = function(){
@@ -22,7 +21,7 @@ MethodCall.prototype.exec = function(){
   }catch(e){
     return this.sendErr(e)
   }
-  if(result != "undefined")
+  if(typeof result != "undefined")
     this.sendResult(result);
 }
 

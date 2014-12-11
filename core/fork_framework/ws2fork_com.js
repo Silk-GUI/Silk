@@ -43,7 +43,11 @@ methods.addFork = function(fork){
   this.fork_resp[fork.pid] = [];
   this.forks[fork.pid] = fork;
   fork.on("message", function(message){
+<<<<<<< HEAD
     debug(JSON.stringify(message));
+=======
+//    console.log(JSON.stringify(message));
+>>>>>>> master
     switch(message.cmd){
       case "send": methods.send(message.message);break;
       case "add": methods.add(message,fork);break;
@@ -67,7 +71,7 @@ methods.call = function(ws,message){
     console.log("typeof: "+typeof message);
   }
   if(!(message.name in this.responders)){
-    console.log(JSON.stringify(message));
+    //console.log(JSON.stringify(message));
     return ws.send(JSON.stringify({
       id:message.id,
       ws:ws.id,
