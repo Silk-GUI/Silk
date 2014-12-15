@@ -2,6 +2,7 @@
   "title": "Text Editor",
   "url": "/textEditor/index.html",
   "icon": "logo.png",
+  "multipleWindows": true,
   "opens": [
     "text/plain",
     "*"

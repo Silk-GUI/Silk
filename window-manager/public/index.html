@@ -15,10 +15,10 @@
   </div>
   <div id="desktop">
     <div v-repeat="windows" class="window" v-show="!minimized" v-style="z-index: zIndex">
-      <div class="title">{{title}} <span class="minimize" v-on="click: minimize(this)">_</span>  <span class="close" v-on="click: close(this)">&times;</span>
+      <div class="title">{{title}} <span class="minimize" v-on="click: minimize($index)">_</span>  <span class="close" v-on="click: close($index)">&times;</span>
       </div>
 
-      <iframe v-if="running" class="content" v-on="load: buildChannel(this)" v-attr="src: url" data-name="{{title}}"></iframe>
+      <iframe v-if="running" class="content" v-on="load: buildChannel($index)" v-attr="src: url" data-name="{{title}}"></iframe>
     </div>
     <!--
     <div class="window">
@@ -29,8 +29,10 @@
   </div>
 
   <div id="taskbar">
-    <div class="app menu" v-on="click: menu(this)"><img src="img/menu.png"></div>
-    <div class="app" v-show="running" v-repeat="programs" v-on="click: open(this)" v-class="running: running">
+    <div class="app menu" v-on="click: menu($index)">
+      <img src="img/menu.png">
+    </div>
+    <div class="app" v-show="running" v-repeat="programs" v-on="click: open($index)" v-class="running: running">
       <img v-attr="src: icon">
 
     </div>
@@ -39,19 +41,22 @@
   <div id="appNotifications"></div>
 
   <div id="menu">
-  <h1>Apps</h1>
+    <h1>Apps</h1>
     <ul>
-      <li v-repeat="apps" v-on="click: open(this)"><img v-attr="src: icon"> {{title}} </li>
+      <li v-repeat="apps" v-on="click: open($index)">
+        <img v-attr="src: icon">{{title}}</li>
     </ul>
   </div>
-  
+
   <!-- Scripts -->
   <script src="/bc/jquery"></script>
-  <script src="js/load.js"></script>
   <script src="/bc/vue"></script>
+  <script src="/bc/jspath"></script>
   <script src="js/call.js"></script>
   <script src="/bc/jschannel"></script>
+  <script src="js/channel.js"></script>
   <script src="js/windowManager.js"></script>
+  <script src="js/load.js"></script>
   <script src="js/clock.js"></script>
 </body>
 
