@@ -1,9 +1,6 @@
 {
   "title": "App Manager",
   "url": "index.html",
-  "zIndex": 0,
-  "running": false,
-  "minimized": true,
   "icon": "icon.png",
   "bower_dependencies": {
     "jquery": "latest"

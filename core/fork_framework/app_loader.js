@@ -122,6 +122,14 @@ AppFactory.prototype.checkWindowJSON = function(file,next){
       if(!j.url) return next(new Error("URL is always standard"))
       if(!j.title) return next(new Error("for now, title is standard"))
       if(!j.icon) return next(new Error("for now, Logo is standard"))
+      
+      // add fields necessary for windows
+      if(j.url !== 'headless'){
+        j.zIndex = 0;
+        j.running = false;
+        j.minimized = true;
+      }
+      
       j.name = file;
       j.clean = JSON.parse(JSON.stringify(j));
       j.path = f+file;
