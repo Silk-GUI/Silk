@@ -50,13 +50,14 @@ $("#text").on("keydown", function(e){
 
 $("#save").click(function () {
   if (file.path != null) {
+    $("#save").text("Saving...");
     
     methods.call("te/save", {
       path: file.path,
       contents: $("#text").val()
     }, function (err, result) {
         $("#toolBar").css("borderBottomColor", " rgba(128, 128, 128, 0.8)");
-     
+        $("#save").text("Save");
     })
           file.changed = false;
 
@@ -80,4 +81,15 @@ $(document).delegate('#text', 'keydown', function(e) {
     $(this).get(0).selectionStart =
     $(this).get(0).selectionEnd = start + 1;
   }
+});
+
+/* keyboard shortcuts */
+Mousetrap.bind(['ctrl+s', 'command+s'], function(e){
+  if (e.preventDefault) {
+        e.preventDefault();
+    } else {
+        // internet explorer
+        e.returnValue = false;
+    }
+  $("#save").click();
 });
