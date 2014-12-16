@@ -22,7 +22,8 @@
     "fontawesome": "*",
     "rsvp": "*",
     "eventEmitter": "*",
-    "jspath": "*"
+    "jspath": "*",
+    "color-thief": "*"
   },
   "resolutions": {
     "jquery": ">=1.9.1"
