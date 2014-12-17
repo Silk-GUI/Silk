@@ -3,8 +3,9 @@
 <head>
   <title>Silk GUI</title>
   <link rel="stylesheet" href="css/normalize.css" type="text/css">
+  <link rel="stylesheet" href="/bc/hint.css" type="text/css">
   <link rel="stylesheet" href="css/main.css" type="text/css">
-
+  
 </head>
 
 <body>
@@ -13,6 +14,7 @@
   <div class="loader">
     <h1><span>S</span><span>i</span><span>l</span><span>k</span></h1>
   </div>
+
   <div id="desktop">
     <div v-repeat="windows" class="window" v-show="!minimized" v-style="z-index: zIndex">
       <div class="title">{{title}} <span class="minimize" v-on="click: minimize($index)">_</span>  <span class="close" v-on="click: close($index)">&times;</span>
@@ -20,21 +22,14 @@
 
       <iframe v-if="running" class="content" v-on="load: buildChannel($index)" v-attr="src: url" data-name="{{title}}"></iframe>
     </div>
-    <!--
-    <div class="window">
-      <div class="title">File Explorer</div>
-      <iframe class="content" src="/fileExplorer/index.html"></iframe>
-    </div>
--->
   </div>
 
   <div id="taskbar">
     <div class="app menu" v-on="click: menu($index)">
       <img src="img/menu.png">
     </div>
-    <div class="app" v-show="running" v-repeat="programs" v-on="click: open($index)" v-class="running: running">
+    <div class="app hint--top hint--no-animate" v-attr="data-hint: title" v-show="running" v-repeat="programs" v-on="click: open($index)" v-class="running: running">
       <img v-attr="src: icon">
-
     </div>
     <div id="clock"></div>
   </div>
@@ -44,7 +39,8 @@
     <h1>Apps</h1>
     <ul>
       <li v-repeat="apps" v-on="click: open($index)">
-        <img v-attr="src: icon">{{title}}</li>
+        <img v-attr="src: icon">{{title}}
+      </li>
     </ul>
   </div>
 
