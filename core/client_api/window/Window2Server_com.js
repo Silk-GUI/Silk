@@ -66,7 +66,7 @@ if(typeof module != "undefined" && module.exports){
   window.DocumentHost = null;
   (function(url){
     url = /^(http[s]?):\/\/([0-9\.]+|[a-z\-.]+)([?::][0-9]+)?([\/][A-Za-z0-9_\-]+)?(\?.*)?/.exec(url);
-    var port = (typeof wp != "undefined")?wp:(document.cookie.pwp)?document.cookie.pwp:9999+(parseInt(url[3].substring(1))-3000);
+    var port = (typeof wp != "undefined")?wp:(document.cookie.pwp)?document.cookie.pwp:3000+(parseInt(url[3].substring(1))-3000);
     console.log(port);
     window.DocumentHost = new Server(url[2],port);
     if(url[4])

@@ -34,7 +34,7 @@ module.exports = function(app,wss){
   });
 */
   app.get("/windows.json",function(req,res,next){
-    console.log(windows.clean);
+    debug(windows.clean);
     res.type("json").send(windows.clean);
   });
 
