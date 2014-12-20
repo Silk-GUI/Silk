@@ -19,7 +19,10 @@ function loadDefaults() {
 
   fs.exists(fileName, function (exists) {
     // TODO create file if it doesn't exist
-    if (!exists) return;
+    if (!exists){
+     fs.writeFileSync(djson, '{}') 
+      
+    }
 
     fs.stat(fileName, function (err, stats) {
       if (err) return console.log(err);
