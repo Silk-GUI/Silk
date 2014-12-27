@@ -33,15 +33,19 @@ function initializeManager(_windows) {
       buildChannel: CreateChannel,
       minimize: function (index) {
         windows[index].minimized = true;
-        windowOrder.pop(index);
+        var position = windowOrder.indexOf(index);
+        windowOrder.splice(position, 1);
       },
       close: function (index) {
         // reset url
         var app = windows[index];
         app.url = app.url.split("?")[0];
+        
         app.running = false;
         app.minimized = true;
-        windowOrder.pop(index);
+        
+        var position = windowOrder.indexOf(index);
+        windowOrder.splice(position, 1);
         updateOrder();
       }
     }
@@ -58,10 +62,11 @@ function initializeManager(_windows) {
         app.running = true;
         
         // move to top if behind
-        if (app.minimized == false) {
-          if (windowOrder.indexOf(index) > 0) {
+        if (app.minimized === false) {
+          if (windowOrder.indexOf(index) > -1) {
             // move to top
-            windowOrder.pop(index);
+            var position = windowOrder.indexOf(index);
+            windowOrder.splice(position, 1);
             windowOrder.unshift(index);
             updateOrder();
             return
@@ -73,7 +78,8 @@ function initializeManager(_windows) {
           windowOrder.unshift(index);
         }
         if (app.minimized === true) {
-          windowOrder.pop(index);
+          var position = windowOrder.indexOf(index);
+          windowOrder.splice(position, 1);
         }
         updateOrder();
       },
@@ -155,7 +161,7 @@ function initializeManager(_windows) {
           win.running = true;
           win.minimized = false;
           windows.push(win);
-          windowOrder.unshift(index);
+          windowOrder.unshift(windows.length - 1);
           updateOrder();
 
         } else {
