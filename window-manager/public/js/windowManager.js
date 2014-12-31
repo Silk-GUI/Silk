@@ -40,10 +40,10 @@ function initializeManager(_windows) {
         // reset url
         var app = windows[index];
         app.url = app.url.split("?")[0];
-        
+
         app.running = false;
         app.minimized = true;
-        
+
         var position = windowOrder.indexOf(index);
         windowOrder.splice(position, 1);
         updateOrder();
@@ -60,7 +60,7 @@ function initializeManager(_windows) {
       open: function (index) {
         app = windows[index];
         app.running = true;
-        
+
         // move to top if behind
         if (app.minimized === false) {
           if (windowOrder.indexOf(index) > -1) {
@@ -72,7 +72,7 @@ function initializeManager(_windows) {
             return
           }
         }
-        
+
         app.minimized = !app.minimized;
         if (app.minimized === false) {
           windowOrder.unshift(index);
@@ -89,6 +89,7 @@ function initializeManager(_windows) {
           $("#menu").css("overflow", "hidden");
           $("#menu").animate({
               height: 0,
+              opacity: 0
             },
             100, 'swing', function () {
               $("#menu").css({
@@ -96,12 +97,6 @@ function initializeManager(_windows) {
                 "height": "auto"
               })
             });
-          $("#taskbar").animate({
-            bottom: 0
-          }, {
-            duration: 100
-          });
-
 
         } else {
           var height = $("#menu").height();
@@ -112,12 +107,8 @@ function initializeManager(_windows) {
           $("#menu").css("overflow", "hidden");
           $("#menu").animate({
             height: height,
-            overflow: "scroll"
-          }, {
-            duration: 100
-          });
-          $("#taskbar").animate({
-            bottom: height
+            overflow: "scroll",
+            opacity: 1
           }, {
             duration: 100
           });
@@ -138,6 +129,7 @@ function initializeManager(_windows) {
         $("#menu").css("overflow", "hidden");
         $("#menu").animate({
             height: 0,
+            opacity: 0
           },
           100, 'swing', function () {
             $("#menu").css({
@@ -146,11 +138,6 @@ function initializeManager(_windows) {
             })
           });
 
-        $("#taskbar").animate({
-          bottom: 0
-        }, {
-          duration: 100
-        });
 
         var app = menu.$data.apps[index];
 
@@ -166,9 +153,9 @@ function initializeManager(_windows) {
 
         } else {
           var win = JSPath.apply('.windows{.title == "' + app.title + '"}', wm.$data);
-          if ( win.length > 0) {
+          if (win.length > 0) {
             app = win[0];
-          } else{
+          } else {
             app = windows.push(app);
             app = windows[app - 1];
           }
@@ -190,5 +177,18 @@ function initializeManager(_windows) {
         }
       }
     }
+  })
+  $("#menu h1 img").click(function(){
+    $("#menu").css("overflow", "hidden");
+          $("#menu").animate({
+              height: 0,
+              opacity: 0
+            },
+            100, 'swing', function () {
+              $("#menu").css({
+                "display": "none",
+                "height": "auto"
+              })
+            });
   })
 }

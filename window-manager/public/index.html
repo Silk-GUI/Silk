@@ -28,7 +28,7 @@
     <div class="app menu" v-on="click: menu($index)">
       <img src="img/menu.png">
     </div>
-    <div class="app hint--top hint--no-animate" v-attr="data-hint: title" v-show="running" v-repeat="programs" v-on="click: open($index)" v-class="running: running">
+    <div class="app hint--top hint--no-animate" v-attr="data-hint: title" v-show="running" v-repeat="programs" v-on="click: open($index)" v-class="running: running, active: active">
       <img v-attr="src: icon">
     </div>
     <div id="clock"></div>
@@ -36,7 +36,7 @@
   <div id="appNotifications"></div>
 
   <div id="menu">
-    <h1>Apps</h1>
+    <h1>Apps <img src="img/Close-48.png"></h1>
     <ul>
       <li v-repeat="apps" v-on="click: open($index)">
         <img v-attr="src: icon">{{title}}

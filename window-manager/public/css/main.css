@@ -63,10 +63,11 @@ bottom: 0px;
 left: 0px;
 width: 100%;
 height: 50px;
-background-color: rgba(69, 159, 224, 0.81);
+background-color: rgba(255, 255, 255, 0.15);
 opacity: 1;
 transition: .3s opacity;
 box-shadow: 0px 3px 5px #000;
+border-top: 3px solid #FFF;
 }
 #taskbar *{
   -webkit-user-select: none;
@@ -82,7 +83,7 @@ box-shadow: 0px 3px 5px #000;
   cursor: pointer;
 }
 #taskbar .app:hover {
-  background-color: rgba(0, 0, 0, 0.57);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 #taskbar .app img {
   height: 40px;
@@ -154,7 +155,7 @@ box-shadow: 0px 3px 5px #000;
   -webkit-transition: .2s background-color;
 }
 .window .title .close:hover {
-  background-color: rgba(16, 67, 103, 0.32);
+background-color: #B01717;
 }
 #desktop .window iframe {
   background-color: white;
@@ -234,20 +235,29 @@ box-sizing: border-box;
 position: absolute;
 bottom: 0px;
 width: 100%;
-background-color: rgba(0, 0, 0, 0.6);
+background-color: rgba(255, 255, 255, 0.8);
 height: auto;
-color: #FFF;
+color: #3A3939;
 display: none;
-z-index: 500;
+z-index: 201;
 box-sizing: border-box;
-padding: 0px 20px 20px 20px;
-  -webkit-user-select: none;
+padding: 0px;
+  -webkit-user-select: one;
+  opacity: 0;
+  margin-bottom: 50px;
 }
 #menu h1 {
 font-weight: 300;
 text-align: left;
 font-size: 30px;
-  cursor: default;
+cursor: default;
+background-color: #459FE0;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  padding-left: 50px;
+  margin-top: 0px;
+  box-sizing: border-box;
 }
 #menu ul {
 padding-left: 0px;
@@ -259,26 +269,30 @@ vertical-align: middle;
 width: 175px;
 cursor: pointer;
 box-sizing: border-box;
-color: rgba(255, 255, 255, 0.67);
+color: #3A3939;
+margin-bottom:5px;
+transition: .3s all;
+  padding: 3px;
 }
 #menu li img {
 vertical-align: middle;
 height: 30px;
+  margin-right: 5px;
+  transition: .3s all;
 }
 #menu li:hover {
-  background-color: rgba(0, 0, 0, 0.6);
-  color:white;
+box-shadow: 0px 3px 0px #459FE0;
 }
 
 #taskbar .app.menu {
 border-top: 0px;
-background-color: rgba(0, 0, 0, 0.2);
+background-color: #459FE0;
 vertical-align: top;
 padding-top: 3px;
 margin-right: -4px;
 }
 #taskbar .app.menu:hover{
-  background-color: rgba(0,0,0,0.57);
+  background-color: #1E5C88;
 }
 
 /* tooltips */
@@ -310,4 +324,12 @@ margin-left: 0px;
 -moz-transition-delay: 300ms;
 transition-delay: 300ms;
     
+}
+
+h1 img {
+height: 32;
+position: absolute;
+right: 10px;
+margin-top: 3px;
+  cursor: pointer;
 }
