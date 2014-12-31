@@ -29,43 +29,26 @@ function CreateChannel(index) {
     methods.call("Silk/appDefaults", params.mime, function (err, data) {
       function openWindow(title) {
         // find window index
-        for (var i = 0; i < windows.length; ++i) {
+        for (var i = 0; i < apps.length; ++i) {
 
-          if (windows[i].title === title) {
+          //TODO correctly handle apps that have multipleWindows : false
+          if (apps[i].title === title) {
+            // clone object
+            var win = JSON.parse(JSON.stringify(apps[i]));
 
-            // start the app
-            if (windows[i].running == false) {
-              var url = windows[i].url;
-              url = url.split("?")[0];
-              windows[i].url = url + "?file=" + encodeURIComponent(params.path);
-              windows[i].running = true;
-              windows[i].minimized = false;
-              windowOrder.unshift(windows[i].title);
-
-            } else {
-
-              channels[windows[i].title].notify({
-                method: "fileToOpen",
-                params: {
-                  path: params.path,
-                  mime: params.mime
-                }
-              });
-
-              if (windows[i].minimized == true) {
-                windows[i].minimized = false;
-                windowOrder.unshift(windows[i].title);
-              } else {
-                // move position to top
-                windowOrder.pop(windows[i].title);
-                windowOrder.unshift(windows[i].title);
-              }
-
-            }
-
+            // open the window
+            console.log("win.title = " + win.title);
+            win.running = true;
+            win.minimized = false;
+            windows.push(win);
+            windowOrder.unshift(windows.length - 1);
             updateOrder();
 
-            break;
+            var url = win.url;
+            url = url.split("?")[0];
+            win.url = url + "?file=" + encodeURIComponent(params.path);
+
+            return;
           }
         }
       }
