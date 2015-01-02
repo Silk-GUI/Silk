@@ -1,3 +1,4 @@
+var methods = Silk.methods;
 var defaults = {};
 
 var djson = __dirname + "/settings/app-defaults.json";

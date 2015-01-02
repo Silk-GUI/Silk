@@ -1,3 +1,5 @@
+var methods = Silk.methods;
+
 methods.add({
   "te/open": function (file, callObj, send) {
     var fs = require("fs");

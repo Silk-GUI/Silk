@@ -1,6 +1,6 @@
 var fs = require('fs');
 var mime = require("mime")
-
+var methods = Silk.methods;
 
 function parsePath(path){
   var files = fs.readdirSync(path);

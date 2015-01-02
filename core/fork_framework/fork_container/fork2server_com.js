@@ -95,8 +95,9 @@ process.on("message",function(message){
 });
 
 // make global because it will be used in most files.
-global.methods = methods;
-
+global.Silk = {};
+Silk.methods = methods;
+Silk.api = silkMethods;
 
 process.nextTick(function(){
   require(process.env.start);

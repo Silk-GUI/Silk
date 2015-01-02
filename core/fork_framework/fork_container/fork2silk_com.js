@@ -28,6 +28,8 @@ var done = function(message){
     
   }
 }
-global.Silk = {};
-Silk.call = call;
-Silk.done = done;
+var api = {};
+api.call = call;
+api.done = done;
+
+module.exports = api;

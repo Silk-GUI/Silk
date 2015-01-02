@@ -5,6 +5,7 @@ var yauzl = require("yauzl");
 var mkdirp = require('mkdirp');
 var async = require('async');
 
+var methods = Silk.methods;
 var apps = [];
 var appsFolder = __dirname.split(path.sep);
 appsFolder = appsFolder.slice(0, appsFolder.length - 1);
