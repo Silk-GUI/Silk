@@ -29,7 +29,7 @@ Silk.event("openFile", function (path) {
         alert(error);
       }
 
-      if (data.state = "loading") {
+      if (data.state === "loading") {
         $("#notifications").html("Loading");
       }
       if (data.content != undefined) {
