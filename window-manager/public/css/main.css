@@ -67,7 +67,6 @@ height: 50px;
 background-color: rgba(255, 255, 255, 0.15);
 opacity: 1;
 transition: .3s opacity;
-box-shadow: 0px 3px 5px #000;
 border-top: 3px solid #FFF;
 box-sizing: border-box;
 }
@@ -116,6 +115,7 @@ box-sizing: border-box;
   padding-top: 7px;
   box-sizing: border-box;
   cursor: default;
+  font-weight: 300;
 }
 .window .title .minimize {
   display: inline-block;
@@ -251,7 +251,7 @@ padding: 0px;
 #menu h1 {
 font-weight: 300;
 text-align: left;
-font-size: 30px;
+font-size: 26px;
 cursor: default;
 background-color: #459FE0;
   color: white;
@@ -260,6 +260,19 @@ background-color: #459FE0;
   padding-left: 50px;
   margin-top: 0px;
   box-sizing: border-box;
+}
+#menu h1 img {
+  height: 26px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  cursor: pointer;
+  padding: 12px;
+  background-color: #1E5C88;
+  -webkit-transition: .2s background-color;
+}
+#menu h1 img:hover {
+  background-color: #B01717;
 }
 #menu ul {
 padding-left: 0px;
@@ -326,12 +339,4 @@ margin-left: 0px;
 -moz-transition-delay: 300ms;
 transition-delay: 300ms;
     
-}
-
-h1 img {
-height: 32;
-position: absolute;
-right: 10px;
-margin-top: 3px;
-  cursor: pointer;
 }
