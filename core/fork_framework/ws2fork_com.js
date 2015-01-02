@@ -1,8 +1,9 @@
 /*
-  Similar to meteor.methods
+  Communication between - method calls from the client and app forks.  
+                        - Silk api calls from forks and silk methods.
 */
 
-
+var silkMethods = require('./silk_methods.js');
 
 var methods = {
   wflag:false,
@@ -46,6 +47,7 @@ methods.addFork = function(fork){
     switch(message.cmd){
       case "send": methods.send(message.message);break;
       case "add": methods.add(message,fork);break;
+      case "silkMethod": silkMethods.call(message, fork);break;
     }
   }.bind(this))
   fork.on("error",function(e){

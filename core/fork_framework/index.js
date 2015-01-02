@@ -1,11 +1,11 @@
 var WL = require(__dirname+'/app_loader.js')
 var windows;
-
 require(__dirname+"/ws2fork_com.js");
 
 
 module.exports = function(app,wss){
   windows = new WL(__root+"/apps/","/",app);
+  Silk.set("apps/appLoader", windows);
   windows.on("finishedCompiling", function(results){
     for(var i in windows.hashmap)
       windows.hashmap[i].fork.send({name:"windows",data:windows.clean});
@@ -23,16 +23,7 @@ module.exports = function(app,wss){
       console.log("child disconnected")
     })
   })
-/*
 
-  methods.add({
-    "silk/apps/list": function (data) {
-      console.log("test");
-      console.log("received: " + data);
-      return "this is a vlue returned by the method"
-    }
-  });
-*/
   app.get("/windows.json",function(req,res,next){
     debug(windows.clean);
     res.type("json").send(windows.clean);

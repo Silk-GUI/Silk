@@ -3,6 +3,8 @@
 */
 //console.log("in the child");
 
+var silkMethods = require('./fork2silk_com.js');
+
 function MethodCall(message){
   this.id = message.id;
   this.ws = message.ws;
@@ -77,7 +79,7 @@ process.on("message",function(message){
   /*
   Commands:
     disconnect: Head is closed
-
+    silkMethod: return value for silk api method
   */
   if(!("cmd" in message)){
     var meth = new MethodCall(message);
@@ -88,7 +90,7 @@ process.on("message",function(message){
     case "close": break; //expected to close, will close forcfully in 5 seconds
     case "sleep": break; //Head is removed from the window manager so updates are impossible
     case "minimize": break; //Head is not removed but updates to the head will not be seen
-
+    case "silkMethod": Silk.done(message);
   }
 });
 
