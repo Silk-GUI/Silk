@@ -5,23 +5,24 @@
   "author": "zodern",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.10.1",
-    "ws": "~0.4.31",
-    "localtunnel": "1.5.0",
-    "mime": "~1.2.11",
-    "commander": "2.5.0",
     "async": "~0.9.0",
     "bower-json": "latest",
+    "commander": "2.5.0",
+    "express": "^4.10.1",
+    "jspath": "latest",
+    "localtunnel": "1.5.0",
+    "mime": "~1.2.11",
+    "os-utils": "0.0.14",
     "rsvp": "latest",
-    "jspath": "latest"
+    "ws": "~0.4.31"
   },
-  "optionalDependencies" : {
-    "tty.js" : "zodern/tty.js"
+  "optionalDependencies": {
+    "tty.js": "zodern/tty.js"
   },
   "scripts": {
     "start": "node server.js"
   },
   "bin": {
-        "silk": "bin.js"
-    }
+    "silk": "bin.js"
+  }
 }
