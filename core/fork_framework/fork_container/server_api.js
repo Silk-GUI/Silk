@@ -2,9 +2,6 @@
 var requests = {};
 
 var call = function(method, data, cb){
-  console.log(method);
-  console.log(data);
-  console.log("wanted to call silk method");
   var id = new Date().getTime() + '-' + Math.random();
   
   requests[id] = {
@@ -17,8 +14,8 @@ var call = function(method, data, cb){
      data: data
   }});
 }
+
 var done = function(message){
-  console.log("received reply");
   var id = message.message.id;
   var error = message.message.error;
   var result = message.message.result;
@@ -28,6 +25,7 @@ var done = function(message){
     
   }
 }
+
 var api = {};
 api.call = call;
 api.done = done;

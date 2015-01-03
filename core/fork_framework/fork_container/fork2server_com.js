@@ -1,7 +1,7 @@
 /*
   Similar to meteor.methods
 */
-var silkMethods = require('./fork2silk_com.js');
+var silkMethods = require('./server_api.js');
 
 function MethodCall(message){
   this.id = message.id;
