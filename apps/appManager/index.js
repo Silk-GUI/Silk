@@ -14,7 +14,7 @@ appsFolder = appsFolder.join(path.sep);
 methods.add({
   "apps/remove": function (data, call_obj, send) {
     send(void(0), "Deleting...");
-    
+
     var file = data.folder;
     var folder = appsFolder + path.sep + file;
     console.log(folder);
@@ -36,63 +36,13 @@ methods.add({
     deleteFolderRecursive(folder);
   },
   "apps/list": function (data, call_obj, send) {
-    fs.readdir(appsFolder, function (err, files) {
-      if (err) {
+    Silk.api.call('apps/list', {}, function(err, data){
+      if(err){
         send(err);
+      } else{
+        send(void(0), data);
       }
-      apps = [];
-      async.each(files, function (file, next) {
-        console.log("each");
-        console.log(apps);
-        console.log(appsFolder + path.sep + file + "/window.json");
-        fs.exists(appsFolder + path.sep + file + "/window.json", function (exists) {
-          if (!exists) {
-            console.log("file doesn't exist");
-            return next(new Error(appsFolder + file + "/window.json does not exist."));
-          }
-
-
-          fs.readFile(appsFolder + path.sep + file + "/window.json", function (err, contents) {
-            console.log(contents);
-            if (err) {
-              console.log(err);
-              return next(err)
-            }
-            try {
-              var j = JSON.parse(contents);
-            } catch (err) {
-              return next(err);
-            }
-            if (!j.url) {
-              console.log("URL is always standard");
-              return next(new Error("URL is always standard"))
-            }
-            if (!j.title) return next(new Error("for now, title is standard"))
-            if (!j.icon) return next(new Error("for now, Logo is standard"))
-            j.name = file;
-            j.path = appsFolder + path.sep + file;
-
-            console.log(j.name);
-            // no erros.  add to apps
-            apps.push(j);
-            console.log("no errors");
-
-            // was being sent before all complete so sending every time
-            send(void(0), apps);
-            return next();
-          })
-        })
-      }, function (err) {
-        console.log(err);
-        console.log("list done");
-        console.dir(apps);
-        send(void(0), apps);
-      });
-      console.log(err);
-      console.dir(files);
-
-    });
-
+    })
   },
   "apps/install": download
 });
@@ -143,7 +93,13 @@ function install(data, call_ob, send) {
         return;
       }
       zipfile.once('end', function () {
-        send(void(0), "Finished installing!")
+        Silk.api.call('apps/start', data.url.replace('/', '-'), function (err, data) {
+          console.log(error);
+          console.log(data);
+          send(void(0), "Finished installing!")
+
+        });
+        send(void(0), 'Starting App');
         console.log("deleting file");
         fs.unlink(__dirname + path.sep + 'test.zip', function (err) {
           console.log("finished deleting");
