@@ -10,13 +10,22 @@ silkMethods['apps/list'] = function () {
 
 silkMethods['apps/restart'] = function (name, message) {
   console.log("requested to restart " + name);
-console.dir(Silk.get('apps/appLoader').hashmap);
+  console.dir(Silk.get('apps/appLoader').hashmap);
   Silk.get("apps/appLoader").restartSingle(Silk.get('apps/appLoader').hashmap[name], function (result) {
     console.log("result from restart:")
     console.log(result);
   });
 
 }
+
+silkMethods['apps/start'] = function (folder, message) {
+  console.log('starting' + name);
+  var appLoader = Silk.get('apps/appLoader');
+  appLoader.startSingle(folder, function (err, j){
+    if(err) console.log(err);
+    appLoader.emit('finishedCompiling', appLoader.clean);
+  })
+};
 
 module.exports.methods = silkMethods;
 
