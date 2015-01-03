@@ -1,8 +1,6 @@
 /*
   Similar to meteor.methods
 */
-//console.log("in the child");
-
 var silkMethods = require('./fork2silk_com.js');
 
 function MethodCall(message){
@@ -90,7 +88,7 @@ process.on("message",function(message){
     case "close": break; //expected to close, will close forcfully in 5 seconds
     case "sleep": break; //Head is removed from the window manager so updates are impossible
     case "minimize": break; //Head is not removed but updates to the head will not be seen
-    case "silkMethod": Silk.done(message);
+    case "silkMethod": Silk.api.done(message);
   }
 });
 

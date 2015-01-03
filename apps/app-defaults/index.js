@@ -3,9 +3,6 @@ var defaults = {};
 
 var djson = __dirname + "/settings/app-defaults.json";
 var windows;
-var Silk = {
-  defaults: {}
-};
 
 methods.add({
   "windows": function (windows) {
@@ -20,9 +17,9 @@ function loadDefaults() {
 
   fs.exists(fileName, function (exists) {
     // TODO create file if it doesn't exist
-    if (!exists){
-     fs.writeFileSync(djson, '{}') 
-      
+    if (!exists) {
+      fs.writeFileSync(djson, '{}')
+
     }
 
     fs.stat(fileName, function (err, stats) {
@@ -77,9 +74,6 @@ function saveDefaults() {
 
 function initialize(windows) {
 
-  defaults = Silk.defaults;
-
- 
   for (var i = 0; i < windows.length; ++i) {
     if (!("opens" in windows[i])) continue;
     var opens = windows[i].opens;
@@ -87,19 +81,19 @@ function initialize(windows) {
     //for each mime listed in windows
     for (var x = 0; x < opens.length; ++x) {
 
-      if (opens[x] in Silk.defaults) {
+      if (opens[x] in defaults) {
 
         // don't add duplicate apps
-        if (Silk.defaults[opens[x]].available.indexOf(windows[i].title) < 0) {
-          Silk.defaults[opens[x]].available.push(windows[i].title);
+        if (defaults[opens[x]].available.indexOf(windows[i].title) < 0) {
+          defaults[opens[x]].available.push(windows[i].title);
         }
 
       } else {
-       
+
         // create object for defaults
 
-        Silk.defaults[opens[x]] = {};
-        Silk.defaults[opens[x]] = {
+        defaults[opens[x]] = {};
+        defaults[opens[x]] = {
           default: "",
           available: [windows[i].title]
         };
@@ -108,23 +102,23 @@ function initialize(windows) {
   }
 
   loadDefaults();
- //console.log(JSON.stringify(defaults, null, 4));
+  //console.log(JSON.stringify(defaults, null, 4));
   methods.add({
     "Silk/appDefaults": function (mime) {
-      if (mime in Silk.defaults) {
-        return Silk.defaults[mime];
+      if (mime in defaults) {
+        return defaults[mime];
       } else {
-        var ret = Silk.defaults["*"];
+        var ret = defaults["*"];
         ret.mime = "*";
         return ret
       }
     },
     "Silk/setDefault": function (data) {
-      if (data.mime in Silk.defaults) {
-        Silk.defaults[data.mime].default = data.app;
+      if (data.mime in defaults) {
+        defaults[data.mime].default = data.app;
       } else {
-        Silk.defaults[data.mime] = {};
-        Silk.defaults[data.mime] = {
+        defaults[data.mime] = {};
+        defaults[data.mime] = {
           default: data.app,
           available: []
         };
