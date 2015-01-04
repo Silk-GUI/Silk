@@ -6,9 +6,9 @@ var fs = require("fs");
 module.exports = function(req,res,next){
   res.setHeader('content-type', 'application/javascript');
 	bowerstatic.raw("/bc/eventEmitter",function(ee){
-    console.log(ee);
+    debug(ee);
 	bowerstatic.raw("/bc/rsvp",function(rsvp){
-    console.log(rsvp);
+    debug(rsvp);
   async.eachSeries([
 		ee,
 		rsvp,

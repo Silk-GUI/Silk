@@ -17,7 +17,6 @@ methods.add({
 
     var file = data.folder;
     var folder = appsFolder + path.sep + file;
-    console.log(folder);
     var deleteFolderRecursive = function (path) {
       if (fs.existsSync(path)) {
         fs.readdirSync(path).forEach(function (file, index) {
@@ -29,7 +28,7 @@ methods.add({
           }
         });
         fs.rmdirSync(path);
-        console.log("Finished removing");
+        console.log("Finished removing " + file);
         send(void(0), " ");
       }
     };
@@ -61,7 +60,6 @@ function download(data, call_ob, send) {
     var repo = data.url;
 
     var url = "https://api.github.com/repos/" + repo + "/zipball";
-    console.log("url is " + url);
     var options = {
       url: url,
       headers: {
@@ -71,8 +69,6 @@ function download(data, call_ob, send) {
 
     send(void(0), "Downloading...");
     request(options).on('response', function (response) {
-      console.log(response.statusCode);
-      console.log(response.headers['content-type]']);
     }).on('error', function (err) {
       send(err)
     }).on("end", function () {
@@ -95,18 +91,16 @@ function install(data, call_ob, send) {
       zipfile.once('end', function () {
         Silk.api.call('apps/start', data.url.replace('/', '-'), function (err, data) {
           console.log(error);
-          console.log(data);
           send(void(0), "Finished installing!")
 
         });
         send(void(0), 'Starting App');
-        console.log("deleting file");
         fs.unlink(__dirname + path.sep + 'test.zip', function (err) {
-          console.log("finished deleting");
           if (err) {
             send(err);
 
           }
+          console.log('Installed ' + data.url);
           send(void(0), " ");
         })
       });

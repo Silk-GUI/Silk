@@ -110,14 +110,9 @@ AppFactory.prototype.hideSingle = function (window, next) {
 }
 
 AppFactory.prototype.restartSingle = function (window, next) {
-  console.log("");
-  console.log("");
-  console.log("");
-  console.dir(window);
   var path = window.path;
   window.fork.disconnect();
   window.fork.kill();
-  console.log("killed process " + window.name);
   var that = this;
   this.getSingle(window.name, function (err, j) {
     if (err) {
@@ -128,11 +123,7 @@ AppFactory.prototype.restartSingle = function (window, next) {
     
     // remove old item (first) from clean
     for(var i = 0; i < that.clean.length; ++i){
-      console.log(i);
-      console.log(that.clean[i].name);
-      console.log(j.name);
       if(that.clean[i].name === j.name){
-        console.log("==== name same ====")
         that.clean.splice(i, 1);
         break;
       }
@@ -146,7 +137,7 @@ AppFactory.prototype.restartSingle = function (window, next) {
     }
 
     that.emit("finishedCompiling", results);
-    console.log("started " + window.name);
+    console.log("restarted " + window.name);
     next(true)
   })
 }
