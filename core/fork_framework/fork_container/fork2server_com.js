@@ -96,6 +96,7 @@ process.on("message",function(message){
 global.Silk = {};
 Silk.methods = methods;
 Silk.api = silkMethods;
+global.methods = methods;
 
 process.nextTick(function(){
   require(process.env.start);
