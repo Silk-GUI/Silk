@@ -15,7 +15,7 @@ silkMethods['apps/restart'] = function (name, message) {
 
 silkMethods['apps/start'] = function (folder, message) {
   var appLoader = Silk.get('apps/appLoader');
-  appLoader.startSingle(folder, function (err, j){
+  appLoader.getSingle(folder, function (err, j){
     if(err) console.log(err);
     appLoader.emit('finishedCompiling', appLoader.clean);
   })
