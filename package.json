@@ -1,6 +1,6 @@
 {
   "name": "silk-gui",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "GUI for developers and Node OS",
   "author": "zodern",
   "license": "MIT",
@@ -21,8 +21,8 @@
     "type": "git",
     "url": "https://github.com/silk-GUI/Silk/issues"
   },
- "bugs": {
-    "url": "https://github.com/nodejitsu/browsenpm.org/issues"
+  "bugs": {
+    "url": "https://github.com/silk-GUI/Silk/issues"
   },
   "keywords": [
     "GUI",
