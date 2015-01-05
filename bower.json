@@ -21,7 +21,10 @@
     "jquery": "~2.1.1",
     "fontawesome": "*",
     "rsvp": "*",
-    "eventEmitter": "*"
+    "eventEmitter": "*",
+    "jspath": "*",
+    "color-thief": "*",
+    "hint.css": "*"
   },
   "resolutions": {
     "jquery": ">=1.9.1"

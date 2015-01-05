@@ -21,6 +21,16 @@ function file_explorer(elem) {
     // alert("You're going to have to setup a default view for mimetype: " + $(this).parent().attr("data-mime"));
     return false;
   })
+  // Create folder
+  jQuery("#newFolder").click(function (e) {
+    var name = prompt("Name of Folder");
+    methods.listen("fe/create/folder", {path: that.href, name: name}, function (err, result) {
+      if(err){
+      alert(err);
+      return;
+    }
+    })
+  })
   this.listener = methods.listen("fe/list/path", function (err, list) {
     if (err) return alert(JSON.stringify(err));
     that.processList(that.href, list);
@@ -56,7 +66,7 @@ file_explorer.prototype.processList = function (href, list) {
   var files = [];
   this.processCD(href);
   this.files.empty();
-  
+
   // add folders and separate files
   for (var i = 0; i < list.length; i++) {
     var item = list[i];
@@ -64,23 +74,25 @@ file_explorer.prototype.processList = function (href, list) {
       var el = jQuery("<li><a href='" + item.path + "'><i class='fa fa-folder'></i>" + item.name + "</a></li>");
       this.files.append(el);
       el.addClass("directory");
-      
+
     } else {
       files.push(item);
     }
   }
-  
+
   // add files
-  for(var i = 0; i < files.length; i++){
+  for (var i = 0; i < files.length; i++) {
     var item = list[i];
-        var el = jQuery("<li><a href='" + item.path + "'><i class='fa fa-file-o'></i>" + item.name + "</a></li>");
-        this.files.append(el);
-        el.addClass("file");
-        el.attr("data-mime", item.mime);
-      
+    var el = jQuery("<li><a href='" + item.path + "'><i class='fa fa-file-o'></i>" + item.name + "</a></li>");
+    this.files.append(el);
+    el.addClass("file");
+    el.attr("data-mime", item.mime);
+
   }
-  
+
 }
+
+
 
 jQuery(function ($) {
   new file_explorer();

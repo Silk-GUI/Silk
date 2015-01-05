@@ -5,6 +5,11 @@ var socket;
   try {
 
     var host = "ws://0.0.0.0:9999";
+    
+    // change host url if remote
+    if(/localhost:3000/.test(location.host) | /0.0.0.0:3000/.test(location.host)){{
+      host = location.protocol + "//" + location.host + ":9999";
+    }
     socket = new WebSocket(host);
 
     socket.onopen = function () {

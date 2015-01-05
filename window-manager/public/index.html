@@ -1,0 +1,60 @@
+<html>
+
+<head>
+  <title>Silk GUI</title>
+  <link rel="stylesheet" href="css/normalize.css" type="text/css">
+  <link rel="stylesheet" href="/bc/hint.css" type="text/css">
+  <link rel="stylesheet" href="css/main.css" type="text/css">
+  
+</head>
+
+<body>
+
+  <div>Silk</div>
+  <div class="loader">
+    <h1><span>S</span><span>i</span><span>l</span><span>k</span></h1>
+  </div>
+
+  <div id="desktop">
+    <div v-repeat="windows" class="window" v-show="!minimized" v-style="z-index: zIndex">
+      <div class="title">{{title}} <span class="minimize" v-on="click: minimize($index)">_</span>  <span class="close" v-on="click: close($index)">&times;</span>
+      </div>
+
+      <iframe v-if="running" class="content" v-on="load: buildChannel($index)" v-attr="src: url" data-name="{{title}}"></iframe>
+    </div>
+  </div>
+
+  <div id="taskbar">
+    <div class="app menu" v-on="click: menu($index)">
+      <img src="img/menu.png">
+    </div>
+    <div class="app hint--top hint--no-animate" v-attr="data-hint: title" v-show="running" v-repeat="programs" v-on="click: open($index)" v-class="running: running, active: active">
+      <img v-attr="src: icon">
+    </div>
+    <div id="clock"></div>
+  </div>
+  <div id="appNotifications"></div>
+
+  <div id="menu">
+    <h1>Apps <img src="img/Close-48.png"></h1>
+    <ul>
+      <li v-repeat="apps" v-on="click: open($index)">
+        <img v-attr="src: icon">{{title}}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/bc/jquery"></script>
+  <script src="/bc/vue"></script>
+  <script src="/bc/jspath"></script>
+  <script src="js/call.js"></script>
+  <script src="/bc/jschannel"></script>
+  <script src="js/channel.js"></script>
+  <script src="js/remote.js"></script>
+  <script src="js/windowManager.js"></script>
+  <script src="js/load.js"></script>
+  <script src="js/clock.js"></script>
+</body>
+
+</html>

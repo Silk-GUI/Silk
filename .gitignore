@@ -4,3 +4,7 @@ npm-debug.log
 roadmap
 *.orig
 *.*~
+
+.brackets.json
+
+apps/app-defaults/settings/app-defaults.json

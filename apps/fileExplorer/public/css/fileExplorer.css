@@ -1,5 +1,6 @@
 body {
   font-family: "Trebuchet MS", Helvetica, sans-serif;
+  margin-bottom: 50px;
 }
 h1 a {
   color: rgb(128, 128, 128);
@@ -12,43 +13,53 @@ h1 a {
 h1 .current_path i:first-child {
   display: none;
 }
-
 h1 a:last-child {
-color:rgb(69, 159, 224);
+  color: rgb(69, 159, 224);
 }
 .files .directory {
   /*background-color: #DDD;*/
 }
 .files .directory i {
-color: rgb(234, 204, 78);
+  color: rgb(234, 204, 78);
 }
-h1 .current_path span{
-  display:none;
+h1 .current_path span {
+  display: none;
 }
 .files {
-list-style: none;
+  list-style: none;
 }
 .files li {
-padding: 2px;
-margin: 5px;
-width: 80px;
-display: inline-block;
-text-align: center;
-vertical-align: top;
+  padding: 2px;
+  margin: 5px;
+  width: 80px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
 }
 .files li a {
-font-size: 12px;
-width: 80px;
-word-wrap: break-word;
-text-decoration: none;
-color: grey;
+  font-size: 12px;
+  width: 80px;
+  word-wrap: break-word;
+  text-decoration: none;
+  color: grey;
 }
 .files li i {
-font-size: 40px;
-display: block;
+  font-size: 40px;
+  display: block;
 }
 .files .file i {
-font-size: 30px;
-margin-top: 3px;
-margin-bottom: 7px;
+  font-size: 30px;
+  margin-top: 3px;
+  margin-bottom: 7px;
+}
+#newFolder {
+  background-color: 4EBAEA;
+  border: none;
+  color: #FFF;
+  padding: 10px;
+  font-size: 14px;
+  position: fixed;
+  bottom: 5px;
+  left: 5px;
+  cursor: pointer;
 }

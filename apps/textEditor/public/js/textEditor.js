@@ -29,7 +29,7 @@ Silk.event("openFile", function (path) {
         alert(error);
       }
 
-      if (data.state = "loading") {
+      if (data.state === "loading") {
         $("#notifications").html("Loading");
       }
       if (data.content != undefined) {
@@ -50,15 +50,46 @@ $("#text").on("keydown", function(e){
 
 $("#save").click(function () {
   if (file.path != null) {
+    $("#save").text("Saving...");
     
     methods.call("te/save", {
       path: file.path,
       contents: $("#text").val()
     }, function (err, result) {
         $("#toolBar").css("borderBottomColor", " rgba(128, 128, 128, 0.8)");
-     
+        $("#save").text("Save");
     })
           file.changed = false;
 
   }
-})
+});
+
+$(document).delegate('#text', 'keydown', function(e) {
+  var keyCode = e.keyCode || e.which;
+
+  if (keyCode == 9) {
+    e.preventDefault();
+    var start = $(this).get(0).selectionStart;
+    var end = $(this).get(0).selectionEnd;
+
+    // set textarea value to: text before caret + tab + text after caret
+    $(this).val($(this).val().substring(0, start)
+                + "\t"
+                + $(this).val().substring(end));
+
+    // put caret at right position again
+    $(this).get(0).selectionStart =
+    $(this).get(0).selectionEnd = start + 1;
+  }
+});
+
+/* keyboard shortcuts */
+Mousetrap.bind(['ctrl+s', 'command+s'], function(e){
+  if (e.preventDefault) {
+        e.preventDefault();
+    } else {
+        // internet explorer
+        e.returnValue = false;
+    }
+  $("#save").click();
+});

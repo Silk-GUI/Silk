@@ -1,8 +1,9 @@
 /*
-  Similar to meteor.methods
+  Communication between - method calls from the client and app forks.  
+                        - Silk api calls from forks and silk methods.
 */
 
-
+var silkMethods = require('./silk_methods.js');
 
 var methods = {
   wflag:false,
@@ -16,14 +17,14 @@ var methods = {
 };
 
 methods.add = function(m,fork){
-  console.log("adding");
+  debug("adding");
   this.responders[m.name] = fork;
   this.fork_resp[fork.pid].push(m.name)
 }
 
 methods.send = function(message){
   if(!this.requests[message.id]){
-    console.log("user removed or no request");
+    debug("user removed or no request");
     return;
   }
   this.requests[message.id].send(JSON.stringify(message));
@@ -39,14 +40,14 @@ methods.removeFork = function(fork,code,signal){
 }
 
 methods.addFork = function(fork){
-  console.log("adding fork");
+  debug("adding fork");
   this.fork_resp[fork.pid] = [];
   this.forks[fork.pid] = fork;
   fork.on("message", function(message){
-//    console.log(JSON.stringify(message));
     switch(message.cmd){
       case "send": methods.send(message.message);break;
       case "add": methods.add(message,fork);break;
+      case "silkMethod": silkMethods.call(message, fork);break;
     }
   }.bind(this))
   fork.on("error",function(e){

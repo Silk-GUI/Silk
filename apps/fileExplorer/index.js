@@ -1,6 +1,6 @@
 var fs = require('fs');
 var mime = require("mime")
-
+var methods = Silk.methods;
 
 function parsePath(path){
   var files = fs.readdirSync(path);
@@ -60,5 +60,28 @@ methods.add({
     }
     setupWatcher(path,call_ob,next);
     return parsePath(path);
+  },
+  "fe/create/folder": function (data, call_ob, send){
+    var path = data.path;
+    var name = data.name;
+        console.log(path);
+    console.log(name);
+    console.log(path + "/" + name);
+    
+    if(typeof path == "undefined"){
+      path = "/"
+    }
+    if(typeof name == "undefined"){
+      name = "Untitled";
+    }
+
+    fs.mkdir(path + "/" + name,function(err) {
+        if (err) {
+            if (err.code == 'EEXIST') send("Fodler already exists"); // ignore the error if the folder already exists
+            else send(err); // something else went wrong
+        } 
+      else send(void(0), {"status": "done"}); // successfully created folder
+    });
+    
   }
 })

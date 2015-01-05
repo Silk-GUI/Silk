@@ -4,7 +4,14 @@ var socket;
 (function () {
   try {
 
-    var host = "ws://0.0.0.0:9999";
+    var host = "ws://0.0.0.0:3000/websocket";
+    
+     // change host url if remote
+    if(/localhost:3000/.test(location.host) | /0.0.0.0:3000/.test(location.host)){
+      } else{
+      host =  "ws://" + location.host + "/websocket";
+    }
+    console.log(host);
     socket = new WebSocket(host);
 
     socket.onopen = function () {
