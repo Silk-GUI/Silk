@@ -40,9 +40,9 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 
   fs.readdir(folder, function (err, files) {
     async.filter(files, function (file, next) {
-      fs.exists(folder + file + '/window.json', function (exists) {
+      fs.exists(folder + file + '/app.json', function (exists) {
         if (!exists) {
-          return next(new Error('window.json does not exist for ' + file));
+          return next(new Error('app.json does not exist for ' + file));
         }
 
         var app = new App(folder + file, expressApp);
@@ -75,7 +75,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
  * Creates and manages an app
  * @constructor
  * @param {string} path - path to folder
- * @param {object} j - contents of window.json for app
+ * @param {object} j - contents of app.json for app
  */
 function App(path, expressApp, urlPath) {
   this.json = {};
@@ -97,12 +97,12 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   /**
-   * Loads window.json for app.  Automatically called when app is constructed.
+   * Loads app.json for app.  Automatically called when app is constructed.
    * @param {function} next - callback
    */
   this.loadJSON = function (next) {
     var that = this;
-    fs.readFile(this.path + "/window.json", function (err, contents) {
+    fs.readFile(this.path + "/app.json", function (err, contents) {
       if (err) {
         console.log(err);
         return next(err);
@@ -119,16 +119,16 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   /**
-   * Makes sure the window.json has the required fields and adds fields for window manager
+   * Makes sure the app.json has the required fields and adds fields for window manager
    * @param {function} next - callback
    */
   var checkJSON = function (next) {
     var j = this.json;
     if (!j.url) {
-      next(new Error(this.folder + ' window.json does not have a url'));
+      next(new Error(this.folder + ' app.json does not have a url'));
     }
     if (!j.name) {
-      next(new Error(this.folder + ' window.json does not have a name'));
+      next(new Error(this.folder + ' app.json does not have a name'));
     }
 
     if (j.url !== 'headless') {
@@ -145,7 +145,7 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   /**
-   * Makes urls in window.json absolute
+   * Makes urls in app.json absolute
    * @param {function} next - callback
    */
   var checkURLs = function (next) {
@@ -184,7 +184,7 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   /**
-   * Validates window.json and fixes url
+   * Validates app.json and fixes url
    * @param {function} next - callback
    */
   this.validate = function (next) {
@@ -255,6 +255,7 @@ function App(path, expressApp, urlPath) {
   this.loadJSON(function (err) {
     if (err) {
       this.valid = false;
+      console.log(err);
       return;
     }
     that.validate(function (err) {
