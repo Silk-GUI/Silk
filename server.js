@@ -26,7 +26,11 @@ global.__root = __dirname;
 var app = express(),
   server,
   wss,
-  windows;
+  windows,
+  url,
+  toLoad = 2,
+  loaded = 0,
+  spinStep = 0;
 
 program
   .version('0.3.0')
@@ -36,6 +40,38 @@ program
 
 program.dev ? global.debug = console.log : global.debug = function(){};
 
+//loading spinner
+function Spinner(){
+  this.step = 0;
+  this.pattern = '|/-\\';
+  var interval;
+  this.start = function(){
+    var that = this;
+    interval = setInterval(function(){
+      process.stdout.write('\r ' + that.pattern[that.step] + ' Starting Silk');
+      that.step += 1;
+      if(that.step === 4){
+        that.step = 0;
+      }
+    }, 175);
+  }
+  this.stop = function(){
+    clearInterval(interval);
+  }
+}
+
+var spinner = new Spinner();
+spinner.start();
+
+// hides spinner and shows url when finished loading;
+function loader(){
+  loaded += 1;
+  if(loaded === toLoad){
+    spinner.stop();
+   process.stdout.write('\r ' + url);
+    console.log('');
+  }
+}
 
 app.get('/', function (req, res) {
   res.sendFile(__root + "/window-manager/public/index.html");
@@ -48,30 +84,8 @@ app.get("/api.js", require(__root + "/core/client_api.js"));
 
 server = app.listen(3000, function () {
   var add = server.address();
-
-  // display url in box
-  var message = 'Silk at http://' + add.address + ":" + add.port;
-  var length = message.length;
-  var prespace = "   ";
-  var box = "";
-
-  for (var i = 0; i < length + 10; ++i) {
-    box += "=";
-  }
-
-  var space = "    ";
-  var empty = "";
-
-  for (var i = 0; i < length + 10 - 2; ++i) {
-    empty += " ";
-  }
-
-  console.log(prespace + box);
-  console.log(prespace + "|" + empty + "|");
-  console.log(prespace + "|" + space + message + space + "|");
-  console.log(prespace + "|" + empty + "|");
-  console.log(prespace + box);
-  console.log("");
+  url = 'Silk at http://' + add.address + ':' + add.port;
+  loader();
 })
 
 wss = new WebSocketServer({
@@ -92,7 +106,9 @@ wss.on('connection', function (ws) {
   });
 });
 
-var windows = require(__root + "/core/fork_framework")(app, wss);
+require(__root + "/core/fork_framework")(app, wss, function(){
+  loader();
+});
 
 require('./core/remote.js');
 
