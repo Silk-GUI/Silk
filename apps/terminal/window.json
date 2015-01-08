@@ -1,5 +1,6 @@
 {
- "title" : "Terminal",
+  "name": "Terminal",
+  "title" : "Terminal",
   "url" : "//localhost:8000/",
   "icon" : "//localhost:3000/terminal/icon.png",
   "remote" : {
