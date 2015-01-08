@@ -1,1 +1,0 @@
-require('./jshint.spec.js');

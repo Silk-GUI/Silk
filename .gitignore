@@ -8,3 +8,5 @@ roadmap
 .brackets.json
 
 apps/app-defaults/settings/app-defaults.json
+
+test/App.spec.js

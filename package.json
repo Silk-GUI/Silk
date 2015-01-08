@@ -33,9 +33,15 @@
     "tty.js": "zodern/tty.js"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha"
   },
   "bin": {
     "silk": "bin.js"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "chai": "*",
+    "mocha-jshint": "*"
   }
 }
