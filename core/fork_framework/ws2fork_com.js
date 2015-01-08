@@ -95,5 +95,4 @@ methods.call = function(ws,message){
   this.requests[message.id] = ws;
 }
 
-// make global because it will be used in most files.
-global.methods = methods;
+module.exports = methods;
