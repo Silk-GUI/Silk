@@ -55,7 +55,9 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 
           app.start(function (err, result) {
             if (!err) {
+              if(app.clean.url !== 'headless'){
               appList.clean.push(app.clean);
+              }
               appList.emit('added', app);
               next();
             }
@@ -163,8 +165,9 @@ function App(path, expressApp, urlPath) {
       }
 
       // create absolute url
-      j[prop] = url.resolve("http://localhost:3000/" + urlPath + j.name + "/index.html", j[prop]);
+      j[prop] = url.resolve("http://localhost:3000/" + urlPath + j.folder + "/index.html", j[prop]);
       that.clean[prop] = j[prop];
+      console.log(j[prop]);
       var parsed = url.parse(j[prop]);
 
       // if local file, make sure it exists.
