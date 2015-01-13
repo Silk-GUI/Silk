@@ -95,16 +95,7 @@ wss = new WebSocketServer({
 
 debug("web socket is at: " + wss.options.host + wss.options.path);
 
-wss.on('connection', function (ws) {
-  debug("connected");
-  ws.on('message', function (message) {
 
-    debug("websocket message: " + message);
-
-
-    methods.call(ws, message);
-  });
-});
 
 require(__root + "/core/fork_framework")(app, wss, function(){
   loader();

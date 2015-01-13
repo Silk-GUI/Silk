@@ -28,5 +28,16 @@ module.exports = function (app, wss, next) {
   app.get("/windows.json", function (req, res, next) {
     res.type("json").send(appLoader.apps.clean);
   });
+  
+  wss.on('connection', function (ws) {
+  debug("connected");
+  ws.on('message', function (message) {
+
+    debug("websocket message: " + message);
+
+
+    methods.call(ws, message);
+  });
+});
 
 }
