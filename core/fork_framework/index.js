@@ -11,12 +11,13 @@ module.exports = function (app, wss, next) {
   Silk.set('apps/clean', appLoader.apps.clean);
 
   appLoader.apps.on("added", function (app) {
-    if (app.status === 'running') {
+    if (app.status === 'running' || 'starting') {
       methods.addFork(app.fork);
       return;
     } else {
       app.once('ready', function (err) {
         if (err) {
+          console.log(err);
           return;
         }
         methods.addFork(app.fork);

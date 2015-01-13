@@ -2,7 +2,6 @@
   Communication between - method calls from the client and app forks.  
                         - Silk api calls from forks and silk methods.
 */
-
 var silkMethods = require('./silk_methods.js');
 
 var methods = {
@@ -17,7 +16,7 @@ var methods = {
 };
 
 methods.add = function(m,fork){
-  debug("adding");
+  debug('adding fork for ' + m.name);
   this.responders[m.name] = fork;
   this.fork_resp[fork.pid].push(m.name)
 }
@@ -27,7 +26,7 @@ methods.send = function(message){
     debug("user removed or no request");
     return;
   }
-  this.requests[message.id].send(JSON.stringify(message));
+  this.requests[message.id].write(JSON.stringify(message));
 }
 
 methods.removeFork = function(fork,code,signal){
