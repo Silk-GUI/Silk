@@ -15,7 +15,7 @@
     "mime": "~1.2.11",
     "os-utils": "0.0.14",
     "rsvp": "latest",
-    "ws": "~0.4.31"
+    "sockjs": "~0.3.12"
   },
   "repository": {
     "type": "git",

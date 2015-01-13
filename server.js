@@ -1,22 +1,21 @@
 var http = require('http');
 var express = require('express')
-var WebSocketServer = require('ws').Server;
+var SockJS = require('sockjs');
 var program = require('commander');
 
 // has info and state of various parts of Silk.  Used mainly be api.
 global.Silk = {
-  set: function(prop, value){
-    if(prop in Silk.data){
+  set: function (prop, value) {
+    if (prop in Silk.data) {
       Silk.data[prop].value = value;
-    }
-    else{
+    } else {
       Silk.data[prop] = {
         value: value,
         needUpdates: []
       }
     }
   },
-  get: function(prop){
+  get: function (prop) {
     return Silk.data[prop].value;
   },
   data: {}
@@ -38,24 +37,24 @@ program
   .option('-d, --dev', 'Show debug messages')
   .parse(process.argv);
 
-program.dev ? global.debug = console.log : global.debug = function(){};
+program.dev ? global.debug = console.log : global.debug = function () {};
 
 //loading spinner
-function Spinner(){
+function Spinner() {
   this.step = 0;
   this.pattern = '|/-\\';
   var interval;
-  this.start = function(){
+  this.start = function () {
     var that = this;
-    interval = setInterval(function(){
+    interval = setInterval(function () {
       process.stdout.write('\r ' + that.pattern[that.step] + ' Starting Silk');
       that.step += 1;
-      if(that.step === 4){
+      if (that.step === 4) {
         that.step = 0;
       }
     }, 175);
   }
-  this.stop = function(){
+  this.stop = function () {
     clearInterval(interval);
   }
 }
@@ -64,11 +63,11 @@ var spinner = new Spinner();
 spinner.start();
 
 // hides spinner and shows url when finished loading;
-function loader(){
+function loader() {
   loaded += 1;
-  if(loaded === toLoad){
+  if (loaded === toLoad) {
     spinner.stop();
-   process.stdout.write('\r ' + url);
+    process.stdout.write('\r ' + url);
     console.log('');
   }
 }
@@ -88,16 +87,18 @@ server = app.listen(3000, function () {
   loader();
 })
 
-wss = new WebSocketServer({
-  server: server,
-  path: '/websocket'
+wss = SockJS.createServer({
+  sockjs_url: '//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js'
+});
+wss.installHandlers(server, {
+  prefix: '/ws'
 });
 
 debug("web socket is at: " + wss.options.host + wss.options.path);
 
 
 
-require(__root + "/core/fork_framework")(app, wss, function(){
+require(__root + "/core/fork_framework")(app, wss, function () {
   loader();
 });
 

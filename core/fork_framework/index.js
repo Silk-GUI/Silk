@@ -29,14 +29,14 @@ module.exports = function (app, wss, next) {
     res.type("json").send(appLoader.apps.clean);
   });
   
-  wss.on('connection', function (ws) {
+  wss.on('connection', function (conn) {
   debug("connected");
-  ws.on('message', function (message) {
+  conn.on('data', function (message) {
 
     debug("websocket message: " + message);
 
 
-    methods.call(ws, message);
+    methods.call(conn, message);
   });
 });
 

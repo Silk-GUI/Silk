@@ -167,7 +167,6 @@ function App(path, expressApp, urlPath) {
       // create absolute url
       j[prop] = url.resolve("http://localhost:3000/" + urlPath + j.folder + "/index.html", j[prop]);
       that.clean[prop] = j[prop];
-      console.log(j[prop]);
       var parsed = url.parse(j[prop]);
 
       // if local file, make sure it exists.

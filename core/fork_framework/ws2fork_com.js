@@ -69,7 +69,7 @@ methods.call = function(ws,message){
   }
   if(!(message.name in this.responders)){
     //console.log(JSON.stringify(message));
-    return ws.send(JSON.stringify({
+    return ws.write(JSON.stringify({
       id:message.id,
       ws:ws.id,
       error:"method "+message.name+" does not exist"
