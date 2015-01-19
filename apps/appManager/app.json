@@ -4,10 +4,10 @@
   "url": "https://bing.com",
   "icon": "icon.png",
   "multipleWindows": false,
-  "bower_dependencies": {
+  "bowerDependencies": {
     "jquery": "latest"
   },
-  "npm_dependencies": {
+  "npmDependencies": {
     "request": "*",
     "yauzl": "*",
     "mkdirp": "*"
