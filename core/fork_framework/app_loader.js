@@ -6,6 +6,9 @@ var fs = require('fs'),
   https = require('https'),
   express = require('express'),
   url = require('url'),
+  npmi = require('npmi'),
+  bower = require('bower'),
+  bowerJSON = require('bower-json'),
   child_process = require('child_process');
 
 /**
@@ -55,8 +58,8 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 
           app.start(function (err, result) {
             if (!err) {
-              if(app.clean.url !== 'headless'){
-              appList.clean.push(app.clean);
+              if (app.clean.url !== 'headless') {
+                appList.clean.push(app.clean);
               }
               appList.emit('added', app);
               next();
@@ -190,6 +193,7 @@ function App(path, expressApp, urlPath) {
    * @param {function} next - callback
    */
   this.validate = function (next) {
+    debug('validating ' + this.path);
     var that = this;
     async.series([
     checkJSON,
@@ -205,6 +209,95 @@ function App(path, expressApp, urlPath) {
       next(err, result);
     })
   }.bind(this);
+
+  /**
+   * Installs dependencies
+   */
+  this.npmDependencies = function (next) {
+    debug('installing npm dependencies for ' + this.name);
+    var d = this.json.npmDependencies || {};
+    if (d.length === 0) {
+      debug('no npm dependencies');
+      return next();
+    }
+    async.eachSeries(Object.keys(d), function (dep, next) {
+
+      // check if installed
+      try {
+        require.resolve(dep);
+        return next();
+      } catch (e) {
+        var options = {
+          name: dep, // your module name
+          version: d[dep] // expected version [default: 'latest']
+        };
+        npmi(options, function (err, result) {
+          if (err) {
+            if (err.code === npmi.LOAD_ERR) console.log('npm load error');
+            else if (err.code === npmi.INSTALL_ERR) console.log('npm install error');
+            console.log(err.message);
+            return next(err.message);
+          }
+
+          // installed
+          console.log(options.name + '@' + options.version + ' installed successfully');
+          next();
+        });
+      }
+
+    }, function (err) {
+      if (err) console.log(err);
+      next();
+    });
+    debug('npm dependencies');
+    var amount = d.length - 1;
+    var done = 0;
+    var errors = null;
+  }
+
+  /**
+   * Installs Bower dependencies
+   * @param {function} next - callback
+   */
+  this.bowerDependencies = function (next) {
+    var d = this.json.bowerDependencies || {};
+    if (Object.keys(d).length === 0) {
+      // no dependencies
+      return next();
+    }
+    async.eachSeries(Object.keys(d), function (dep, next) {
+      bowerJSON.read(__root + "/bower_components/" + dep, function (err, file) {
+        if (file) {
+          return next();
+        }
+        var force = false;
+        if (d[dep] === 'latest') {
+          force = true;
+        }
+        console.log('installing ' + dep);
+        bower.commands
+          .install([dep + '#' + d[dep]], {
+            save: false,
+            force: true
+          })
+          .on('error', function (err) {
+            console.log('error isntalling ' + dep);
+            console.log(err);
+            next();
+          })
+          .on('end', function (installed) {
+            console.log('finished installing ' + dep);
+            return next();
+          })
+      })
+    }, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      next(err);
+    })
+
+  }
 
   /**
    * Starts the fork process
@@ -242,6 +335,9 @@ function App(path, expressApp, urlPath) {
           }
           this.status = 'running';
           next();
+        });
+        fork.on('close', function(code, signal){
+          console.log('process for ' + that.name + 'ended');
         })
 
       } catch (e) {
@@ -261,8 +357,12 @@ function App(path, expressApp, urlPath) {
       return;
     }
     that.validate(function (err) {
-      createRouter();
-      that.emit('ready', err);
+      that.bowerDependencies(function (err) {
+        that.npmDependencies(function () {
+          createRouter();
+          that.emit('ready', err);
+        })
+      });
     })
   })
 }
