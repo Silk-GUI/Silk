@@ -313,7 +313,9 @@ function App(path, expressApp, urlPath) {
           cwd: __root,
           env: {
             start: this.path
-          }
+          },
+          silent: true,
+          stdio: 'pipe'
         }
         var fork = child_process.fork(modulePath, [], forkOpts);
         this.fork = fork;
@@ -338,6 +340,10 @@ function App(path, expressApp, urlPath) {
         });
         fork.on('close', function(code, signal){
           console.log('process for ' + that.name + 'ended');
+        });
+        
+        fork.stdout.on('data', function(data){
+          console.log('[' + that.name + ']' + data);
         })
 
       } catch (e) {
