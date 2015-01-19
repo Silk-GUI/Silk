@@ -52,7 +52,7 @@ function Spinner() {
       if (that.step === 4) {
         that.step = 0;
       }
-    }, 175);
+    }, 150);
   }
   this.stop = function () {
     clearInterval(interval);
@@ -87,16 +87,22 @@ server = app.listen(3000, function () {
   loader();
 })
 
-wss = SockJS.createServer({
+var sockOptions = {
   sockjs_url: '//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js'
-});
+}
+
+if (!program.dev) {
+  sockOptions.log = function (severity, message) {
+    if (severity === 'error') {
+      console.log(message);
+    }
+  }
+}
+
+wss = SockJS.createServer(sockOptions);
 wss.installHandlers(server, {
   prefix: '/ws'
 });
-
-debug("web socket is at: " + wss.options.host + wss.options.path);
-
-
 
 require(__root + "/core/fork_framework")(app, wss, function () {
   loader();
