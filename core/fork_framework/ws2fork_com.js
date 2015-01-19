@@ -31,8 +31,13 @@ methods.send = function(message){
 
 methods.removeFork = function(fork,code,signal){
   console.log(code+" "+signal);
-  for(var i in this.forks[fork.pid]){
-    delete this.reponders[this.forks[fork.pid][i]];
+
+  // delete methods from this fork
+  for(var i in this.responders){
+   if(this.responders[i].pid === fork.pid){
+     console.log(i);
+     delete this.responders[i];
+   }
   }
   delete this.fork_resp[fork.pid];
   delete this.forks[fork.pid];
