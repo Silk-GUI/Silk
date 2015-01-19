@@ -141,6 +141,15 @@ function App(path, expressApp, urlPath) {
       j.running = false;
       j.minimized = true;
     }
+    try {
+      if ('ports' in j.remote) {
+        for (var i = 0; i < j.remote.ports.length; ++i) {
+          Silk.get('remote/addPort')(j.remote.ports[i]);
+        }
+      }
+    } catch (e) {
+
+    }
 
     j.folder = this.folder;
     j.path = this.path;
@@ -338,11 +347,11 @@ function App(path, expressApp, urlPath) {
           this.status = 'running';
           next();
         });
-        fork.on('close', function(code, signal){
+        fork.on('close', function (code, signal) {
           console.log('process for ' + that.name + 'ended');
         });
-        
-        fork.stdout.on('data', function(data){
+
+        fork.stdout.on('data', function (data) {
           console.log('[' + that.name + ']' + data);
         })
 

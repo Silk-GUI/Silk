@@ -4,7 +4,7 @@
   "url" : "//localhost:8000/",
   "icon" : "//localhost:3000/terminal/icon.png",
   "remote" : {
-    "enabled": false
+    "ports": [8000]
   },
   "multipleWindows": false
 }

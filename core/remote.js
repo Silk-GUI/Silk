@@ -43,7 +43,9 @@ function Remote(port) {
         Silk.set("remote/url", tunnel.url);
         Silk.set("remote/close", tunnel.close);
 
-        console.log("Go to " + tunnel.url + " to remotely access Silk");
+        if (that.port === 3000) {
+          console.log("Go to " + tunnel.url + " to remotely access Silk");
+        }
 
         tunnel.on("error", function (err) {
           console.log(err);
@@ -97,7 +99,7 @@ function addPort(port) {
   ports[port] = new Remote(port);
 }
 
-function removePort(port){
+function removePort(port) {
   ports[port].close();
   delete ports[port];
 }

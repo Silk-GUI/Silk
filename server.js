@@ -111,5 +111,5 @@ require(__root + "/core/fork_framework")(app, wss, function () {
 require('./core/remote.js');
 
 if (program.remote) {
-  Silk.get('remote/start')();
+  Silk.get('remote/start')(true);
 }
