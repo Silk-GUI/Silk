@@ -142,10 +142,8 @@ function App(path, expressApp, urlPath) {
       j.minimized = true;
     }
     try {
-      if ('ports' in j.remote) {
-        for (var i = 0; i < j.remote.ports.length; ++i) {
-          Silk.get('remote/addPort')(j.remote.ports[i]);
-        }
+      if ('port' in j.remote) {
+          Silk.get('remote/addPort')(j.remote.port);
       }
     } catch (e) {
 
