@@ -223,8 +223,7 @@ function App(path, expressApp, urlPath) {
   this.npmDependencies = function (next) {
     debug('installing npm dependencies for ' + this.name);
     var d = this.json.npmDependencies || {};
-    if (d.length === 0) {
-      debug('no npm dependencies');
+    if (Object.keys(d).length === 0) {
       return next();
     }
     async.eachSeries(Object.keys(d), function (dep, next) {
