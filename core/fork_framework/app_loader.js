@@ -62,6 +62,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
                 appList.clean.push(app.clean);
               }
               appList.emit('added', app);
+              debug(app.name + 'is running');
               next();
             }
           })
@@ -221,7 +222,6 @@ function App(path, expressApp, urlPath) {
    * Installs dependencies
    */
   this.npmDependencies = function (next) {
-    debug('installing npm dependencies for ' + this.name);
     var d = this.json.npmDependencies || {};
     if (Object.keys(d).length === 0) {
       return next();
@@ -233,6 +233,7 @@ function App(path, expressApp, urlPath) {
         require.resolve(dep);
         return next();
       } catch (e) {
+        console.log('installing npm dependencies for' + this.name);
         var options = {
           name: dep, // your module name
           version: d[dep] // expected version [default: 'latest']
