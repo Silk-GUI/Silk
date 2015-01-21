@@ -37,6 +37,9 @@ program
   .option('-d, --dev', 'Show debug messages')
   .parse(process.argv);
 
+// TODO: remove before release
+program.dev = true;
+
 program.dev ? global.debug = console.log : global.debug = function () {};
 
 //loading spinner
