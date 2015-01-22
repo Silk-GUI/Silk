@@ -9,6 +9,7 @@ var fs = require('fs'),
   npmi = require('npmi'),
   bower = require('bower'),
   bowerJSON = require('bower-json'),
+  chokidar = require('chokidar'),
   child_process = require('child_process');
 
 /**
@@ -102,6 +103,13 @@ function App(path, expressApp, urlPath) {
     this.expressApp.use(this.router);
   }.bind(this);
 
+  var watcher = chokidar.watch(this.path + '/app.json');
+  watcher.on('change', function (path) {
+    console.log('app.json changed');
+    init();
+    console.log('re initialized');
+  });
+
   /**
    * Loads app.json for app.  Automatically called when app is constructed.
    * @param {function} next - callback
@@ -144,7 +152,7 @@ function App(path, expressApp, urlPath) {
     }
     try {
       if ('port' in j.remote) {
-          Silk.get('remote/addPort')(j.remote.port);
+        Silk.get('remote/addPort')(j.remote.port);
       }
     } catch (e) {
 
@@ -363,21 +371,25 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   var that = this;
-  this.loadJSON(function (err) {
-    if (err) {
-      this.valid = false;
-      console.log(err);
-      return;
-    }
-    that.validate(function (err) {
-      that.bowerDependencies(function (err) {
-        that.npmDependencies(function () {
-          createRouter();
-          that.emit('ready', err);
-        })
-      });
+  var init = function () {
+    this.loadJSON(function (err) {
+      if (err) {
+        this.valid = false;
+        console.log(err);
+        return;
+      }
+      that.validate(function (err) {
+        that.bowerDependencies(function (err) {
+          that.npmDependencies(function () {
+            createRouter();
+            that.emit('ready', err);
+          })
+        });
+      })
     })
-  })
+  }.bind(this);
+  
+  init();
 }
 
 util.inherits(App, events.EventEmitter);
