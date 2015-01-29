@@ -8,7 +8,7 @@ var call = function(method, data, cb){
     cb: cb
   }
   
-   process.send({cmd:"silkMethod",message:{
+   process.send({cmd:"server api",message:{
      id: id,
      method: method,
      data: data

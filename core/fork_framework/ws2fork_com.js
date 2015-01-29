@@ -2,7 +2,7 @@
   Communication between - method calls from the client and app forks.  
                         - Silk api calls from forks and silk methods.
 */
-var silkMethods = require('./silk_methods.js');
+var serverAPI = require('./server_api.js');
 
 var methods = {
   wflag: false,
@@ -54,8 +54,8 @@ methods.addFork = function (fork) {
     case "add":
       methods.add(message, fork);
       break;
-    case "silkMethod":
-      silkMethods.call(message, fork);
+    case "server api":
+      serverAPI.call(message, fork);
       break;
     }
   }.bind(this))

@@ -1,7 +1,7 @@
 /*
   Similar to meteor.methods
 */
-var silkMethods = require('./server_api.js');
+var serverAPI = require('./server_api.js');
 
 function MethodCall(message){
   this.id = message.id;
@@ -77,7 +77,7 @@ process.on("message",function(message){
   /*
   Commands:
     disconnect: Head is closed
-    silkMethod: return value for silk api method
+    server api: return value for silk api method
   */
   if(!("cmd" in message)){
     var meth = new MethodCall(message);
@@ -88,14 +88,14 @@ process.on("message",function(message){
     case "close": break; //expected to close, will close forcfully in 5 seconds
     case "sleep": break; //Head is removed from the window manager so updates are impossible
     case "minimize": break; //Head is not removed but updates to the head will not be seen
-    case "silkMethod": Silk.api.done(message);
+    case "server api": Silk.api.done(message);
   }
 });
 
 // make global because it will be used in most files.
 global.Silk = {};
 Silk.methods = methods;
-Silk.api = silkMethods;
+Silk.api = serverAPI;
 global.methods = methods;
 
 process.nextTick(function(){
