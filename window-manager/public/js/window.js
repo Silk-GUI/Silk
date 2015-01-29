@@ -12,7 +12,7 @@ var Win = function(json, windows, order){
   // throw error if multiple windows is false and there already is a window
   if(json.multipleWindows === false){
     for(var i = 0; i < windows.length; ++i){
-      if(window[i].name === json.name){
+      if(windows[i] && windows[i].name === json.name){
         throw new Error('multipleWindows: false and there already is a window');
       }
     }
