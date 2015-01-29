@@ -1,7 +1,7 @@
 {
   "name": "App Manager",
   "title": "App Manager",
-  "url": "https://bing.com",
+  "url": "index.html",
   "icon": "icon.png",
   "multipleWindows": false,
   "bowerDependencies": {
