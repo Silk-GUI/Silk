@@ -9,6 +9,14 @@ var Win = function(json, windows, order){
   if(typeof json !== "object"){
     throw new Error('Win constructor needs a json object');
   }
+  // throw error if multiple windows is false and there already is a window
+  if(json.multipleWindows === false){
+    for(var i = 0; i < windows.length; ++i){
+      if(window[i].name === json.name){
+        throw new Error('multipleWindows: false and there already is a window');
+      }
+    }
+  }
   this._order = order;
   this.json = json;
   this.name = json.name;

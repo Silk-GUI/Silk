@@ -38,29 +38,29 @@ function initializeManager(appList) {
   });
 
   taskbar = new Vue({
-      el: '#taskbar',
-      data: {
-        programs: windows
-      },
-      methods: {
-        open: function (index) {
-          app = windows[index];
-          if (app.running === false) {
-            app.start();
-            return app.open();
-          } else if (app.minimized === true) {
-            return app.open();
-          } else if (windowOrder.indexOf(app.index) > 0){
-            // app is open but not on top
-            var position = windowOrder.indexOf(app.index);
-            windowOrder.splice(position, 1);
-            windowOrder.unshift(app.index);
-            updateOrder();
-            return;
-          } else if (windowOrder.indexOf(app.index) === 0){
-            app.minimize();
-          }
-        
+    el: '#taskbar',
+    data: {
+      programs: windows
+    },
+    methods: {
+      open: function (index) {
+        app = windows[index];
+        if (app.running === false) {
+          app.start();
+          return app.open();
+        } else if (app.minimized === true) {
+          return app.open();
+        } else if (windowOrder.indexOf(app.index) > 0) {
+          // app is open but not on top
+          var position = windowOrder.indexOf(app.index);
+          windowOrder.splice(position, 1);
+          windowOrder.unshift(app.index);
+          updateOrder();
+          return;
+        } else if (windowOrder.indexOf(app.index) === 0) {
+          app.minimize();
+        }
+
 
       },
       menu: function () {
@@ -97,32 +97,55 @@ function initializeManager(appList) {
       }
     }
   });
-menu = new Vue({
-  el: '#menu',
-  data: {
-    apps: apps
-  },
-  methods: {
-    open: function (index) {
-      // todo correctly handle apps with muitpleWindows: false
-      var win = new Win(apps[index], windows, windowOrder);
-      win.start();
-      win.open();
-    }
-  }
-});
-$("#menu h1 img").click(function () {
-  $("#menu").css("overflow", "hidden");
-  $("#menu").animate({
-      height: 0,
-      opacity: 0
+  menu = new Vue({
+    el: '#menu',
+    data: {
+      apps: apps
     },
-    100, 'swing',
-    function () {
-      $("#menu").css({
-        "display": "none",
-        "height": "auto"
-      })
-    });
-})
+    methods: {
+      open: function (index) {
+        // todo correctly handle apps with muitpleWindows: false
+        try {
+          var win = new Win(apps[index], windows, windowOrder);
+        } catch (e) {
+          // check if window is already open
+          for (var i = 0; i < windows.length; ++i) {
+            if (windows[i].name === apps[index].name) {
+              var win = windows[i];
+              break;
+            }
+          }
+        }
+        win.start();
+        win.open();
+        // hide menu
+        $("#menu").css("overflow", "hidden");
+        $("#menu").animate({
+            height: 0,
+            opacity: 0
+          },
+          100, 'swing',
+          function () {
+            $("#menu").css({
+              "display": "none",
+              "height": "auto"
+            })
+          });
+      }
+    }
+  });
+  $("#menu h1 img").click(function () {
+    $("#menu").css("overflow", "hidden");
+    $("#menu").animate({
+        height: 0,
+        opacity: 0
+      },
+      100, 'swing',
+      function () {
+        $("#menu").css({
+          "display": "none",
+          "height": "auto"
+        })
+      });
+  })
 }
