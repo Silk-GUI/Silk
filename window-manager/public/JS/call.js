@@ -123,12 +123,3 @@ methods.receive = function (message) {
     methods.listeners[message.id].callback(message.error, message.data);
   }
 }
-
-// test
-methods.call("silk/apps/list", {
-  name: "test"
-}, function (error, data) {
-  console.log("This is inside the callback");
-  console.log(error);
-  console.log(data);
-});
