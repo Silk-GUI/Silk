@@ -1,5 +1,5 @@
 var http = require('http');
-var express = require('express')
+var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
 
@@ -28,8 +28,7 @@ var app = express(),
   windows,
   url,
   toLoad = 2,
-  loaded = 0,
-  spinStep = 0;
+  loaded = 0;
 
 program
   .version('0.3.0')
@@ -64,7 +63,6 @@ function Spinner() {
 
 var spinner = new Spinner();
 spinner.start();
-
 // hides spinner and shows url when finished loading;
 function loader() {
   loaded += 1;
