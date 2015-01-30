@@ -7,9 +7,9 @@ module.exports = function(req,res,next){
   if(/.*\/\.\.?\/.*/.test(path)) return next();
   if(/.*\/\/.*/.test(path)) return next();
   raw(path,function(file){
-    if(file) return res.sendFile(file)
+    if(file) return res.sendFile(file);
     next();
-  })
+  });
 };
 
 function raw(path,next){
@@ -24,7 +24,7 @@ function raw(path,next){
       return next(p.resolve(path,file.main));
 
     if(file.main.length == 1 && wp.length == 1)
-      return next(p.resolve(path,file.main[0]))
+      return next(p.resolve(path,file.main[0]));
 
     wp.shift();
     var r = p.resolve(path,wp.join("/"));
@@ -34,7 +34,7 @@ function raw(path,next){
         return next(r);
     }
     return next();
-  })
+  });
 }
 
 module.exports.raw = raw;

@@ -36,8 +36,8 @@ module.exports.compileFolder = function (folder, expressApp, next) {
   }
 
   if (!/\/$/.test(folder)) {
-    folder += '/'
-  };
+    folder += '/';
+  }
 
   fs.readdir(folder, function (err, files) {
     if(err){
@@ -70,13 +70,13 @@ module.exports.compileFolder = function (folder, expressApp, next) {
               debug(app.name + ' is running');
               next();
             }
-          })
+          });
         });
 
-      })
+      });
     }, function (err, result) {
       next(err, result);
-    })
+    });
   });
 
 };
@@ -89,6 +89,9 @@ module.exports.compileFolder = function (folder, expressApp, next) {
  * @param {object} j - contents of app.json for app
  */
 function App(path, expressApp, urlPath) {
+  if(!urlPath){
+    urlPath = '';
+  }
   this.json = {};
   this.state = 'stopped';
   this.clean = {};
@@ -97,7 +100,6 @@ function App(path, expressApp, urlPath) {
   this.folder = this.folder[this.folder.length - 1] || this.folder[this.folder.length - 2];
   this.expressApp = expressApp;
   this.valid = false;
-  var urlPath = urlPath || '';
   var createRouter = function () {
     if (this.json.url === 'headless') {
       return false;
@@ -127,13 +129,13 @@ function App(path, expressApp, urlPath) {
       }
       try {
         that.json = JSON.parse(contents);
-      } catch (err) {
-        console.log(err);
-        return next(err);
+      } catch (e) {
+        console.log(e);
+        return next(e);
       }
 
       next();
-    })
+    });
   }.bind(this);
 
   /**
@@ -183,9 +185,11 @@ function App(path, expressApp, urlPath) {
 
     async.each(["url", "icon"], function (prop, next) {
       // we know there is a url or icon property if it is needed from checkJSON.
+      /*jshint -W018 */
       if (!prop in j) {
         return next();
       }
+      /*jshint +W018 */
 
       // create absolute url
       j[prop] = url.resolve("http://localhost:3000/" + urlPath + j.folder + "/index.html", j[prop]);
@@ -197,7 +201,7 @@ function App(path, expressApp, urlPath) {
         fs.exists(j.path, function (boo) {
           if (!boo) return next(new Error(that.name + ' ' + prop + " file does not exist"));
           next();
-        })
+        });
       }
 
     }, function (err) {
@@ -205,7 +209,7 @@ function App(path, expressApp, urlPath) {
         return next(err);
       }
       next(void(0), j);
-    })
+    });
   }.bind(this);
 
   /**
@@ -227,7 +231,7 @@ function App(path, expressApp, urlPath) {
         that.valid = true;
       }
       next(err, result);
-    })
+    });
   }.bind(this);
 
   /**
@@ -272,7 +276,7 @@ function App(path, expressApp, urlPath) {
     var amount = d.length - 1;
     var done = 0;
     var errors = null;
-  }
+  };
 
   /**
    * Installs Bower dependencies
@@ -307,16 +311,16 @@ function App(path, expressApp, urlPath) {
           .on('end', function (installed) {
             console.log('finished installing ' + dep);
             return next();
-          })
-      })
+          });
+      });
     }, function (err) {
       if (err) {
         console.log(err);
       }
       next(err);
-    })
+    });
 
-  }
+  };
 
   /**
    * Starts the fork process
@@ -335,7 +339,7 @@ function App(path, expressApp, urlPath) {
           },
           silent: true,
           stdio: 'pipe'
-        }
+        };
         var fork = child_process.fork(modulePath, [], forkOpts);
         this.fork = fork;
         var that = this;
@@ -344,7 +348,7 @@ function App(path, expressApp, urlPath) {
           that.fork.removeAllListeners();
           fork.kill();
           return next(new Error(this.name + ' took too long to start.'));
-        }, 5000)
+        }, 5000);
 
         fork.once('message', function (m) {
           clearTimeout(timeout);
@@ -363,7 +367,7 @@ function App(path, expressApp, urlPath) {
 
         fork.stdout.on('data', function (data) {
           console.log('[' + that.name + '] ' + data);
-        })
+        });
 
       } catch (e) {
         next(e);
@@ -387,10 +391,10 @@ function App(path, expressApp, urlPath) {
           that.npmDependencies(function () {
             createRouter();
             that.emit('ready', err);
-          })
+          });
         });
-      })
-    })
+      });
+    });
   }.bind(this);
 
   init();

@@ -42,7 +42,7 @@ MessageWriter.prototype.constructor = MessageWriter;
 */
 MessageWriter.prototype.wSendFn = function(message,user){
 	throw new Error("this message is abstract and needs to be overwritten");
-}
+};
 
 
 /**
@@ -56,7 +56,7 @@ MessageWriter.prototype.ready = function(){
     this.wSendFn(this.queue.shift());
   }
 	return this;
-}
+};
 
 /**
 	Allows the MessageWriter to know when they it can no longer send messages
@@ -65,7 +65,7 @@ MessageWriter.prototype.ready = function(){
 */
 MessageWriter.prototype.stop = function(){
 	this._ready = false;
-}
+};
 
 /**
 	The message to call after you have transformed the data into a readable form
@@ -74,10 +74,10 @@ MessageWriter.prototype.stop = function(){
 	@param {object} message - An object containing important message information
 */
 MessageWriter.prototype.returnMessage = function (message) {
-  if (this.getListeners(message.id).length == 0)
+  if (this.getListeners(message.id).length === 0)
     throw new Error("non Existant Message");
   this.emit(message.id, message.error,message.data);
-}
+};
 
 
 /**
@@ -89,7 +89,7 @@ MessageWriter.prototype.returnMessage = function (message) {
 */
 MessageWriter.prototype.trigger = function(name,data){
   this.messageFactory("trigger",name).send(data);
-}
+};
 
 /**
   `requestCallback` is what will be called once an io is completed.
@@ -118,11 +118,11 @@ MessageWriter.prototype.get = function (name, data, cb) {
     cb = function(err, message){
       if(err) return ret.reject(err);
       ret.resolve(message);
-    }
+    };
   }
   this.messageFactory("get", name, cb).send(data);
   return (ret)?ret.promise:this;
-}
+};
 
 /**
 	Sends one or more messages to the io expecting one or more return values
@@ -152,7 +152,7 @@ MessageWriter.prototype.pipe = function(name, callback){
     return ret;
   }
   return p;
-}
+};
 
 /**
 	Aborts a pipe or get request
@@ -165,11 +165,11 @@ MessageWriter.prototype.abort = function(ob){
   if(!ob)
     throw Error("cannot unpipe "+ob);
   var id = (ob.id)?ob.id:ob;
-  if(this.listeners(id).length == 0)
+  if(this.listeners(id).length === 0)
     throw new Error("Cannot abort what doesn't exist");
 	this.removeAllListeners(id);
   return this;
-}
+};
 
 MessageWriter.prototype.messageFactory = function(type,name,callback){
   //id to find callback when returned data is received
@@ -196,7 +196,7 @@ MessageWriter.prototype.messageFactory = function(type,name,callback){
 	if(type == "pipe")
 		this.addListener(id,callback);
   return content;
-}
+};
 
 if(typeof module != "undefined"){
 	module.exports = MessageWriter;

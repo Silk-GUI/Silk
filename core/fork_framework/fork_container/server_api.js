@@ -6,14 +6,14 @@ var call = function(method, data, cb){
   
   requests[id] = {
     cb: cb
-  }
+  };
   
    process.send({cmd:"server api",message:{
      id: id,
      method: method,
      data: data
   }});
-}
+};
 
 var done = function(message){
   var id = message.message.id;
@@ -24,7 +24,7 @@ var done = function(message){
   } catch(e){
     
   }
-}
+};
 
 var api = {};
 api.call = call;

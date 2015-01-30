@@ -10,12 +10,12 @@ MessageProxyPool.prototype.slaveEnter = function(slave){
   slave.messages = [];
   this.slaves[slave.id] = slave;
   this.slaveSend({name:"id",type:"trigger",message:slave.id},slave);
-}
+};
 
 MessageProxyPool.prototype.slaveLeave = function(slave){
   delete this.slaves[slave.id];
   slave = null;
-}
+};
 
 MessageProxyPool.prototype.slaveMessage = function(message,slave){
   if(!this.slaves[message.target]){
@@ -24,4 +24,4 @@ MessageProxyPool.prototype.slaveMessage = function(message,slave){
     this.slaveSend(message,slave);
   }
   this.slaveSend(message, this.slaves[message.target]);
-}
+};

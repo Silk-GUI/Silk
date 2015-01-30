@@ -55,8 +55,8 @@ function Remote(port) {
           console.log("remote closed");
         });
       });
-    })
-  }
+    });
+  };
 
   if (autoStart === true) {
     this.start();
@@ -80,7 +80,7 @@ var start = function (port) {
       ports[port].start();
     }
   }
-}
+};
 
 var close = function (port) {
   if (typeof port === 'number') {
@@ -93,7 +93,7 @@ var close = function (port) {
       ports[port].close();
     }
   }
-}
+};
 
 function addPort(port) {
   ports[port] = new Remote(port);

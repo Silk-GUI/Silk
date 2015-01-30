@@ -50,7 +50,7 @@ WinAbs.prototype.open = function(context){
     },10);
   });
   this.ready();
-}
+};
 
 
 /**

@@ -22,7 +22,7 @@ module.exports = function (app, wss, next) {
           return;
         }
         methods.addFork(app.fork);
-      })
+      });
     }
 
   });
@@ -43,4 +43,4 @@ module.exports = function (app, wss, next) {
     });
   });
 
-}
+};

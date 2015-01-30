@@ -12,7 +12,7 @@ global.Silk = {
       Silk.data[prop] = {
         value: value,
         needUpdates: []
-      }
+      };
     }
   },
   get: function (prop) {
@@ -39,7 +39,9 @@ program
 // TODO: remove before release
 program.dev = true;
 
-program.dev ? global.debug = console.log : global.debug = function () {};
+/*jshint -W030 */
+program.dev !== true ? global.debug = console.log : global.debug = function () {};
+/* jshint +W030 */
 
 //loading spinner
 function Spinner() {
@@ -56,10 +58,10 @@ function Spinner() {
         that.step = 0;
       }
     }, 150);
-  }
+  };
   this.stop = function () {
     clearInterval(interval);
-  }
+  };
 }
 
 var spinner = new Spinner();
@@ -87,18 +89,18 @@ server = app.listen(3000, function () {
   var add = server.address();
   url = 'Silk at http://' + add.address + ':' + add.port;
   loader();
-})
+});
 
 var sockOptions = {
   sockjs_url: '//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js'
-}
+};
 
 if (!program.dev) {
   sockOptions.log = function (severity, message) {
     if (severity === 'error') {
       console.log(message);
     }
-  }
+  };
 }
 
 wss = SockJS.createServer(sockOptions);

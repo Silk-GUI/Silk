@@ -11,7 +11,7 @@ if(typeof module != "undefined" && module.exports){
 */
 function FrameContext(manager,winconfig){
   manager.emit("preBuild",winconfig);
-  if(!("id" in winconfig)) throw new Error("I want to ensure you are in control")
+  if(!("id" in winconfig)) throw new Error("I want to ensure you are in control");
   this.id = winconfig.id;
   this.manager = manager;
   this.config = winconfig;
@@ -48,8 +48,7 @@ FrameContext.prototype.open = function(container){
   if(typeof container == "undefined")
     throw Error("To Open, this window needs a container");
   container = $(container);
-  if(container.prop("tagName").toLowerCase() != "iframe"
-  || container.attr("src") != this.config.url){
+  if(container.prop("tagName").toLowerCase() != "iframe" || container.attr("src") != this.config.url){
     this.frame = '<iframe class="content" data-name="'+this.config.title+'" src="'+this.config.url+'"></iframe>';
     this.frame = $(this.frame);
   }else{
@@ -62,22 +61,22 @@ FrameContext.prototype.open = function(container){
   var done = 0;
   if(container)
     container.append(this.frame);
-  WinAbs.prototype.open.call(that,that.frame[0].contentWindow,function(){ret.resolve(that)});
+  WinAbs.prototype.open.call(that,that.frame[0].contentWindow,function(){ret.resolve(that);});
   return ret;
-}
+};
 
 FrameContext.prototype.buildMethods = function(){
   var that = this;
   this.add("openFile", function(params,next){
     console.log("was bound, heard files");
     that.manager.openFile(that,params);
-    return null
+    return null;
   });
   this.add("reverse", function(s,next) {
       console.log("received message: "+s);
       return s.split("").reverse().join("");
-  })
-}
+  });
+};
 
 if(typeof module != "undefined" && module.exports){
   module.exports = FrameContext;

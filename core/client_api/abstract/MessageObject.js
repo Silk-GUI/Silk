@@ -11,19 +11,21 @@ function MessageObject(message,fn,next){
 			data: (err)?null:result
 		};
 		next(message);
-	}.bind(this)
+	}.bind(this);
 	this.exec(fn);
 }
 
 MessageObject.prototype.exec = function(fn){
+  var result;
   try{
-    var result = fn(this.data,this,this.next);
+    result = fn(this.data,this,this.next);
   }catch(e){
     return this.next(e);
   }
-  if(typeof result != "undefined")
+  if(typeof result != "undefined"){
     this.next(void(0),result);
-}
+  }
+};
 
 
 if(typeof module != "undefined" && module.exports){

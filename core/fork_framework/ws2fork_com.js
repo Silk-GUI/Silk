@@ -18,8 +18,8 @@ var methods = {
 methods.add = function (m, fork) {
   debug('adding method ' + m.name);
   this.responders[m.name] = fork;
-  this.fork_resp[fork.pid].push(m.name)
-}
+  this.fork_resp[fork.pid].push(m.name);
+};
 
 methods.send = function (message) {
   if (!this.requests[message.id]) {
@@ -27,7 +27,7 @@ methods.send = function (message) {
     return;
   }
   this.requests[message.id].write(JSON.stringify(message));
-}
+};
 
 methods.removeFork = function (fork, code, signal) {
   console.log(code + " " + signal);
@@ -41,7 +41,7 @@ methods.removeFork = function (fork, code, signal) {
   }
   delete this.fork_resp[fork.pid];
   delete this.forks[fork.pid];
-}
+};
 
 methods.addFork = function (fork) {
   this.fork_resp[fork.pid] = [];
@@ -58,22 +58,22 @@ methods.addFork = function (fork) {
       serverAPI.call(message, fork);
       break;
     }
-  }.bind(this))
+  }.bind(this));
   fork.on("error", function (e) {
     console.log(e);
   });
   fork.on("close", function (code, signal) {
     methods.removeFork(fork, code, signal);
-  })
-}
+  });
+};
 
 methods.call = function (ws, message) {
   try {
     message = JSON.parse(message);
   } catch (e) {
-    console.log("ERROR")
-    console.log("err:" + e)
-    console.log("mess: " + message)
+    console.log("ERROR");
+    console.log("err:" + e);
+    console.log("mess: " + message);
     console.log("typeof: " + typeof message);
   }
   if (!(message.name in this.responders)) {
@@ -93,19 +93,19 @@ methods.call = function (ws, message) {
         delete this.requests[this.user_reqs[ws.id][i]];
       }
       delete this.user_reqs[ws.id];
-      for (var i in this.forks) {
-        this.forks[i].send({
+      for (var fork in this.forks) {
+        this.forks[fork].send({
           cmd: "disconnect",
           ws: ws.id
         });
       }
-    }.bind(this))
+    }.bind(this));
     this.user_reqs[ws.id] = [];
   }
   message.ws = ws.id;
   this.user_reqs[ws.id].push(message.id);
   this.responders[message.name].send(message);
   this.requests[message.id] = ws;
-}
+};
 
 module.exports = methods;

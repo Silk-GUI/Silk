@@ -42,7 +42,7 @@ WindowManager.prototype.load = function(configs){
   console.log("done");
   this.emit("load");
   return this;
-}
+};
 
 /**
   registers a configuration or a {@link FrameContext}
@@ -51,19 +51,20 @@ WindowManager.prototype.load = function(configs){
 */
 WindowManager.prototype.registerWindow = function(config){
   console.log("f");
+  var win;
   if(!(config instanceof FrameContext)){
     console.log("create");
-    var win = new FrameContext(this, config);
+    win = new FrameContext(this, config);
     console.log("didit");
   }else if(config.id in this.windows){
     console.log("found");
-     return
+     return;
   }
   this.windows[config.id] = win;
   this.configs.push(config);
   this.emit("registered", win);
   return this;
-}
+};
 
 /**
   Method to find an appropiate application to open a file. Is subjecy to change
@@ -74,7 +75,7 @@ WindowManager.prototype.registerWindow = function(config){
 WindowManager.prototype.openFile = function(source,file){
   console.log("opening");
   var that = this;
-  var windows = this.windows
+  var windows = this.windows;
   $.ajax("/filesniffer?file="+file.path).done(function(sniffed){
     console.log(sniffed);
     var candidates = {};
@@ -104,10 +105,10 @@ WindowManager.prototype.openFile = function(source,file){
       candidates[i] = windows[i];
       count++;
     }
-    if(count == 0)
+    if(count === 0)
       return alert("Your file of "+JSON.stringify(sniffed)+" has no takers : /");
     that.emit("openFile",sniffed,candidates,source);
   }).fail(function(e){
     console.log(e);
-  })
-}
+  });
+};

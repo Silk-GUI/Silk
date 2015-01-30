@@ -1,6 +1,6 @@
 
 var util = require("util");
-var events = require("events")
+var events = require("events");
 
 function User(id){
   this.id = id;
