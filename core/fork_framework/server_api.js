@@ -4,21 +4,17 @@ var serverAPI = {};
 var requests = [];
 
 serverAPI['apps/list'] = function () {
-  //console.log('apps/list', Silk.get('apps/clean'));
-  
   return Silk.get('apps/clean');
 }
 
 serverAPI['apps/restart'] = function (name, message) {
- Silk.get("apps/appLoader").restartSingle(Silk.get('apps/appLoader').hashmap[name], function (result) {
-  });
-
+  Silk.get("apps/appLoader").restartSingle(Silk.get('apps/appLoader').hashmap[name], function (result) {});
 }
 
 serverAPI['apps/start'] = function (folder, message) {
   var appLoader = Silk.get('apps/appLoader');
-  appLoader.getSingle(folder, function (err, j){
-    if(err) console.log(err);
+  appLoader.getSingle(folder, function (err, j) {
+    if (err) console.log(err);
     appLoader.emit('finishedCompiling', appLoader.clean);
   })
 };

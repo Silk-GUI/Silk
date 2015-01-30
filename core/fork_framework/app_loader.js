@@ -12,21 +12,20 @@ var fs = require('fs'),
   chokidar = require('chokidar'),
   child_process = require('child_process');
 
-/**
- * array of json of apps and an event emmitter.
- * @constructor
- */
-var AppList = function () {
-  this.clean = [];
-}
-util.inherits(AppList, events.EventEmitter);
+
+
 /**
  * object of all apps
  */
-var appList = new AppList();
+var apps = {};
+var clean = [];
+var appLoader = new events.EventEmitter();
+appLoader.clean = clean;
+appLoader.App = App;
+appLoader.apps = apps;
 
-module.exports.App = App;
-module.exports.apps = appList;
+
+module.exports = appLoader;
 
 /**
  * Finds all apps in the folder and constructs a new app for each
@@ -35,7 +34,7 @@ module.exports.apps = appList;
  */
 module.exports.compileFolder = function (folder, expressApp, next) {
   if (typeof folder === 'undefined') {
-    throw Error('we need the path to the folder to compile');
+    throw Error('compileFolder needs path to folder');
   }
 
   if (!/\/$/.test(folder)) {
@@ -43,6 +42,9 @@ module.exports.compileFolder = function (folder, expressApp, next) {
   };
 
   fs.readdir(folder, function (err, files) {
+    if(err){
+      next(err);
+    }
     async.filter(files, function (file, next) {
       fs.exists(folder + file + '/app.json', function (exists) {
         if (!exists) {
@@ -50,7 +52,11 @@ module.exports.compileFolder = function (folder, expressApp, next) {
         }
 
         var app = new App(folder + file, expressApp);
-        appList[app.folder] = app;
+        apps[app.folder] = app;
+        app.once('error', function (err){
+          console.log(err);
+          return next(err);
+        });
         app.once('ready', function (err) {
           if (err) {
             console.log(err);
@@ -60,10 +66,10 @@ module.exports.compileFolder = function (folder, expressApp, next) {
           app.start(function (err, result) {
             if (!err) {
               if (app.clean.url !== 'headless') {
-                appList.clean.push(app.clean);
+                appLoader.clean.push(app.clean);
               }
-              appList.emit('added', app);
-              debug(app.name + 'is running');
+              appLoader.emit('added', app);
+              debug(app.name + ' is running');
               next();
             }
           })
@@ -358,7 +364,7 @@ function App(path, expressApp, urlPath) {
         });
 
         fork.stdout.on('data', function (data) {
-          console.log('[' + that.name + ']' + data);
+          console.log('[' + that.name + '] ' + data);
         })
 
       } catch (e) {
@@ -388,7 +394,7 @@ function App(path, expressApp, urlPath) {
       })
     })
   }.bind(this);
-  
+
   init();
 }
 

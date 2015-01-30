@@ -5,13 +5,13 @@ var appLoader = require(__dirname + '/app_loader.js'),
 
 module.exports = function (app, wss, next) {
   appLoader.compileFolder(__root + '/apps', app, function (err) {
-    next(err, appLoader.apps.clean);
+    next(err, appLoader.clean);
   });
 
   Silk.set("apps/list", appLoader.apps);
-  Silk.set('apps/clean', appLoader.apps.clean);
+  Silk.set('apps/clean', appLoader.clean);
 
-  appLoader.apps.on("added", function (app) {
+  appLoader.on("added", function (app) {
     if (app.status === 'running' || 'starting') {
       methods.addFork(app.fork);
       return;
@@ -28,7 +28,7 @@ module.exports = function (app, wss, next) {
   });
 
   app.get("/windows.json", function (req, res, next) {
-    res.type("json").send(appLoader.apps.clean);
+    res.type("json").send(appLoader.clean);
   });
 
   wss.on('connection', function (conn) {
