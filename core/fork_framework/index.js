@@ -26,10 +26,11 @@ module.exports = function (app, wss, next) {
     }
 
   });
-  
-  appLoader.on('change',function(change){
-    Silk.change('apps/list', change);
-  })
+
+  appLoader.on('change', function () {
+    Silk.set('apps/clean', appLoader.clean);
+    Silk.change('apps/clean');
+  });
 
   app.get("/windows.json", function (req, res, next) {
     res.type("json").send(appLoader.clean);

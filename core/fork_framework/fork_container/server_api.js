@@ -36,7 +36,16 @@ var listen = function (method, data, cb) {
       type: 'listener'
     }
   });
-}
+  
+};
+var removeListener = function (id) {
+  var request = requests[id];
+  if(request.type === 'call'){
+    return;
+  }
+  delete requests[id];
+  // TODO tell api it can stop sending changes
+};
 
 var done = function (message) {
   var id = message.message.id;

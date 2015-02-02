@@ -18,15 +18,25 @@ global.Silk = {
   get: function (prop) {
     return Silk.data[prop].value;
   },
-  change: function (prop, change) {
+  change: function (prop) {
     var listeners = Silk.data[prop].listeners;
-    for (var i = 0; listeners.length; ++i) {
+
+    function send(i) {
       process.nextTick(function () {
-        listeners[i](change);
+        listeners[i]();
       });
+    }
+
+    for (var i = 0; i < listeners.length; ++i) {
+      send(i);
     }
   },
   listen: function (prop, next) {
+    /*jshint -W018 */
+    if (!prop in Silk.data) {
+      return;
+    }
+    /*jshint +W018 */
     Silk.data[prop].listeners.push(next);
   },
   data: {}

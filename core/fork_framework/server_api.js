@@ -1,9 +1,48 @@
-// API for apps.  Available in app forks.
-var serverAPI = {};
+// API for apps.  Available to app forks.
 
-var requests = [];
+var serverAPI = {},
+  requests = [];
 
-serverAPI['apps/list'] = function () {
+function Request(message, fork) {
+  this.message = message;
+  this.id = message.message.id;
+  this.fork = fork;
+}
+Request.prototype.send = function (error, result) {
+  console.log('sending');
+  this.fork.send({
+    cmd: 'server api',
+    message: {
+      id: this.id,
+      error: error,
+      result: result
+    }
+  });
+};
+
+Request.prototype.exec = function () {
+  var error = null;
+  var result = null;
+  var data = this.message.message.data;
+  var message = this.message.message;
+  try {
+    result = serverAPI[this.message.message.method](data, message, this.send.bind(this));
+  } catch (e) {
+    console.log('caught error', e);
+    error = e;
+  }
+  this.send(error, result);
+};
+
+serverAPI['apps/list'] = function (data, message, send) {
+  //console.dir(message);
+  if (message.type === 'listener') {
+    console.log('creating listener');
+    Silk.listen('apps/clean', function () {
+      console.log('received change, will send to app');
+      send(null, Silk.get('apps/clean'));
+    });
+  }
   return Silk.get('apps/clean');
 };
 
@@ -22,20 +61,6 @@ serverAPI['apps/start'] = function (folder, message) {
 module.exports.methods = serverAPI;
 
 module.exports.call = function (message, fork) {
-  var error = null;
-  var result = null;
-  try {
-    result = serverAPI[message.message.method](message.message.data);
-  } catch (e) {
-    error = e;
-  }
-  fork.send({
-    cmd: "server api",
-    message: {
-      id: message.message.id,
-      error: error,
-      result: result
-    }
-  });
-  
+  var request = new Request(message, fork);
+  request.exec();
 };

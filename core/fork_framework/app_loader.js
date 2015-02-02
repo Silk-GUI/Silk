@@ -45,16 +45,18 @@ module.exports.compileFolder = function (folder, expressApp, next) {
         if (!exists) {
           return next(new Error('app.json does not exist for ' + file));
         }
-
+        var index;
         var app = new App(folder + file, expressApp);
         apps[app.folder] = app;
         app.on('change', function (type, property, oldValue) {
-          appLoader.emit('change', {
-            app: app,
-            type: type,
-            property: property,
-            oldValue: oldValue
-          });
+          console.log('appLoader caught change event');
+          appLoader.clean[index] = app.clean;
+          /*
+          * Change event
+          * An app's properties changed
+          * @event appLoader#change
+          */
+          appLoader.emit('change');
         });
         app.once('ready', function (err) {
           if (err) {
@@ -66,6 +68,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
             if (!err) {
               if (app.clean.url !== 'headless') {
                 appLoader.clean.push(app.clean);
+                index = appLoader.clean.length - 1;
               }
               appLoader.emit('added', app);
               debug(app.name + ' is running');
@@ -115,8 +118,15 @@ function App(path, expressApp, urlPath) {
   var watcher = chokidar.watch(this.path + '/app.json');
   watcher.on('change', function (path) {
     console.log('app.json changed');
+    console.log(that.name);
     init(function (err) {
-      that.emit('changed', err);
+      /**
+      * Change event
+      * Something changed in the app.json
+      * @event App#change
+      */
+      console.log(that.name);
+      that.emit('change', err);
     });
     console.log('re initialized');
   });
@@ -354,16 +364,10 @@ function App(path, expressApp, urlPath) {
           that.status = 'error';
           /*
            * Changed event
+           * The status changed
            * @event App#change
-           * @property {string} type - type of change
-           * @property {string} property - the property that changed
-           * @property oldValue - the previous value of the property
            */
-          that.emit('changed', {
-            type: 'change',
-            property: 'status',
-            oldValue: oldValue
-          });
+          that.emit('changed');
           that.fork.removeAllListeners();
           fork.kill();
           return next(new Error(this.name + ' took too long to start.'));
@@ -378,31 +382,19 @@ function App(path, expressApp, urlPath) {
             fork.kill();
             /*
              * Changed event
+             * the status changed
              * @event App#change
-             * @property {string} type - type of change
-             * @property {string} property - the property that changed
-             * @property oldValue - the previous value of the property
              */
-            that.emit('changed', {
-              type: 'change',
-              property: 'status',
-              oldValue: oldValue
-            });
+            that.emit('changed');
             return next(new Error(that.name + ' sending messages before initialization'));
           }
           this.status = 'running';
           /*
            * Changed event
+           * Status changed
            * @event App#change
-           * @property {string} type - type of change
-           * @property {string} property - the property that changed
-           * @property oldValue - the previous value of the property
            */
-          that.emit('changed', {
-            type: 'change',
-            property: 'status',
-            oldValue: oldValue
-          });
+          that.emit('changed');
           next();
         });
         fork.on('close', function (code, signal) {
@@ -422,7 +414,6 @@ function App(path, expressApp, urlPath) {
     }
   }.bind(this);
 
-  var that = this;
   var init = function (next) {
     this.loadJSON(function (err) {
       if (err) {

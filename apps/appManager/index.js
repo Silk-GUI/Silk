@@ -35,14 +35,12 @@ methods.add({
     deleteFolderRecursive(folder);
   },
   "apps/list": function (data, call_obj, send) {
-    Silk.api.listen('apps/list', {}, function(err, data){
-      console.log('in Silk.api.listen');
-      if(err){
-        send(err);
-      } else{
-        send(void(0), data);
+    Silk.api.listen('apps/list', {}, function (err, data) {
+      if (err) {
+        return send(err);
       }
-    })
+      send(void(0), data);
+    });
   },
   "apps/install": download
 });
@@ -69,8 +67,7 @@ function download(data, call_ob, send) {
     };
 
     send(void(0), "Downloading...");
-    request(options).on('response', function (response) {
-    }).on('error', function (err) {
+    request(options).on('response', function (response) {}).on('error', function (err) {
       send(err)
     }).on("end", function () {
       send(void(0), "pending");
