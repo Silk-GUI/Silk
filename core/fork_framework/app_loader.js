@@ -10,8 +10,6 @@ var fs = require('fs'),
   chokidar = require('chokidar'),
   child_process = require('child_process');
 
-
-
 /**
  * object of all apps
  */
@@ -21,7 +19,6 @@ var appLoader = new events.EventEmitter();
 appLoader.clean = clean;
 appLoader.App = App;
 appLoader.apps = apps;
-
 
 module.exports = appLoader;
 
@@ -40,7 +37,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
   }
 
   fs.readdir(folder, function (err, files) {
-    if(err){
+    if (err) {
       next(err);
     }
     async.filter(files, function (file, next) {
@@ -51,9 +48,13 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 
         var app = new App(folder + file, expressApp);
         apps[app.folder] = app;
-        app.once('error', function (err){
-          console.log(err);
-          return next(err);
+        app.on('change', function (type, property, oldValue) {
+          appLoader.emit('change', {
+            app: app,
+            type: type,
+            property: property,
+            oldValue: oldValue
+          });
         });
         app.once('ready', function (err) {
           if (err) {
@@ -87,9 +88,10 @@ module.exports.compileFolder = function (folder, expressApp, next) {
  * @constructor
  * @param {string} path - path to folder
  * @param {object} j - contents of app.json for app
+ * @fires App#ready
  */
 function App(path, expressApp, urlPath) {
-  if(!urlPath){
+  if (!urlPath) {
     urlPath = '';
   }
   this.json = {};
@@ -100,6 +102,7 @@ function App(path, expressApp, urlPath) {
   this.folder = this.folder[this.folder.length - 1] || this.folder[this.folder.length - 2];
   this.expressApp = expressApp;
   this.valid = false;
+  var that = this;
   var createRouter = function () {
     if (this.json.url === 'headless') {
       return false;
@@ -112,7 +115,9 @@ function App(path, expressApp, urlPath) {
   var watcher = chokidar.watch(this.path + '/app.json');
   watcher.on('change', function (path) {
     console.log('app.json changed');
-    init();
+    init(function (err) {
+      that.emit('changed', err);
+    });
     console.log('re initialized');
   });
 
@@ -325,6 +330,7 @@ function App(path, expressApp, urlPath) {
   /**
    * Starts the fork process
    * @param {function} next - callback
+   * @fires App#change
    */
   this.start = function (next) {
     try {
@@ -344,21 +350,59 @@ function App(path, expressApp, urlPath) {
         this.fork = fork;
         var that = this;
         var timeout = setTimeout(function () {
-          that.status = 'stopped';
+          var oldValue = that.status;
+          that.status = 'error';
+          /*
+           * Changed event
+           * @event App#change
+           * @property {string} type - type of change
+           * @property {string} property - the property that changed
+           * @property oldValue - the previous value of the property
+           */
+          that.emit('changed', {
+            type: 'change',
+            property: 'status',
+            oldValue: oldValue
+          });
           that.fork.removeAllListeners();
           fork.kill();
           return next(new Error(this.name + ' took too long to start.'));
         }, 5000);
 
         fork.once('message', function (m) {
+          var oldValue = that.status;
           clearTimeout(timeout);
           fork.removeAllListeners();
           if (m.cmd !== 'ready') {
-            this.status = 'stopped';
+            that.status = 'error';
             fork.kill();
-            return next(new Error(this.name + ' sending messages before initialization'));
+            /*
+             * Changed event
+             * @event App#change
+             * @property {string} type - type of change
+             * @property {string} property - the property that changed
+             * @property oldValue - the previous value of the property
+             */
+            that.emit('changed', {
+              type: 'change',
+              property: 'status',
+              oldValue: oldValue
+            });
+            return next(new Error(that.name + ' sending messages before initialization'));
           }
           this.status = 'running';
+          /*
+           * Changed event
+           * @event App#change
+           * @property {string} type - type of change
+           * @property {string} property - the property that changed
+           * @property oldValue - the previous value of the property
+           */
+          that.emit('changed', {
+            type: 'change',
+            property: 'status',
+            oldValue: oldValue
+          });
           next();
         });
         fork.on('close', function (code, signal) {
@@ -379,25 +423,33 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   var that = this;
-  var init = function () {
+  var init = function (next) {
     this.loadJSON(function (err) {
       if (err) {
         this.valid = false;
-        console.log(err);
-        return;
+        return next(err);
       }
       that.validate(function (err) {
         that.bowerDependencies(function (err) {
-          that.npmDependencies(function () {
+          that.npmDependencies(function (err) {
             createRouter();
-            that.emit('ready', err);
+            return next(err);
           });
         });
       });
     });
   }.bind(this);
 
-  init();
+  init(function (err) {
+    /**
+     * Ready event.  Fired when done loading json and validating.  Might not be valid.
+     * Any changes to the app later are emitted as change event
+     *
+     * @event App#ready
+     * @type {error}
+     */
+    that.emit('ready', err);
+  });
 }
 
 util.inherits(App, events.EventEmitter);

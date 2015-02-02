@@ -11,12 +11,20 @@ global.Silk = {
     } else {
       Silk.data[prop] = {
         value: value,
-        needUpdates: []
+        listeners: []
       };
     }
   },
   get: function (prop) {
     return Silk.data[prop].value;
+  },
+  change: function (prop, change) {
+    var listeners = Silk.data[prop].listeners;
+    for (var i = 0; listeners.length; ++i) {
+      process.nextTick(function () {
+        listeners[i](change);
+      });
+    }
   },
   data: {}
 };
