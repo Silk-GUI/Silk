@@ -35,7 +35,8 @@ methods.add({
     deleteFolderRecursive(folder);
   },
   "apps/list": function (data, call_obj, send) {
-    Silk.api.call('apps/list', {}, function(err, data){
+    Silk.api.listen('apps/list', {}, function(err, data){
+      console.log('in Silk.api.listen');
       if(err){
         send(err);
       } else{

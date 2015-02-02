@@ -1,33 +1,60 @@
 // makes silk api available to fork
 var requests = {};
 
-var call = function(method, data, cb){
+var call = function (method, data, cb) {
   var id = new Date().getTime() + '-' + Math.random();
-  
-  requests[id] = {
-    cb: cb
-  };
-  
-   process.send({cmd:"server api",message:{
-     id: id,
-     method: method,
-     data: data
-  }});
-};
 
-var done = function(message){
+  requests[id] = {
+    cb: cb,
+    type: 'call'
+  };
+
+  process.send({
+    cmd: "server api",
+    message: {
+      id: id,
+      method: method,
+      data: data,
+      type: 'call'
+    }
+  });
+};
+var listen = function (method, data, cb) {
+  var id = new Date().getTime() + '-' + Math.random();
+
+  requests[id] = {
+    cb: cb,
+    type: 'listener'
+  };
+
+  process.send({
+    cmd: 'server api',
+    message: {
+      id: id,
+      method: method,
+      data: data,
+      type: 'listener'
+    }
+  });
+}
+
+var done = function (message) {
   var id = message.message.id;
   var error = message.message.error;
   var result = message.message.result;
-  try{
+  try {
     requests[id].cb(error, result);
-  } catch(e){
-    
+  } catch (e) {
+
+  }
+  if (requests[id].type === 'call') {
+    delete requests[id];
   }
 };
 
 var api = {};
 api.call = call;
+api.listen = listen;
 api.done = done;
 
 module.exports = api;
