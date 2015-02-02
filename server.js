@@ -26,6 +26,9 @@ global.Silk = {
       });
     }
   },
+  listen: function (prop, next) {
+    Silk.data[prop].listeners.push(next);
+  },
   data: {}
 };
 global.__root = __dirname;
