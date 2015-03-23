@@ -17,7 +17,12 @@ var Win = function(json, windows, order){
       }
     }
   }
+  /**
+  * Order of windows
+  * @type {array}
+  */
   this._order = order;
+  alert(this._order === windowOrder);
   this.json = json;
   this.name = json.name;
   this.url = json.url;
@@ -26,6 +31,7 @@ var Win = function(json, windows, order){
   this.running = false;
   this.minimized = true;
   this.active = false;
+  // position
   this.x = 0;
   this.y = 0;
   this.z = 0;
@@ -56,6 +62,6 @@ Win.prototype.close = function () {
   this.running = false;
   var position = this._order.indexOf(this.index);
   this._order.splice(position, 1);
-  windows[this.index] = [];
+  windows[this.index] = undefined;
   updateOrder();
 }

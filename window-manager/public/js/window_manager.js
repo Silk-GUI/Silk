@@ -8,6 +8,10 @@ var apps = [],
 // update z-index of windows
 var updateOrder = function () {
   for (var i = 0; i < windows.length; ++i) {
+    // skip this window if it was closed
+    if(typeof windows[i] === "undefined"){
+      continue;
+    }
     if (windows[i].running === true & windows[i].minimized !== true) {
       console.log(windows[i].title + "will be updated");
       var position = windowOrder.indexOf(i);
