@@ -10,7 +10,7 @@ module.exports = function (app, wss, next) {
 
   Silk.set("apps/list", appLoader.apps);
   Silk.set('apps/clean', appLoader.clean);
-
+  Silk.set('apps/add', appLoader.add);
   appLoader.on("added", function (app) {
     if (app.status === 'running' || 'starting') {
       methods.addFork(app.fork);
