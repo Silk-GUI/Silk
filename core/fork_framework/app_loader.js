@@ -52,10 +52,10 @@ module.exports.compileFolder = function (folder, expressApp, next) {
           console.log('appLoader caught change event');
           appLoader.clean[index] = app.clean;
           /*
-          * Change event
-          * An app's properties changed
-          * @event appLoader#change
-          */
+           * Change event
+           * An app's properties changed
+           * @event appLoader#change
+           */
           appLoader.emit('change');
         });
         app.once('ready', function (err) {
@@ -65,15 +65,17 @@ module.exports.compileFolder = function (folder, expressApp, next) {
           }
 
           app.start(function (err, result) {
-            if (!err) {
-              if (app.clean.url !== 'headless') {
-                appLoader.clean.push(app.clean);
-                index = appLoader.clean.length - 1;
-              }
-              appLoader.emit('added', app);
-              debug(app.name + ' is running');
-              next();
+            if (err) {
+              return next(err);
             }
+            if (app.clean.url !== 'headless') {
+              appLoader.clean.push(app.clean);
+              index = appLoader.clean.length - 1;
+            }
+            appLoader.emit('added', app);
+            debug(app.name + ' is running');
+            next();
+
           });
         });
 
@@ -85,6 +87,45 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 
 };
 
+appLoader.add = function (path, next) {
+  fs.exists(path + '/app.json', function (exists) {
+    if (exists) {
+      return next(new Error("app doesn't have an app.json"));
+    }
+    var index;
+    var app = new App(folder + file, expressApp);
+    apps[app.folder] = app;
+    app.on('change', function (type, property, oldValue) {
+      appLoader.clean[index] = app.clean;
+      /*
+       * Change event
+       * An app's properties changed
+       * @event appLoader#change
+       */
+      appLoader.emit('change');
+    });
+    app.once('ready', function (err) {
+      if (err) {
+        console.log(err);
+        return next(err);
+      }
+
+      app.start(function (err, result) {
+        if (err) {
+          return next(err);
+        }
+        if (app.clean.url !== 'headless') {
+          appLoader.clean.push(app.clean);
+          index = appLoader.clean.length - 1;
+        }
+        appLoader.emit('added', app);
+        debug(app.name + ' is running');
+        next();
+
+      });
+    });
+  })
+}
 
 /**
  * Creates and manages an app
@@ -121,10 +162,10 @@ function App(path, expressApp, urlPath) {
     console.log(that.name);
     init(function (err) {
       /**
-      * Change event
-      * Something changed in the app.json
-      * @event App#change
-      */
+       * Change event
+       * Something changed in the app.json
+       * @event App#change
+       */
       console.log(that.name);
       that.emit('change', err);
     });
@@ -412,6 +453,31 @@ function App(path, expressApp, urlPath) {
       // no serverside scripts
       next();
     }
+  }.bind(this);
+
+  this.stop = function (next) {
+    if (this.state !== 'running' || this.state !== 'starting') {
+      next();
+    }
+    this.fork.disconnect();
+    this.fork.kill();
+    this.fork.removeAllListeners();
+    this.state = 'stopped';
+    /*
+     * Changed event
+     * Status changed
+     * @event App#change
+     */
+    that.emit('changed');
+    next();
+  }.bind(this);
+
+  this.restart = function (next) {
+    this.stop(function(){
+      that.start(function(err){
+        next(err);
+      });
+    });
   }.bind(this);
 
   var init = function (next) {
