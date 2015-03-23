@@ -43,8 +43,9 @@
     "silk": "bin.js"
   },
   "devDependencies": {
-    "mocha": "*",
     "chai": "*",
+    "gulp": "^3.8.11",
+    "mocha": "*",
     "mocha-jshint": "*"
   }
 }
