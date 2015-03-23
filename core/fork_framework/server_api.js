@@ -35,26 +35,28 @@ Request.prototype.exec = function () {
 };
 
 serverAPI['apps/list'] = function (data, message, send) {
-  //console.dir(message);
+
   if (message.type === 'listener') {
-    console.log('creating listener');
     Silk.listen('apps/clean', function () {
-      console.log('received change, will send to app');
       send(null, Silk.get('apps/clean'));
     });
   }
   return Silk.get('apps/clean');
 };
 
-serverAPI['apps/restart'] = function (name, message) {
-  Silk.get("apps/appLoader").restartSingle(Silk.get('apps/appLoader').hashmap[name], function (result) {});
+serverAPI['apps/restart'] = function (folderName, message) {
+  console.dir(Silk.get('apps/list')[folderName]);
+  Silk.get('apps/list')[folderName].restart(function(err){
+    console.log('restarted', err);
+  });
 };
 
-serverAPI['apps/start'] = function (folder, message) {
-  var appLoader = Silk.get('apps/appLoader');
-  appLoader.getSingle(folder, function (err, j) {
-    if (err) console.log(err);
-    appLoader.emit('finishedCompiling', appLoader.clean);
+serverAPI['apps/start'] = function (path, message) {
+  Silk.get('aps/add')(path, function(err){
+    if(err){
+      return;
+    }
+    console.log('started app');
   });
 };
 
