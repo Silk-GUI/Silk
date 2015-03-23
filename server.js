@@ -57,9 +57,6 @@ program
   .option('-d, --dev', 'Show debug messages')
   .parse(process.argv);
 
-// TODO: remove before release
-program.dev = true;
-
 /*jshint -W030 */
 program.dev !== true ? global.debug = console.log : global.debug = function () {};
 /* jshint +W030 */
