@@ -3,6 +3,12 @@ var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
 
+process.on('SIGINT', function() {
+    // put prompt on line after ^c
+    console.log("");
+    process.exit();
+});
+
 // has info and state of various parts of Silk.  Used mainly be api.
 global.Silk = {
   set: function (prop, value) {
