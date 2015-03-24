@@ -66,7 +66,7 @@ program
   .parse(process.argv);
 
 /*jshint -W030 */
-program.dev !== true ? global.debug = console.log : global.debug = function () {};
+program.dev == true ? global.debug = console.log : global.debug = function () {};
 /* jshint +W030 */
 
 //loading spinner
