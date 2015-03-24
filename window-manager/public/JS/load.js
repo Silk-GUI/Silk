@@ -20,3 +20,24 @@ $(document).ready(function () {
 
 
 });
+
+// add nw class to body if in nw.js
+(function () {
+function isNW (evt) {
+  var message;
+  // nwjs message is from file://.  
+  //alert(evt.data);
+  if(evt.data === "from nw.js"){
+    $("body").addClass('nwjs');
+    //alert('is nwjs');
+  }
+}
+
+if (window.addEventListener) {
+  // For standards-compliant web browsers
+  window.addEventListener("message", isNW, false);
+}
+else {
+  window.attachEvent("onmessage", isNW);
+}
+})();

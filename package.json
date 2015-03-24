@@ -16,6 +16,7 @@
     "localtunnel": "1.5.0",
     "mime": "~1.2.11",
     "npmi": "^0.1.2",
+    "nw": "^0.12.0",
     "os-utils": "0.0.14",
     "rsvp": "latest",
     "sockjs": "~0.3.12"

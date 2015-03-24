@@ -55,6 +55,8 @@ program
   .version('0.3.0')
   .option('-r, --remote', 'Remotely access Silk')
   .option('-d, --dev', 'Show debug messages')
+  .option('-o, --open', 'Open Silk in a window')
+  .option('--devtools', 'Show toolbar in nw.js for debugging')
   .parse(process.argv);
 
 /*jshint -W030 */
@@ -134,4 +136,8 @@ require('./core/remote.js');
 
 if (program.remote) {
   Silk.get('remote/start')(true);
+}
+
+if (program.open) {
+  require('./core/nw/open.js')(program.devtools);
 }

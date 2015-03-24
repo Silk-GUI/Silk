@@ -1,0 +1,9 @@
+{
+  "name": "silk-nw",
+  "main": "index.html",
+  "window": {
+    "title": "Silk",
+    "toolbar": false,
+    "fullscreen": true
+   }
+}
