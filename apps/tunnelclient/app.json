@@ -1,0 +1,10 @@
+{
+  "name": "Tunnel Client",
+  "title": "Tunnel Client",
+  "category": "override",
+  "url": "index.html",
+  "icon": "icon.png",
+  "npmDependencies": {
+  	"ws": "*"
+  }
+}
