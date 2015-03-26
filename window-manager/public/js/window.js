@@ -22,7 +22,6 @@ var Win = function(json, windows, order){
   * @type {array}
   */
   this._order = order;
-  alert(this._order === windowOrder);
   this.json = json;
   this.name = json.name;
   this.url = json.url;
