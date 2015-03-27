@@ -14,6 +14,9 @@ var fs = require('fs'),
  * object of all apps
  */
 var apps = {};
+/** 
+* Array of app properties
+*/
 var clean = [];
 var appLoader = new events.EventEmitter();
 appLoader.clean = clean;
@@ -26,6 +29,7 @@ module.exports = appLoader;
  * Finds all apps in the folder and constructs a new app for each
  * @param {string} folder - path to folder
  * @param {express app} expressApp - an express app for routing
+ * @param {function} next - a callback
  */
 module.exports.compileFolder = function (folder, expressApp, next) {
   if (typeof folder === 'undefined') {
@@ -40,6 +44,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
     if (err) {
       next(err);
     }
+    // tries to create an app for each folder.
     async.filter(files, function (file, next) {
       fs.exists(folder + file + '/app.json', function (exists) {
         if (!exists) {
@@ -87,6 +92,11 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 
 };
 
+/**
+* Compiles an app
+* @param {string} path - path to app's folder
+* @param {function} next - callback
+*/
 appLoader.add = function (path, next) {
   fs.exists(path + '/app.json', function (exists) {
     if (exists) {
@@ -131,8 +141,10 @@ appLoader.add = function (path, next) {
  * Creates and manages an app
  * @constructor
  * @param {string} path - path to folder
- * @param {object} j - contents of app.json for app
+ * @param {express app} expressApp - an expressApp to use for routing
+ * @param {string} urlPath - url path for routing.  Final route is urlPath/appFolderName/publicFile 
  * @fires App#ready
+ * @fires App#change
  */
 function App(path, expressApp, urlPath) {
   if (!urlPath) {
@@ -147,6 +159,7 @@ function App(path, expressApp, urlPath) {
   this.expressApp = expressApp;
   this.valid = false;
   var that = this;
+
   var createRouter = function () {
     if (this.json.url === 'headless') {
       return false;
@@ -269,7 +282,7 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   /**
-   * Validates app.json and fixes url
+   * calls this.checkJSON and this.checkURLs
    * @param {function} next - callback
    */
   this.validate = function (next) {
@@ -291,7 +304,8 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   /**
-   * Installs dependencies
+   * Installs NPM dependencies
+   * @param {function} next - callback
    */
   this.npmDependencies = function (next) {
     var d = this.json.npmDependencies || {};
