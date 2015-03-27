@@ -37,8 +37,8 @@ Request.prototype.exec = function () {
 serverAPI['apps/list'] = function (data, message, send) {
 
   if (message.type === 'listener') {
-    Silk.listen('apps/clean', function () {
-      send(null, Silk.get('apps/clean'));
+    Silk.watch('apps/clean', function (prop, oldValue, currentValue) {
+      send(null, currentValue);
     });
   }
   return Silk.get('apps/clean');

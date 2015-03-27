@@ -10,43 +10,9 @@ process.on('SIGINT', function() {
 });
 
 // has info and state of various parts of Silk.  Used mainly be api.
-global.Silk = {
-  set: function (prop, value) {
-    if (prop in Silk.data) {
-      Silk.data[prop].value = value;
-    } else {
-      Silk.data[prop] = {
-        value: value,
-        listeners: []
-      };
-    }
-  },
-  get: function (prop) {
-    return Silk.data[prop].value;
-  },
-  change: function (prop) {
-    var listeners = Silk.data[prop].listeners;
-
-    function send(i) {
-      process.nextTick(function () {
-        listeners[i]();
-      });
-    }
-
-    for (var i = 0; i < listeners.length; ++i) {
-      send(i);
-    }
-  },
-  listen: function (prop, next) {
-    /*jshint -W018 */
-    if (!prop in Silk.data) {
-      return;
-    }
-    /*jshint +W018 */
-    Silk.data[prop].listeners.push(next);
-  },
-  data: {}
-};
+var watchData = require('./core/watch_data.js');
+global.Silk = new watchData();
+console.dir(Silk);
 global.__root = __dirname;
 
 var app = express(),
