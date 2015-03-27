@@ -134,8 +134,8 @@ appLoader.add = function (path, next) {
 
       });
     });
-  })
-}
+  });
+};
 
 /**
  * Creates and manages an app

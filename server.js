@@ -65,9 +65,9 @@ program
   .option('--devtools', 'Show toolbar in nw.js for debugging')
   .parse(process.argv);
 
-/*jshint -W030 */
-program.dev == true ? global.debug = console.log : global.debug = function () {};
-/* jshint +W030 */
+/*jshint -W030, -W033 */
+program.dev === true ? global.debug = console.log : global.debug = function () {};
+/*jshint +W030, +W033 */
 
 //loading spinner
 function Spinner() {
