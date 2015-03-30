@@ -160,6 +160,15 @@ function App(path, expressApp, urlPath) {
   this.valid = false;
   var that = this;
 
+  /**
+  * used to change property of app and emit change event
+  * @fires changed
+  */
+  this.set = function (prop, value) {
+    this[prop] = value;
+    this.emit('change', prop);
+  }.bind(this);
+
   var createRouter = function () {
     if (this.json.url === 'headless') {
       return false;
@@ -457,6 +466,9 @@ function App(path, expressApp, urlPath) {
         });
 
         fork.stdout.on('data', function (data) {
+          console.log('[' + that.name + '] ' + data);
+        });
+        fork.stderr.on('data', function (data) {
           console.log('[' + that.name + '] ' + data);
         });
 
