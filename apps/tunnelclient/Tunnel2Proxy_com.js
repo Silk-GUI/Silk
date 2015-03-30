@@ -29,7 +29,6 @@ var http = require("http");
 var ws = require("ws");
 
 function Tunnel2Proxy(httpport, websocketport){
-  console.log('tunnel2proxy');
   this.httpport = httpport || 3000;
   this.websocketport = websocketport || 9999;
   this.proxyServer;
@@ -38,7 +37,6 @@ function Tunnel2Proxy(httpport, websocketport){
   this.ready = false;
   this.inprogress = {};
   this.verified = [];
-  console.log('finished tunnel2proxy');
 }
 
 Tunnel2Proxy.prototype.setPass = function(pass){
