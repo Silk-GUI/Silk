@@ -6,6 +6,7 @@ var domain = require('domain'),
  * @constructor
  * @param {number} port - port number
  */
+ // TODO notify Silk of changes
 function Remote(port) {
   this.port = port;
   this.status = 'stopped';
@@ -20,6 +21,8 @@ function Remote(port) {
       that.close();
     } catch (e) {
       console.log(e);
+      // error closing tunnel.
+      return;
     }
     that.status = 'stopped';
     that.start();
@@ -41,8 +44,7 @@ function Remote(port) {
         this.url = tunnel.url;
         this.status = 'running';
         Silk.set("remote/url", tunnel.url);
-        Silk.set("remote/close", tunnel.close);
-
+        Silk.set('remote/ports', ports);
         if (that.port === 3000) {
           console.log("Go to " + tunnel.url + " to remotely access Silk");
         }
@@ -79,6 +81,7 @@ var start = function (port) {
     for (port in ports) {
       ports[port].start();
     }
+    console.log('started all ports');
   }
 };
 
@@ -92,6 +95,7 @@ var close = function (port) {
     for (port in ports) {
       ports[port].close();
     }
+    Silk.set('remote/ports', ports);
   }
 };
 
