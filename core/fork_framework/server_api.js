@@ -28,7 +28,8 @@ Request.prototype.exec = function () {
   try {
     result = serverAPI[this.message.message.method](data, message, this.send.bind(this));
   } catch (e) {
-    console.log('caught error', e);
+    console.log('caught error');
+    console.log(e.stack);
     error = e;
   }
   this.send(error, result);
@@ -59,6 +60,28 @@ serverAPI['apps/start'] = function (path, message) {
     console.log('started app');
   });
 };
+
+// API for remote
+
+// once remote notifies Silk global of changes, 
+// we can allow listeners.
+
+// start remote connection for port
+serverAPI['remote/start'] = function (port) {
+  Silk.get('remote/start')(port);
+}
+
+serverAPI['remote/close'] = function (port) {
+  Silk.get('remote/close')(port);
+}
+
+serverAPI['remote/ports'] = function () {
+  return Silk.get('remote/ports')
+}
+
+serverAPI['remote/addPort'] = function (port) {
+  Silk.get('remote/addPort')(port)
+}
 
 module.exports.methods = serverAPI;
 
