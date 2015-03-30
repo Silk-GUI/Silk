@@ -12,7 +12,6 @@ process.on('SIGINT', function() {
 // has info and state of various parts of Silk.  Used mainly be api.
 var watchData = require('./core/watch_data.js');
 global.Silk = new watchData();
-console.dir(Silk);
 global.__root = __dirname;
 
 var app = express(),
