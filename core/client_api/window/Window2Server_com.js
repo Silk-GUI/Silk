@@ -24,8 +24,8 @@ function Server(host,port,path){
   });
   // method calls that are sent and waiting an answer
   try {
-    this.host = "//"+host+":"+port + '/ws';
-    this.socket = new SockJS(this.host);
+    this.host = "ws://"+host+":"+port + '/ws/websocket';
+    this.socket = new WebSocket(this.host);
     this.socket.onopen = function(){
       that.ready();
     };
