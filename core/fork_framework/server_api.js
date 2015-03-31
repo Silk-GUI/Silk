@@ -69,19 +69,19 @@ serverAPI['apps/start'] = function (path, message) {
 // start remote connection for port
 serverAPI['remote/start'] = function (port) {
   Silk.get('remote/start')(port);
-}
+};
 
 serverAPI['remote/close'] = function (port) {
   Silk.get('remote/close')(port);
-}
+};
 
 serverAPI['remote/ports'] = function () {
-  return Silk.get('remote/ports')
-}
+  return Silk.get('remote/ports');
+};
 
 serverAPI['remote/addPort'] = function (port) {
-  Silk.get('remote/addPort')(port)
-}
+  Silk.get('remote/addPort')(port);
+};
 
 module.exports.methods = serverAPI;
 
