@@ -47,6 +47,8 @@
     "chai": "*",
     "gulp": "^3.8.11",
     "mocha": "*",
-    "mocha-jshint": "*"
+    "mocha-jshint": "*",
+    "istanbul": "~0.2.4",
+    "coveralls": "~2.7.1"
   }
 }
