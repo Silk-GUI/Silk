@@ -34,7 +34,7 @@
     "Silk"
   ],
   "optionalDependencies": {
-    "tty.js": "zodern/tty.js"
+    "tty.js": "Silk-GUI/tty.js"
   },
   "scripts": {
     "start": "node server.js",
