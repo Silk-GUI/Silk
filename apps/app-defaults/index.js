@@ -4,11 +4,6 @@ var defaults = {};
 var djson = __dirname + "/settings/app-defaults.json";
 var windows;
 
-methods.add({
-  "windows": function (windows) {
-    initialize(windows);
-  }
-});
 
 // load defaults from file
 function loadDefaults() {
@@ -127,3 +122,14 @@ function initialize(windows) {
     }
   });
 }
+
+// get windows from Server API and initialize
+
+Silk.api.call('apps/list', {}, function (err, windows) {
+  if(err){
+    console.log(err);
+    console.log('unable to load app defaults');
+    return;
+  }
+  initialize(windows);
+});
