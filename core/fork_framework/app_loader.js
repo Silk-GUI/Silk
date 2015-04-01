@@ -71,6 +71,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 
           app.start(function (err, result) {
             if (err) {
+              debug('error starting ' + app.path, err);
               return next(err);
             }
             if (app.clean.url !== 'headless') {
@@ -306,6 +307,7 @@ function App(path, expressApp, urlPath) {
         console.log(err);
         that.valid = false;
       } else {
+        debug(that.path + ' is valid');
         that.valid = true;
       }
       next(err, result);

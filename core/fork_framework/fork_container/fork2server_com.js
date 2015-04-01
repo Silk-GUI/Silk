@@ -20,6 +20,8 @@ MethodCall.prototype.exec = function(){
       console.log("no error, no result");
     });
   }catch(e){
+    console.log('error in method ' + this.name);
+    console.log(e.trace);
     return this.sendErr(e);
   }
   if(typeof result != "undefined")
