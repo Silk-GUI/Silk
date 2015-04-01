@@ -61,6 +61,10 @@ Win.prototype.close = function () {
   this.running = false;
   var position = this._order.indexOf(this.index);
   this._order.splice(position, 1);
-  windows[this.index] = undefined;
+  var placeholder = {
+    minimized: true,
+    running: false
+  };
+  windows[this.index] = placeholder;
   updateOrder();
 }
