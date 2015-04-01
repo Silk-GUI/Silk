@@ -27,29 +27,22 @@ function CreateChannel(index) {
     // find text editor
 
     methods.call("Silk/appDefaults", params.mime, function (err, data) {
+      if(err){
+        alert(err);
+        return;
+      }
       function openWindow(title) {
-        // find window index
-        for (var i = 0; i < apps.length; ++i) {
-
-          //TODO correctly handle apps that have multipleWindows : false
-          if (apps[i].title === title) {
-            // clone object
-            var win = JSON.parse(JSON.stringify(apps[i]));
-
-            // open the window
-            console.log("win.title = " + win.title);
-            win.running = true;
-            win.minimized = false;
-            windows.push(win);
-            windowOrder.unshift(windows.length - 1);
-            updateOrder();
-
-            var url = win.url;
-            url = url.split("?")[0];
-            win.url = url + "?file=" + encodeURIComponent(params.path);
-
-            return;
-          }
+        // get app's json
+        var app = appFromName(title);
+        // clone app to not change origional url
+        app = JSON.parse(JSON.stringify(app));
+        app.url = app.url + '?file=' + encodeURIComponent(params.path);
+        try {
+          var win = new Win(app, windows, windowOrder);
+          win.start();
+          win.open();
+        } catch (e) {
+          alert('error opening file');
         }
       }
 

@@ -5,6 +5,15 @@ var apps = [],
   taskbar,
   menu;
 
+// returns app json for app name 
+var appFromName = function (name) {
+  for(var i = 0; i < apps.length; ++i) {
+    if(apps[i].name === name){
+      return apps[i];
+    }
+  }
+};
+
 // update z-index of windows
 var updateOrder = function () {
   for (var i = 0; i < windows.length; ++i) {
