@@ -27,7 +27,7 @@ program
   .option('-r, --remote', 'Remotely access Silk')
   .option('-d, --dev', 'Show debug messages')
   .option('-o, --open', 'Open Silk in a window')
-  .option('--devtools', 'Show toolbar in nw.js for debugging')
+  .option('--devtools', 'Open nw.js dev tools')
   .parse(process.argv);
 
 /*jshint -W030, -W033 */
