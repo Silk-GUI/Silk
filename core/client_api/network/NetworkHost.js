@@ -71,7 +71,7 @@ NetworkHost.prototype.constructor = NetworkHost;
   @param {object} info - info that the server and other users may will see
 */
 NetworkHost.prototype.connect = function(info){
-  if(!info) throw new Error("Network Server may not be able to handle no information")
+  if(!info) throw new Error("Network Server may not be able to handle no information");
   this.info = info;
   var that = this;
   this.RTCHandle = this.RTCHost.pipe("RTC-user",info,function(error,data){
@@ -93,7 +93,7 @@ NetworkHost.prototype.connect = function(info){
 			that.connections[data.identity].remoteIce(data.data);
     }
   });
-}
+};
 
 /**
   Closes all user connections
@@ -102,7 +102,7 @@ NetworkHost.prototype.connect = function(info){
 NetworkHost.prototype.closeAll = function(){
   for(var i in this.connections)
     this.connections[i].close();
-}
+};
 /**
   Makes an offer directed at a specific user
   @memberof NetworkHost
@@ -117,7 +117,7 @@ NetworkHost.prototype.offer = function(identity){
 		});
 	}.bind(this));
   return promise;
-}
+};
 /**
   Accepts an offer
   @memberof NetworkHost
@@ -133,7 +133,7 @@ NetworkHost.prototype.offerAccept = function(message){
 		});
   }.bind(this));
   return promise;
-}
+};
 
 if(typeof module != "undefined" && module.exports){
   module.exports = NetworkHost;

@@ -1,9 +1,10 @@
 {
- "title" : "Terminal",
+  "name": "Terminal",
+  "title" : "Terminal",
   "url" : "//localhost:8000/",
   "icon" : "//localhost:3000/terminal/icon.png",
   "remote" : {
-    "enabled": false
+    "port": 8000
   },
-  "multipleWindows": false
+  "multipleWindows": true
 }

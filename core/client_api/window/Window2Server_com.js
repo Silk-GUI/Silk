@@ -24,11 +24,11 @@ function Server(host,port,path){
   });
   // method calls that are sent and waiting an answer
   try {
-    this.host = "ws://"+host+":"+port;
+    this.host = "ws://"+host+":"+port + '/ws/websocket';
     this.socket = new WebSocket(this.host);
     this.socket.onopen = function(){
       that.ready();
-    }
+    };
     this.socket.onmessage = function(message){
       console.log(message);
       try{
@@ -37,7 +37,7 @@ function Server(host,port,path){
         that.socket.close();
       }
       that.returnMessage(message);
-    }
+    };
     this.socket.onclose = function(){
       console.log('Socket Status: ' + that.socket.readyState + ' (Closed)');
       that.stop();
@@ -71,5 +71,5 @@ if(typeof module != "undefined" && module.exports){
     window.DocumentHost = new Server(url[2],port);
     if(url[4])
       window.ApplicationFork = new Server(url[2],port,url[4].substring(1)+"-");
-  })(document.URL)
+  })(document.URL);
 }

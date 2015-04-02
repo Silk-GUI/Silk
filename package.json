@@ -7,15 +7,19 @@
   "preferGlobal": true,
   "dependencies": {
     "async": "~0.9.0",
+    "bower": "^1.3.12",
     "bower-json": "latest",
+    "chokidar": "^0.12.6",
     "commander": "2.5.0",
     "express": "^4.10.1",
     "jspath": "latest",
     "localtunnel": "1.5.0",
     "mime": "~1.2.11",
+    "npmi": "^0.1.2",
+    "nw": "^0.12.0",
     "os-utils": "0.0.14",
     "rsvp": "latest",
-    "ws": "~0.4.31"
+    "sockjs": "~0.3.12"
   },
   "repository": {
     "type": "git",
@@ -30,12 +34,22 @@
     "Silk"
   ],
   "optionalDependencies": {
-    "tty.js": "zodern/tty.js"
+    "tty.js": "Silk-GUI/tty.js"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha"
   },
   "bin": {
     "silk": "bin.js"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "gulp": "^3.8.11",
+    "mocha": "*",
+    "mocha-jshint": "*",
+    "istanbul": "~0.2.4",
+    "coveralls": "~2.7.1",
+    "mocha-lcov-reporter": "*"
   }
 }

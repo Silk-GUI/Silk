@@ -110,7 +110,7 @@
   <div id="manager">
     <h2>Your Apps</h2>
     <ul>
-      <li v-repeat="apps"><span>{{title}}</span> 
+      <li v-repeat="apps"><span>{{name}}</span> 
         <button v-on="click : remove(this)">&times;</button>
       </li>
     </ul>
@@ -125,6 +125,7 @@
 
   <script src="/bc/vue"></script>
   <script src="/bc/jquery"></script>
+  <script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
   <script src="/api.js"></script>
   <script src="/js/call.js"></script>
   <script>

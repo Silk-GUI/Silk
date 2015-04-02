@@ -6,7 +6,7 @@ if(typeof module != "undefined" && module.exports){
 }else{
   doAsync = function(fn){
     setTimeout(fn,1);
-  }
+  };
 }
 
 
@@ -21,7 +21,7 @@ if(typeof module != "undefined" && module.exports){
 */
 
 function MessageDuplex(wSendFn, rSendFn){
-  console.log("mesdup")
+  console.log("mesdup");
   if(!rSendFn) rSendFn = wSendFn;
   if(typeof wSendFn == "undefined") throw new Error("Need at least 1 function");
   var _writeFn = wSendFn;
@@ -34,15 +34,15 @@ function MessageDuplex(wSendFn, rSendFn){
       }
       message.originator.push(that.originator);
     }else{
-      message.originator = [that.originator]
+      message.originator = [that.originator];
     }
     _writeFn(message);
   };
-  console.log("b4rout")
+  console.log("b4rout");
   MessageRouter.call(this, rSendFn);
-  console.log("b4writ")
+  console.log("b4writ");
   MessageWriter.call(this, wSendFn);
-};
+}
 MessageDuplex.prototype = Object.create(MessageWriter.prototype);
 MessageDuplex.prototype.rSendFn = MessageRouter.prototype.rSendFn;
 MessageDuplex.prototype.add = MessageRouter.prototype.add;
@@ -61,7 +61,7 @@ MessageDuplex.prototype.handleMessage = function(message,user){
     this.returnMessage(message);
   }else{
     console.log("route");
-    this.routeMessage(message,user)
+    this.routeMessage(message,user);
   }
 };
 MessageDuplex.prototype.constructor = MessageDuplex;

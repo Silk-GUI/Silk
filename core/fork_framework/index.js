@@ -1,33 +1,50 @@
-var WL = require(__dirname+'/app_loader.js')
-var windows;
-require(__dirname+"/ws2fork_com.js");
+var appLoader = require(__dirname + '/app_loader.js'),
+  apps,
+  methods = require(__dirname + "/ws2fork_com.js"),
+  connId = 0;
 
-
-module.exports = function(app,wss){
-  windows = new WL(__root+"/apps/","/",app);
-  Silk.set("apps/appLoader", windows);
-  windows.on("finishedCompiling", function(results){
-    for(var i in windows.hashmap)
-      windows.hashmap[i].fork.send({name:"windows",data:windows.clean});
-    console.log("\nThese Windows were completed: "+ JSON.stringify(results));
-  });
-  windows.on("forked", function(fork){
-    methods.addFork(fork);
-    fork.on("error",function(err){
-      console.log(err);
-    });
-    fork.on("close",function(code,signal){
-      console.log("child is closed");
-    });
-    fork.on("disconnect",function(){
-      console.log("child disconnected")
-    })
-  })
-
-  app.get("/windows.json",function(req,res,next){
-    debug(windows.clean);
-    res.type("json").send(windows.clean);
+module.exports = function (app, wss, next) {
+  appLoader.compileFolder(__root + '/apps', app, function (err) {
+    next(err, appLoader.clean);
   });
 
-  return windows.clean;
-}
+  Silk.set("apps/list", appLoader.apps);
+  Silk.set('apps/clean', appLoader.clean);
+  Silk.set('apps/add', appLoader.add);
+  appLoader.on("added", function (app) {
+    if (app.status === 'running' || 'starting') {
+      methods.addFork(app.fork);
+      return;
+    } else {
+      app.once('ready', function (err) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        methods.addFork(app.fork);
+      });
+    }
+
+  });
+
+  appLoader.on('change', function () {
+    Silk.set('apps/clean', appLoader.clean);
+  });
+
+  app.get("/windows.json", function (req, res, next) {
+    res.type("json").send(appLoader.clean);
+  });
+
+  wss.on('connection', function (conn) {
+    conn.id = connId++;
+    debug("connected");
+    conn.on('data', function (message) {
+
+      debug("websocket message: " + message);
+
+
+      methods.call(conn, message);
+    });
+  });
+
+};

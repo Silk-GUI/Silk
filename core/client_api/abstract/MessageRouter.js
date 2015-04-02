@@ -5,7 +5,7 @@ if(typeof module != "undefined" && module.exports){
 }else{
   doAsync = function(fn){
     setTimeout(fn,1);
-  }
+  };
 }
 
 /**
@@ -41,7 +41,7 @@ MessageRouter.prototype.constructor = MessageRouter;
 */
 MessageRouter.prototype.rSendFn = function(message,user){
   throw new Error("this message is abstract and needs to be overwritten");
-}
+};
 
 /**
   The method that is called when the MessageRouter responds.
@@ -59,7 +59,7 @@ MessageRouter.prototype.add = function(keymethod){
   if(arguments.length == 2){
     ob[arguments[0]] = arguments[1];
   }else{
-    ob = keymethod
+    ob = keymethod;
   }
 
   Object.keys(ob).forEach(function(key){
@@ -69,7 +69,7 @@ MessageRouter.prototype.add = function(keymethod){
     that.emit("add",key,ob[key]);
   });
   return this;
-}
+};
 
 /**
   The method to call after you have processed the message the io has recieved.
@@ -81,7 +81,7 @@ MessageRouter.prototype.routeMessage = function(message,user,retFn){
   var that = this;
   retFn = (retFn)?retFn:this.rSendFn;
 
-  if(this.getListeners(message.name).length == 0){
+  if(this.getListeners(message.name).length === 0){
     message.data = null;
     message.error = "method "+message.name+" does not exist";
     return retFn(message,user);
@@ -89,7 +89,7 @@ MessageRouter.prototype.routeMessage = function(message,user,retFn){
 
   message.user = user;
 
-  if(this.getListeners(message.id).length == 0)
+  if(this.getListeners(message.id).length === 0)
     switch(message.type){
       case "get":
         this._returns.once(message.id,function(message){
@@ -101,7 +101,7 @@ MessageRouter.prototype.routeMessage = function(message,user,retFn){
           retFn(message,user);
         };
         this._returns.on(message.id,fn);
-        message.user.on('close',this.removeListener.bind(this,message.id,fn))
+        message.user.on('close',this.removeListener.bind(this,message.id,fn));
         break;
       case "abort":
         this._returns.removeAllListeners(message.id);
@@ -115,7 +115,7 @@ MessageRouter.prototype.routeMessage = function(message,user,retFn){
   doAsync(function(){
     that.emit(message.name,message);
   });
-}
+};
 
 /**
   wrapper message that allows the function to return data and/or send it in a callback
@@ -125,19 +125,20 @@ MessageRouter.prototype.routeMessage = function(message,user,retFn){
 */
 MessageRouter.prototype.processMessage = function(message,fn){
   var that = this;
+  var result;
   var next = function(err,result){
     message.error = (err)?err.stack:null;
     message.data =(err)?null:result;
     that._returns.emit(message.id,message);
   };
   try{
-    var result = fn(message.data,message,next);
+    result = fn(message.data,message,next);
   }catch(e){
     return next(e);
   }
   if(typeof result != "undefined")
     next(void(0),result);
-}
+};
 
 if(typeof module != "undefined"){
   module.exports = MessageRouter;

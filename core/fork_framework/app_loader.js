@@ -1,369 +1,540 @@
-var util = require("util")
-var fs = require("fs");
-var events = require("events");
-var async = require("async");
-var http = require("http");
-var https = require("https");
-var express = require("express");
-var router = express.Router();
-var url = require("url");
-var child_process = require("child_process");
-module.exports = AppFactory;
+var fs = require('fs'),
+  events = require('events'),
+  async = require('async'),
+  util = require('util'),
+  express = require('express'),
+  url = require('url'),
+  npmi = require('npmi'),
+  bower = require('bower'),
+  bowerJSON = require('bower-json'),
+  chokidar = require('chokidar'),
+  child_process = require('child_process');
 
-function AppFactory(folder, urlpath, app) {
-  if (typeof folder == "undefined")
-    throw Error("In Order to use the abstract, you need to provide a folder to load from");
-  if (!/\/$/.test(folder)) folder += "/";
-  if (!/\/$/.test(urlpath)) urlpath += "/"
-  this.folder = folder;
-  this.urlpath = urlpath;
-  this.hashmap = {};
-  this.clean = []
-  this.removed = [];
-  this.router = express.Router();
-  router.get(urlpath, function (req, res, next) {
-    var t = url.parse(req.originalURL);
-    t = t.substring(urlpath.length);
-    t = t.substring(0, t.indexOf("/") || void(0));
-    if (removed.indexOf(t) != -1)
-      next(new Error("this application has been removed"))
-    next();
-  })
-  var that = this;
-  app.use(router)
-  process.nextTick(this.compileFolder.bind(this));
-  this.on("compiledSingle", function (j) {
-    router.use(urlpath + j.name, express.static(folder + j.name + "/public"));
-    router.get(urlpath + j.name, function (req, res, next) {
-      res.redirect(301, j.url);
-    });
-    if (j.url != "headless") {
-      debug("not headless")
-      that.clean.push(j.clean);
-    }
-    delete j.clean;
-    that.hashmap[j.name] = j;
+/**
+ * object of all apps
+ */
+var apps = {};
+/** 
+* Array of app properties
+*/
+var clean = [];
+var appLoader = new events.EventEmitter();
+appLoader.clean = clean;
+appLoader.App = App;
+appLoader.apps = apps;
 
-  });
-  fs.watch(this.folder, this.fsEvent.bind(this));
-}
-util.inherits(AppFactory, events.EventEmitter);
+module.exports = appLoader;
 
-AppFactory.prototype.compileFolder = function (app) {
-  var that = this;
-  fs.readdir(this.folder, function (err, files) {
-    async.filterSeries(files, function (file, next) {
-      that.getSingle(file, function (err, j) {
-        if (err) {
-          console.log(file + " could not be loaded")
-          console.log(err);
-          return next(false)
-        }
-        next(true)
-      })
-    }, function (results) {
-      that.completed = results;
-      that.emit("finishedCompiling", results);
-    });
-  })
-}
-
-AppFactory.prototype.fsEvent = function (event, filename) {
-  debug(event);
-}
-AppFactory.prototype.closeSingle = function (window, next) {
-  if (!window.fork)
-    return next(new Error("This window has no fork"))
-  if (!window.fork.pid)
-    return next(new Error("This fork is already gone"))
-  try {
-    window.fork.kill()
-  } catch (e) {
-    return next(e)
+/**
+ * Finds all apps in the folder and constructs a new app for each
+ * @param {string} folder - path to folder
+ * @param {express app} expressApp - an express app for routing
+ * @param {function} next - a callback
+ */
+module.exports.compileFolder = function (folder, expressApp, next) {
+  if (typeof folder === 'undefined') {
+    throw Error('compileFolder needs path to folder');
   }
-  next(void(0), window);
-}
 
-AppFactory.prototype.deleteSingle = function (window, next) {
-  fs.rmdir(window.path, function (err, res) {
-    console.log(JSON.stringify(arguments));
-    if (err) next(err)
-    next(void(0), window);
-  });
-}
+  if (!/\/$/.test(folder)) {
+    folder += '/';
+  }
 
-AppFactory.prototype.hideSingle = function (window, next) {
-  var name = window.name;
-  var i = 0;
-  async.whilst(function () {
-    return this.collection[i] && this.collection[i] != window
-  }, function (next) {
-    i++;
-    process.nextTick(next)
-  }, function () {
-    if (!this.collection[i])
-      next(new Error("there can't hide what doesn't exist"))
-    delete this.collection[i];
-    this.removed.push(name);
-    next(void(0), window);
-  })
-}
-
-AppFactory.prototype.restartSingle = function (window, next) {
-  var path = window.path;
-  window.fork.disconnect();
-  window.fork.kill();
-  var that = this;
-  this.getSingle(window.name, function (err, j) {
+  fs.readdir(folder, function (err, files) {
     if (err) {
-      console.log(file + " could not be loaded")
-      console.log(err);
-      return next(false)
+      next(err);
     }
-    
-    // remove old item (first) from clean
-    for(var i = 0; i < that.clean.length; ++i){
-      if(that.clean[i].name === j.name){
-        that.clean.splice(i, 1);
-        break;
-      }
-    }
-    
-    window = j;
-    var results = [];
-    // create array of results
-    for (item in that.hashmap) {
-      results.push(item);
-    }
+    // tries to create an app for each folder.
+    async.filter(files, function (file, next) {
+      fs.exists(folder + file + '/app.json', function (exists) {
+        if (!exists) {
+          return next(new Error('app.json does not exist for ' + file));
+        }
+        var index;
+        var app = new App(folder + file, expressApp);
+        apps[app.folder] = app;
+        app.on('change', function (type, property, oldValue) {
+          console.log('appLoader caught change event');
+          appLoader.clean[index] = app.clean;
+          /*
+           * Change event
+           * An app's properties changed
+           * @event appLoader#change
+           */
+          appLoader.emit('change');
+        });
+        app.once('ready', function (err) {
+          if (err) {
+            console.log(err);
+            return next(err);
+          }
 
-    that.emit("finishedCompiling", results);
-    console.log("restarted " + window.name);
-    next(true)
-  })
-}
+          app.start(function (err, result) {
+            if (err) {
+              debug('error starting ' + app.path, err);
+              return next(err);
+            }
+            if (app.clean.url !== 'headless') {
+              appLoader.clean.push(app.clean);
+              index = appLoader.clean.length - 1;
+            }
+            appLoader.emit('added', app);
+            debug(app.name + ' is running');
+            next();
 
-AppFactory.prototype.checkWindowJSON = function (file, next) {
-  var f = this.folder;
-  fs.exists(f + file + "/window.json", function (boo) {
-    if (!boo)
-      return next(new Error(f + file + "/window.json does not exist."));
-    fs.readFile(f + file + "/window.json", function (err, contents) {
-      if (err)
-        return next(err)
-      try {
-        var j = JSON.parse(contents);
-      } catch (err) {
+          });
+        });
+
+      });
+    }, function (err, result) {
+      next(err, result);
+    });
+  });
+
+};
+
+/**
+* Compiles an app
+* @param {string} path - path to app's folder
+* @param {function} next - callback
+*/
+appLoader.add = function (path, next) {
+  fs.exists(path + '/app.json', function (exists) {
+    if (exists) {
+      return next(new Error("app doesn't have an app.json"));
+    }
+    var index;
+    var app = new App(folder + file, expressApp);
+    apps[app.folder] = app;
+    app.on('change', function (type, property, oldValue) {
+      appLoader.clean[index] = app.clean;
+      /*
+       * Change event
+       * An app's properties changed
+       * @event appLoader#change
+       */
+      appLoader.emit('change');
+    });
+    app.once('ready', function (err) {
+      if (err) {
+        console.log(err);
         return next(err);
       }
-      if (!j.url) return next(new Error("URL is always standard"))
-      if (!j.title) return next(new Error("for now, title is standard"))
-      if (!j.icon) return next(new Error("for now, Logo is standard"))
 
-      // add fields necessary for windows
-      if (j.url !== 'headless') {
-        j.zIndex = 0;
-        j.running = false;
-        j.minimized = true;
-      }
-
-      j.name = file;
-      j.clean = JSON.parse(JSON.stringify(j));
-      j.path = f + file;
-      next(void(0), j);
-    })
-  })
-}
-
-AppFactory.prototype.checkURIs = function (j, next) {
-  var that = this;
-  if (j.url == "headless") {
-    debug("headless");
-    return next(void(0), j);
-  }
-  async.each(["url", "icon"], function (ns, next) {
-    j[ns] = url.resolve("http://localhost:3000" + that.urlpath + j.name + "/index.html", j[ns]);
-    j.clean[ns] = j[ns];
-    var parsed = url.parse(j[ns]);
-    if (!url.host) {
-      fs.exists(j.path, function (boo) {
-        if (!boo) return next(new Error("local file does not exist"));
+      app.start(function (err, result) {
+        if (err) {
+          return next(err);
+        }
+        if (app.clean.url !== 'headless') {
+          appLoader.clean.push(app.clean);
+          index = appLoader.clean.length - 1;
+        }
+        appLoader.emit('added', app);
+        debug(app.name + ' is running');
         next();
-      })
-      return;
-    }
-    if (/^https/.test(j[ns]))
-      https.request(j[ns], function (res) {
-        if (res.statusCode >= 400)
-          return next(new Error(j[ns] + " cannot be fulfilled " + res.statusCode));
-      })
-    else
-      http.request(j[ns], function (res) {
-        if (res.statusCode >= 400)
-          return next(new Error(j[ns] + " cannot be fulfilled " + res.statusCode));
-      })
-  }, function (err) {
-    if (err) next(err);
-    next(void(0), j);
-  })
-};
 
-AppFactory.prototype.checkNPMDeps = function (j, next) {
-  if (!j.npm_dependencies) {
-    j.npm_dependencies = {};
-    j.npm_info = {
-      already_install: [],
-      new_install: [],
-      all: []
-    };
-    return next(void(0), j);
-  }
-  var ai = [];
-  var ni = [];
-  async.each(Object.keys(j.npm_dependencies), function (dep, next) {
-    try {
-      var loc = require.resolve(dep);
-      ai.push({
-        name: dep,
-        path: loc
       });
-      return next(void(0), dep);
-    } catch (e) {
-      console.log("this dependency does not exist");
-      child_process.exec(
-        "npm install " + dep + "@" + j.npm_dependencies[dep], {
-          cwd: __root
-        }, function (err, stout, sterr) {
-          if (err) return next(err);
-          try {
-            var loc = require.resolve(dep);
-            ni.push({
-              name: dep,
-              path: loc
-            });
-            return next(void(0), dep);
-          } catch (e) {
-            return next(e);
-          }
-        })
-    }
-  }, function (err, results) {
-    if (err) return next(err);
-    j.npm_info = {
-      already_install: ai,
-      new_install: ni,
-      all: results
-    };
-    return next(void(0), j);
-  })
+    });
+  });
 };
 
-AppFactory.prototype.checkBowerDeps = function (j, next) {
-  if (!j.bower_dependencies) {
-    j.bower_dependencies = {};
-    j.bower_info = {
-      already_install: [],
-      new_install: [],
-      all: []
-    };
-    return next(void(0), j);
+/**
+ * Creates and manages an app
+ * @constructor
+ * @param {string} path - path to folder
+ * @param {express app} expressApp - an expressApp to use for routing
+ * @param {string} urlPath - url path for routing.  Final route is urlPath/appFolderName/publicFile 
+ * @fires App#ready
+ * @fires App#change
+ */
+function App(path, expressApp, urlPath) {
+  if (!urlPath) {
+    urlPath = '';
   }
-  var bowerJson = require('bower-json');
-  var ai = [];
-  var ni = [];
-  async.each(Object.keys(j.bower_dependencies), function (dep, next) {
-    bowerJson.read(__root + "/bower_components/" + dep, function (err, file) {
-      if (file) {
-        ai.push(dep)
-        return next(void(0), dep);
-      }
-      child_process.exec(
-        "bower install " + dep + (j.bower_dependencies[dep] == "latest" ?
-          " --force-latest" :
-          "#" + j.bower_dependencies[dep]
-        ), {
-          cwd: __root
-        }, function (err, stout, sterr) {
-          if (err) return next(err);
-          bowerJson.read(__root + "/bower_components/" + dep, function (err, file) {
-            if (err) return next(err);
-            ni.push(dep);
-            return next(void(0), dep);
-          });
-        })
-    })
-  }, function (err, results) {
-    if (err) return next(err);
-    j.bower_info = {
-      already_install: ai,
-      new_install: ni,
-      all: results
-    };
-    return next(void(0), j);
-  })
-}
-
-AppFactory.prototype.createFork = function (j, next) {
+  this.json = {};
+  this.state = 'stopped';
+  this.clean = {};
+  this.path = path;
+  this.folder = this.path.split('/');
+  this.folder = this.folder[this.folder.length - 1] || this.folder[this.folder.length - 2];
+  this.expressApp = expressApp;
+  this.valid = false;
   var that = this;
-  try {
-    require.resolve(j.path);
+
+  /**
+  * used to change property of app and emit change event
+  * @fires changed
+  */
+  this.set = function (prop, value) {
+    this[prop] = value;
+    this.emit('change', prop);
+  }.bind(this);
+
+  var createRouter = function () {
+    if (this.json.url === 'headless') {
+      return false;
+    }
+    this.router = express.Router();
+    this.router.use(urlPath + '/' + this.folder, express.static(this.path + '/public'));
+    this.expressApp.use(this.router);
+  }.bind(this);
+
+  var watcher = chokidar.watch(this.path + '/app.json');
+  watcher.on('change', function (path) {
+    console.log('app.json changed');
+    console.log(that.name);
+    init(function (err) {
+      /**
+       * Change event
+       * Something changed in the app.json
+       * @event App#change
+       */
+      console.log(that.name);
+      that.emit('change', err);
+    });
+    console.log('re initialized');
+  });
+
+  /**
+   * Loads app.json for app.  Automatically called when app is constructed.
+   * @param {function} next - callback
+   */
+  this.loadJSON = function (next) {
+    var that = this;
+    fs.readFile(this.path + "/app.json", function (err, contents) {
+      if (err) {
+        console.log(err);
+        return next(err);
+      }
+      try {
+        that.json = JSON.parse(contents);
+      } catch (e) {
+        console.log(e);
+        return next(e);
+      }
+
+      next();
+    });
+  }.bind(this);
+
+  /**
+   * Makes sure the app.json has the required fields and adds fields for window manager
+   * @param {function} next - callback
+   */
+  var checkJSON = function (next) {
+    var j = this.json;
+    if (!j.url) {
+      next(new Error(this.folder + ' app.json does not have a url'));
+    }
+    if (!j.name) {
+      next(new Error(this.folder + ' app.json does not have a name'));
+    }
+
+    if (j.url !== 'headless') {
+      j.zIndex = 0;
+      j.running = false;
+      j.minimized = true;
+    }
     try {
-      var fork = child_process.fork(
-        __dirname + "/fork_container/fork2server_com.js", [], {
+      if ('port' in j.remote) {
+        Silk.get('remote/addPort')(j.remote.port);
+      }
+    } catch (e) {
+
+    }
+
+    j.folder = this.folder;
+    j.path = this.path;
+    this.name = j.name;
+    this.clean = JSON.parse(JSON.stringify(j));
+    next(void(0), j);
+  }.bind(this);
+
+  /**
+   * Makes urls in app.json absolute
+   * @param {function} next - callback
+   */
+  var checkURLs = function (next) {
+    var that = this;
+    var j = this.json;
+
+    if (j.url === "headless") {
+      return next();
+    }
+
+    async.each(["url", "icon"], function (prop, next) {
+      // we know there is a url or icon property if it is needed from checkJSON.
+      /*jshint -W018 */
+      if (!prop in j) {
+        return next();
+      }
+      /*jshint +W018 */
+
+      // create absolute url
+      j[prop] = url.resolve("http://localhost:3000/" + urlPath + j.folder + "/index.html", j[prop]);
+      that.clean[prop] = j[prop];
+      var parsed = url.parse(j[prop]);
+
+      // if local file, make sure it exists.
+      if (!url.host) {
+        fs.exists(j.path, function (boo) {
+          if (!boo) return next(new Error(that.name + ' ' + prop + " file does not exist"));
+          next();
+        });
+      }
+
+    }, function (err) {
+      if (err) {
+        return next(err);
+      }
+      next(void(0), j);
+    });
+  }.bind(this);
+
+  /**
+   * calls this.checkJSON and this.checkURLs
+   * @param {function} next - callback
+   */
+  this.validate = function (next) {
+    debug('validating ' + this.path);
+    var that = this;
+    async.series([
+    checkJSON,
+    checkURLs
+  ], function (err, result) {
+      if (err) {
+        console.log('not valid');
+        console.log(err);
+        that.valid = false;
+      } else {
+        debug(that.path + ' is valid');
+        that.valid = true;
+      }
+      next(err, result);
+    });
+  }.bind(this);
+
+  /**
+   * Installs NPM dependencies
+   * @param {function} next - callback
+   */
+  this.npmDependencies = function (next) {
+    var d = this.json.npmDependencies || {};
+    if (Object.keys(d).length === 0) {
+      return next();
+    }
+    async.eachSeries(Object.keys(d), function (dep, next) {
+
+      // check if installed
+      try {
+        require.resolve(dep);
+        return next();
+      } catch (e) {
+        console.log('installing npm dependencies for' + this.name);
+        var options = {
+          name: dep, // your module name
+          version: d[dep] // expected version [default: 'latest']
+        };
+        npmi(options, function (err, result) {
+          if (err) {
+            if (err.code === npmi.LOAD_ERR) console.log('npm load error');
+            else if (err.code === npmi.INSTALL_ERR) console.log('npm install error');
+            console.log(err.message);
+            return next(err.message);
+          }
+
+          // installed
+          console.log(options.name + '@' + options.version + ' installed successfully');
+          next();
+        });
+      }
+
+    }, function (err) {
+      if (err) console.log(err);
+      next();
+    });
+    debug('npm dependencies');
+    var amount = d.length - 1;
+    var done = 0;
+    var errors = null;
+  };
+
+  /**
+   * Installs Bower dependencies
+   * @param {function} next - callback
+   */
+  this.bowerDependencies = function (next) {
+    var d = this.json.bowerDependencies || {};
+    if (Object.keys(d).length === 0) {
+      // no dependencies
+      return next();
+    }
+    async.eachSeries(Object.keys(d), function (dep, next) {
+      bowerJSON.read(__root + "/bower_components/" + dep, function (err, file) {
+        if (file) {
+          return next();
+        }
+        var force = false;
+        if (d[dep] === 'latest') {
+          force = true;
+        }
+        console.log('installing ' + dep);
+        bower.commands
+          .install([dep + '#' + d[dep]], {
+            save: false,
+            force: true
+          })
+          .on('error', function (err) {
+            console.log('error isntalling ' + dep);
+            console.log(err);
+            next();
+          })
+          .on('end', function (installed) {
+            console.log('finished installing ' + dep);
+            return next();
+          });
+      });
+    }, function (err) {
+      if (err) {
+        console.log(err);
+      }
+      next(err);
+    });
+
+  };
+
+  /**
+   * Starts the fork process
+   * @param {function} next - callback
+   * @fires App#change
+   */
+  this.start = function (next) {
+    try {
+      require.resolve(this.path);
+      try {
+        this.status = 'starting';
+        var modulePath = __dirname + '/fork_container/fork2server_com.js';
+        var forkOpts = {
           cwd: __root,
           env: {
-            start: j.path
-          }
-        }
-      );
-      j.fork = fork;
-      var timeout = setTimeout(function () {
-        fork.removeAllListeners();
-        fork.kill();
-        return next(new Error(j.title + "'s fork process timed out, this may be due to long syncrounous code on initialization'"));
-      }, 5000);
-
-      fork.once("message", function (m) {
-        clearTimeout(timeout);
-        fork.removeAllListeners();
-        if (m.cmd != "ready") {
+            start: this.path
+          },
+          silent: true,
+          stdio: 'pipe'
+        };
+        var fork = child_process.fork(modulePath, [], forkOpts);
+        this.fork = fork;
+        var that = this;
+        var timeout = setTimeout(function () {
+          var oldValue = that.status;
+          that.status = 'error';
+          /*
+           * Changed event
+           * The status changed
+           * @event App#change
+           */
+          that.emit('changed');
+          that.fork.removeAllListeners();
           fork.kill();
-          return next(new Error("fork process sending messages before initialization"));
-        }
-        debug("forkready");
-        that.emit("forked", fork, j);
-        next(void(0), j);
-      });
-      fork.once("error", function (e) {
-        clearTimeout(timeout);
-        fork.removeAllListeners();
-        return next(e);
-      });
+          return next(new Error(this.name + ' took too long to start.'));
+        }, 5000);
+
+        fork.once('message', function (m) {
+          var oldValue = that.status;
+          clearTimeout(timeout);
+          fork.removeAllListeners();
+          if (m.cmd !== 'ready') {
+            that.status = 'error';
+            fork.kill();
+            /*
+             * Changed event
+             * the status changed
+             * @event App#change
+             */
+            that.emit('changed');
+            return next(new Error(that.name + ' sending messages before initialization'));
+          }
+          this.status = 'running';
+          /*
+           * Changed event
+           * Status changed
+           * @event App#change
+           */
+          that.emit('changed');
+          next();
+        });
+        fork.on('close', function (code, signal) {
+          console.log('process for ' + that.name + 'ended');
+        });
+
+        fork.stdout.on('data', function (data) {
+          console.log('[' + that.name + '] ' + data);
+        });
+        fork.stderr.on('data', function (data) {
+          console.log('[' + that.name + '] ' + data);
+        });
+
+      } catch (e) {
+        next(e);
+      }
     } catch (e) {
-      clearTimeout(timeout);
-      fork.removeAllListeners();
-      return next(e);
+      // no serverside scripts
+      next();
     }
-  } catch (e) {
-    console.log(j.name + " has no serverside scripts but that is ok")
-    return next(void(0), j);
-  }
+  }.bind(this);
+
+  this.stop = function (next) {
+    if (this.state !== 'running' || this.state !== 'starting') {
+      next();
+    }
+    this.fork.disconnect();
+    this.fork.kill();
+    this.fork.removeAllListeners();
+    this.state = 'stopped';
+    /*
+     * Changed event
+     * Status changed
+     * @event App#change
+     */
+    that.emit('changed');
+    next();
+  }.bind(this);
+
+  this.restart = function (next) {
+    this.stop(function(){
+      that.start(function(err){
+        next(err);
+      });
+    });
+  }.bind(this);
+
+  var init = function (next) {
+    this.loadJSON(function (err) {
+      if (err) {
+        this.valid = false;
+        return next(err);
+      }
+      that.validate(function (err) {
+        that.bowerDependencies(function (err) {
+          that.npmDependencies(function (err) {
+            createRouter();
+            return next(err);
+          });
+        });
+      });
+    });
+  }.bind(this);
+
+  init(function (err) {
+    /**
+     * Ready event.  Fired when done loading json and validating.  Might not be valid.
+     * Any changes to the app later are emitted as change event
+     *
+     * @event App#ready
+     * @type {error}
+     */
+    that.emit('ready', err);
+  });
 }
 
-
-AppFactory.prototype.getSingle = function (file, next) {
-  async.waterfall([
-
-    function (next) {
-      next(void(0), file);
-    },
-    this.checkWindowJSON.bind(this),
-    this.checkURIs.bind(this),
-    this.checkNPMDeps.bind(this),
-    this.checkBowerDeps.bind(this),
-    this.createFork.bind(this)
-  ], function (err, result) {
-    if (err) return next(err);
-    this.emit("compiledSingle", result)
-    next(void(0), result)
-  }.bind(this))
-}
+util.inherits(App, events.EventEmitter);

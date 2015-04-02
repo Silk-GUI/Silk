@@ -14,7 +14,7 @@ DependentArray.prototype.dormant = function (value,deps,name){
       name = value.split("/").pop();
       name = name.substring(0, name.indexOf("."));
     }else
-      throw new Error("When value isn't a string, name is required")
+      throw new Error("When value isn't a string, name is required");
   }
   var type = "d";
   var chil = [];
@@ -32,7 +32,7 @@ DependentArray.prototype.dormant = function (value,deps,name){
   };
   this.handleDeps(name, deps, (type=="d"));
   return this;
-}
+};
 
 DependentArray.prototype.queue = function (value,deps,name){
   if(typeof deps == "undefined")
@@ -44,7 +44,7 @@ DependentArray.prototype.queue = function (value,deps,name){
       name = value.split("/").pop();
       name = name.substring(0, name.indexOf("."));
     }else
-      throw new Error("When value isn't a string, name is required")
+      throw new Error("When value isn't a string, name is required");
   }
   var chil = [];
   if(name in this.u){
@@ -55,10 +55,10 @@ DependentArray.prototype.queue = function (value,deps,name){
     deps:deps,
     value:value,
     chil:chil
-  }
-  this.handleDeps(name, deps)
+  };
+  this.handleDeps(name, deps);
   return this;
-}
+};
 
 DependentArray.prototype.handleDeps = function(name,deps,isdormant){
   for(var i=0;i<deps.length;i++){
@@ -81,7 +81,7 @@ DependentArray.prototype.handleDeps = function(name,deps,isdormant){
     else
       this.u[deps[i]] = [name];
   }
-}
+};
 
 DependentArray.prototype.resolve = function (){
   this.ret = [];
@@ -99,11 +99,11 @@ DependentArray.prototype.resolve = function (){
 
   console.log("done");
   return this.ret;
-}
+};
 
 DependentArray.prototype.resolveRecurs = function(i){
   if(!(i in this.q))
-    throw new Error("Unresolved dependency: "+i)
+    throw new Error("Unresolved dependency: "+i);
   while(this.q[i].deps.length > 0){
     this.resolveRecurs(this.q[i].deps[0]);
   }
@@ -112,7 +112,7 @@ DependentArray.prototype.resolveRecurs = function(i){
   for(var j=0;j<chil.length;j++)
     this.q[chil[j]].deps.splice(this.q[chil[j]].deps.indexOf(i), 1);
   delete this.q[i];
-}
+};
 
 
 if(typeof module != "undefined" && module.exports){

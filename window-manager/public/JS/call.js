@@ -4,15 +4,15 @@ var socket;
 (function () {
   try {
 
-    var host = "ws://0.0.0.0:3000/websocket";
+    var host = "//0.0.0.0:3000/ws";
     
      // change host url if remote
     if(/localhost:3000/.test(location.host) | /0.0.0.0:3000/.test(location.host)){
       } else{
-      host =  "ws://" + location.host + "/websocket";
+      host =  "//" + location.host + "/ws";
     }
     console.log(host);
-    socket = new WebSocket(host);
+    socket = new SockJS(host);
 
     socket.onopen = function () {
 
@@ -115,6 +115,7 @@ methods.receive = function (message) {
   message = JSON.parse(message.data);
   if (typeof methods.sent[message.id] != "undefined") {
     console.log("called");
+    console.dir(message.error);
     methods.sent[message.id].callback(message.error, message.data);
     delete methods.sent[message.id];
   }else if(methods.listeners[message.id] != undefined) {
@@ -122,12 +123,3 @@ methods.receive = function (message) {
     methods.listeners[message.id].callback(message.error, message.data);
   }
 }
-
-// test
-methods.call("silk/apps/list", {
-  name: "test"
-}, function (error, data) {
-  console.log("This is inside the callback");
-  console.log(error);
-  console.log(data);
-});

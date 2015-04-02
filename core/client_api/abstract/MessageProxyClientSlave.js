@@ -11,7 +11,7 @@ MessageProxy.prototype.clientEnter = function(client){
   client.id = Date.now()+"|"+Math.random();
   client.slave = void(0);
   this.clients[client.id] = {id:client.id,slave:client.slave,res:client,sq:[]};
-}
+};
 
 MessageProxy.prototype.bindClient = function(slave,client){
   if(!this.slaves[slave.id]){
@@ -25,7 +25,7 @@ MessageProxy.prototype.clientLeave = function(client){
   client.slave.clients.splice(client.slave.clients.indexOf(client),1);
   delete this.clients[client.id];
   client = null;
-}
+};
 
 MessageProxy.prototype.clientMessage = function(message,client){
   if(message.name == "bind"){
@@ -45,16 +45,16 @@ MessageProxy.prototype.slaveEnter = function(slave){
   slave.clients = [];
   this.slaves[slave.id] = slave;
   this.slaveSend({name:"id",type:"trigger",data:slave.id},slave);
-}
+};
 
 MessageProxy.prototype.slaveLeave = function(slave){
   var that = this;
   slave.clients.forEach(function(clientid){
     delete that.clients[clientid].slave;
-  })
+  });
   delete this.slaves[slave.id];
   slave = null;
-}
+};
 
 MessageProxy.prototype.slaveMessage = function(message,slave){
   if(!this.clients[message.client]){
@@ -68,7 +68,7 @@ MessageProxy.prototype.slaveMessage = function(message,slave){
     this.slaveSend(message,slave);
   }
   this.clientSend(message, this.clients[message.client]);
-}
+};
 
 if(typeof module != "undefined" && module.exports){
   module.exports = MessageProxy;

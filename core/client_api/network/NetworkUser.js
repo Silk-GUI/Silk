@@ -31,7 +31,7 @@ function NetworkInstance(nethost, target){
     set: function(){
       throw new Error("cannot set the state");
     }
-  })
+  });
 }
 NetworkInstance.prototype = Object.create(MessageDuplex.prototype);
 NetworkInstance.prototype.constructor = NetworkInstance;
@@ -63,15 +63,16 @@ NetworkInstance.prototype.offer = function(identity,cb){
       cb(void(0),that);
     }, cb);
   }, cb);
-}
+};
 
 NetworkInstance.prototype.registerChannel = function(channel){
 	var that = this;
+    var message;
 	this.channel = channel;
   this.channel.onmessage = function(event){
     console.log(event);
 		try{
-		  var message = JSON.parse(event.data);
+		  message = JSON.parse(event.data);
 		}catch(e){
       alert(e);
 		  event.target.close();
@@ -82,9 +83,9 @@ NetworkInstance.prototype.registerChannel = function(channel){
 	this.channel.onopen = function(){
     that.ready();
     that.nethost.emit("ready",that);
-  }
+  };
   this.channel.onclose = this.emit.bind(this,"close");
-}
+};
 /**
   Accepts a webrtc offer from another party
   @memberof NetwokInstance
@@ -108,7 +109,7 @@ NetworkInstance.prototype.accept = function(message,cb){
       }, cb);
     }, cb);
   },cb);
-}
+};
 
 /**
   Solidifies a webrtc connection after the other party accepts
@@ -117,14 +118,14 @@ NetworkInstance.prototype.accept = function(message,cb){
 */
 NetworkInstance.prototype.ok = function(message){
   this.pconn.setRemoteDescription(new RTCSessionDescription(message.desc));
-}
+};
 
 NetworkInstance.prototype.remoteIce = function(message){
   this.pconn.addIceCandidate(new RTCIceCandidate({
       sdpMLineIndex: message.label,
       candidate: message.candidate
   }));
-}
+};
 
 NetworkInstance.prototype.iceCB = function(event){
   if (!event.candidate)
@@ -139,4 +140,4 @@ NetworkInstance.prototype.iceCB = function(event){
 	    candidate: event.candidate.candidate
 		}
 	});
-}
+};

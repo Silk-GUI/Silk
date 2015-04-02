@@ -3,6 +3,7 @@
 
 GUI For Developers (and Node OS)
 
+[![David](https://img.shields.io/david/silk-gui/silk.svg?style=flat-square)]() [![David](https://img.shields.io/david/dev/silk-gui/silk.svg?style=flat-square)]() [![Codacy Badge](https://www.codacy.com/project/badge/e72fea3635914f5a98e1ccb42bf656e3)](https://www.codacy.com/public/zmodern/Silk?style=flat-square) [![npm](https://img.shields.io/npm/dm/silk-gui.svg?style=flat-square)]() 
 
 ###Plans
 - Fast and Lightweight

@@ -1,5 +1,6 @@
 {
-  "title": "File Explorer",
+  "name": "File Explorer",
+  "title": "/ - File Explorer",
   "url": "/fileExplorer/index.html",
   "icon": "/fileExplorer/logo.png",
   "multipleWindows": true
