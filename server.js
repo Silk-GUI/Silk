@@ -1,8 +1,9 @@
+global.__root = __dirname;
 var http = require('http');
 var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
-
+var setup = require('./core/setup/');
 process.on('SIGINT', function() {
     // put prompt on line after ^c
     console.log("");
@@ -12,8 +13,6 @@ process.on('SIGINT', function() {
 // has info and state of various parts of Silk.  Used mainly be api.
 var watchData = require('./core/watch_data.js');
 global.Silk = new watchData();
-global.__root = __dirname;
-
 var app = express(),
   server,
   wss,
@@ -43,7 +42,7 @@ function Spinner() {
     var that = this;
     process.stdout.write('\r ' + that.pattern[that.step] + ' Starting Silk');
     interval = setInterval(function () {
-      process.stdout.write('\r ' + that.pattern[that.step] + ' Starting Silk');
+      process.stdout.write(' ' + that.pattern[that.step] + ' Starting Silk \r');
       that.step += 1;
       if (that.step === 4) {
         that.step = 0;
@@ -66,49 +65,65 @@ function loader() {
     console.log('');
   }
 }
-
-app.get('/', function (req, res) {
-  res.sendFile(__root + "/window-manager/public/index.html");
-});
+function start () {
+    app.get('/', function (req, res) {
+        res.sendFile(__root + "/window-manager/public/index.html");
+    });
 
 // static files for client
-app.use(express.static(__dirname + '/window-manager/public'));
-app.get(/^\/bc\//, require(__root + "/core/bower_static.js"));
-app.get("/api.js", require(__root + "/core/client_api.js"));
+    app.use(express.static(__dirname + '/window-manager/public'));
+    app.get(/^\/bc\//, require(__root + "/core/bower_static.js"));
+    app.get("/api.js", require(__root + "/core/client_api.js"));
 
-server = app.listen(3000, function () {
-  var add = server.address();
-  url = 'Silk at http://' + add.address + ':' + add.port;
-  loader();
-});
+    server = app.listen(3000, function () {
+        var add = server.address();
+        url = 'Silk at http://' + add.address + ':' + add.port;
+        loader();
+    });
 
-var sockOptions = {
-  sockjs_url: '//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js'
-};
+    var sockOptions = {
+        sockjs_url: '//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js'
+    };
 
-if (!program.dev) {
-  sockOptions.log = function (severity, message) {
-    if (severity === 'error') {
-      console.log(message);
+    if (!program.dev) {
+        sockOptions.log = function (severity, message) {
+            if (severity === 'error') {
+                console.log(message);
+            }
+        };
     }
-  };
+
+    wss = SockJS.createServer(sockOptions);
+    wss.installHandlers(server, {
+        prefix: '/ws'
+    });
+
+    require(__root + "/core/fork_framework")(app, wss, function () {
+        loader();
+    });
+
+    require('./core/remote.js');
+
+    if (program.remote) {
+        Silk.get('remote/start')(true);
+    }
+
+    if (program.open) {
+        require('./core/nw/open.js')(program.devtools);
+    }
 }
 
-wss = SockJS.createServer(sockOptions);
-wss.installHandlers(server, {
-  prefix: '/ws'
-});
-
-require(__root + "/core/fork_framework")(app, wss, function () {
-  loader();
-});
-
-require('./core/remote.js');
-
-if (program.remote) {
-  Silk.get('remote/start')(true);
-}
-
-if (program.open) {
-  require('./core/nw/open.js')(program.devtools);
+// check if silk finished setting up
+if(setup.ready() === true ){
+    start();
+} else {
+    setup(function (err) {
+        if(err) {
+            console.log('error setting up silk: ', err);
+            console.log('please report this at https://github.com/Silk-GUI/Silk/issues');
+            return;
+        }
+        // finished setting up. We can start now
+        start();
+    });
 }

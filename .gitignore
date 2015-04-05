@@ -12,3 +12,7 @@ apps/app-defaults/settings/app-defaults.json
 test/App.spec.js
 
 coverage/
+apps/
+.idea/
+
+core/settings/
