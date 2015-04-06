@@ -10,7 +10,6 @@ function Request(message, fork) {
   this.fork = fork;
 }
 Request.prototype.send = function (error, result) {
-  console.log('sending');
   this.fork.send({
     cmd: 'server api',
     message: {
@@ -22,6 +21,8 @@ Request.prototype.send = function (error, result) {
 };
 
 Request.prototype.exec = function () {
+  var error;
+  var result;
   var data = this.message.message.data;
   var message = this.message.message;
   try {

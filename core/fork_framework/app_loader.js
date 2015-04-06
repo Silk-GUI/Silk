@@ -8,8 +8,8 @@ var fs = require('fs'),
   bower = require('bower'),
   bowerJSON = require('bower-json'),
   chokidar = require('chokidar'),
-  child_process = require('child_process');
-
+  child_process = require('child_process'),
+  resolve = require('resolve');
 /**
  * object of all apps
  */
@@ -99,10 +99,11 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 };
 
 /**
-* Compiles an app
-* @param {string} path - path to app's folder. Do not end with a /
-* @param {function} next - callback
-*/
+ * Compiles an app
+ * @param {string} path - path to app's folder. Do not end with a /
+ * @param {object} expressApp - an express app that will be used for routing
+ * @param {function} next - callback
+ */
 appLoader.add = function (path, expressApp, next) {
   debug(path + '/app.json');
   fs.exists(path + '/app.json', function (exists) {
@@ -332,16 +333,20 @@ function App(path, expressApp, urlPath) {
       return next();
     }
     async.eachSeries(Object.keys(d), function (dep, next) {
-
       // check if installed
       try {
-        require.resolve(dep);
+        // TODO make this async
+        resolve.sync(dep, {basedir: that.path});
         return next();
       } catch (e) {
-        console.log('installing npm dependencies for' + this.name);
+        console.log('installing' + dep + 'for ' + that.name);
         var options = {
-          name: dep, // your module name
-          version: d[dep] // expected version [default: 'latest']
+          name: dep,
+          version: d[dep],
+          path: that.path,
+          npmLoad: {
+            loglevel: 'silent'
+          }
         };
         npmi(options, function (err, result) {
           if (err) {
