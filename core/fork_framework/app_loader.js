@@ -18,6 +18,11 @@ var apps = {};
 * Array of app properties
 */
 var clean = [];
+/**
+ * id for apps.  Increased by one for each app.
+ * @type {number}
+ */
+var id = 0;
 var appLoader = new events.EventEmitter();
 appLoader.clean = clean;
 appLoader.App = App;
@@ -152,6 +157,8 @@ function App(path, expressApp, urlPath) {
   if (!urlPath) {
     urlPath = '';
   }
+  id += 1;
+  this.id = id;
   this.json = {};
   this.state = 'stopped';
   this.clean = {};
@@ -176,7 +183,7 @@ function App(path, expressApp, urlPath) {
       return false;
     }
     this.router = express.Router();
-    this.router.use(urlPath + '/' + this.folder, express.static(this.path + '/public'));
+    this.router.use(urlPath + '/' + this.folder + this.id, express.static(this.path + '/public'));
     this.expressApp.use(this.router);
   }.bind(this);
 
@@ -264,7 +271,7 @@ function App(path, expressApp, urlPath) {
     }
 
     async.each(["url", "icon"], function (prop, next) {
-      // we know there is a url or icon property if it is needed from checkJSON.
+      // we know the required urls are here from checkJSON
       /*jshint -W018 */
       if (!prop in j) {
         return next();
@@ -272,7 +279,7 @@ function App(path, expressApp, urlPath) {
       /*jshint +W018 */
 
       // create absolute url
-      j[prop] = url.resolve("http://localhost:3000/" + urlPath + j.folder + "/index.html", j[prop]);
+      j[prop] = url.resolve("http://localhost:3000/" + urlPath + j.folder + that.id + "/index.html", j[prop]);
       that.clean[prop] = j[prop];
       var parsed = url.parse(j[prop]);
 
