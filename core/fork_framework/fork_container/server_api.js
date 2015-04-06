@@ -56,7 +56,9 @@ var done = function (message) {
   } catch (e) {
 
   }
-  if (requests[id].type === 'call') {
+
+  // call requests are deleted after first return
+  if (requests[id] && requests[id].type === 'call') {
     delete requests[id];
   }
 };

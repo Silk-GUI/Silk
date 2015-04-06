@@ -1,7 +1,8 @@
 // API for apps.  Available to app forks.
-
-var serverAPI = {},
-  requests = [];
+var db = require(__root + '/core/db.js'),
+  serverAPI = {},
+  requests = [],
+  externalApps = db.collection('external_apps');
 
 function Request(message, fork) {
   this.message = message;
@@ -21,8 +22,6 @@ Request.prototype.send = function (error, result) {
 };
 
 Request.prototype.exec = function () {
-  var error = null;
-  var result = null;
   var data = this.message.message.data;
   var message = this.message.message;
   try {
@@ -32,9 +31,17 @@ Request.prototype.exec = function () {
     console.log(e.stack);
     error = e;
   }
+  // only send if something is returned.  If nothing is returned,
+  // the api should use send().
+  if(typeof error === "undefined" && typeof result === "undefined"){
+    // nothing to send
+    return;
+  }
+  console.log(typeof error);
   this.send(error, result);
 };
 
+//API for apps
 serverAPI['apps/list'] = function (data, message, send) {
 
   if (message.type === 'listener') {
@@ -58,6 +65,18 @@ serverAPI['apps/start'] = function (path, message) {
       return;
     }
     console.log('started app');
+  });
+};
+
+serverAPI['apps/external/add'] = function (path, message, send) {
+  // make sure it isn't already added
+  externalApps.findOne({path: path}, function (err, data) {
+    if(err) {
+      return send(err);
+    }
+    externalApps.insert({path: path}, function (err, data) {
+      send(err);
+    });
   });
 };
 
