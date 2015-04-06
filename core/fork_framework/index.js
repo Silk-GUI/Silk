@@ -8,19 +8,22 @@ var appLoader = require(__dirname + '/app_loader.js'),
 // get list of external apps;
 var externalApps = db.collection("external_apps");
 
+
 module.exports = function (app, wss, next) {
   // external apps
   var externalList = externalApps.find();
+  function externalApp(item) {
+    appLoader.add(item.path, app, function(err, data) {
+      console.log('apploader err ', err);
+      console.log('appLoader data ', data);
+    });
+  }
   externalList.toArray(function (err, docs) {
     if(err) {
-      return
+      return;
     }
     for(var i = 0; i < docs.length; ++i) {
-      var item = docs[i];
-      appLoader.add(item.path, app, function (err, data) {
-        console.log('apploader err ', err);
-        console.log('appLoader data ', data);
-      });
+      externalApp(item);
     }
   });
 

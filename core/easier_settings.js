@@ -17,8 +17,6 @@ function Settings (settings) {
     return new Settings(settings);
   }
   var self = this;
-  // instance of jsonFile
-  self.data;
   // settings name
   self.name = settings;
   self.path = __root + '/core/settings' + settings + '.json';

@@ -10,7 +10,7 @@ ghDownload.debug();
 try {
   var data = jsonFile.read(__root + '/core/settings/setup.json');
 } catch (e) {
-  fs.writeFileSync(__root + '/core/settings/setup.json', '{"done" : false}')
+  fs.writeFileSync(__root + '/core/settings/setup.json', '{"done" : false}');
   var data = jsonFile.read(__root + '/core/settings/setup.json');
 }
 /**
@@ -18,6 +18,7 @@ try {
  */
 module.exports = function (cb) {
   cb = cb || function () {};
+  var list;
   console.log('setting up');
    // check if it is already done
   if(data.get('done') === true){
@@ -28,7 +29,7 @@ module.exports = function (cb) {
 
   // get list of apps
   try {
-    var list = fs.readFileSync(__root + '/setup.json');
+    list = fs.readFileSync(__root + '/setup.json');
     list = JSON.parse(list);
   } catch (e) {
     return cb(e);
@@ -56,13 +57,13 @@ module.exports = function (cb) {
     cb(err);
   });
 
-}
+};
 
 /**
  * @returns {boolean} if the setup is done
  */
 module.exports.ready = function () {
     return data.get('done');
-}
+};
 
 
