@@ -40,7 +40,7 @@ function Spinner() {
   var interval;
   this.start = function () {
     var that = this;
-    process.stdout.write('\r ' + that.pattern[that.step] + ' Starting Silk');
+    process.stdout.write(that.pattern[that.step] + ' Starting Silk \r');
     interval = setInterval(function () {
       process.stdout.write(' ' + that.pattern[that.step] + ' Starting Silk \r');
       that.step += 1;

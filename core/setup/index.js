@@ -11,14 +11,10 @@ try {
   var data = jsonFile.read(__root + '/core/settings/setup.json');
 } catch (e) {
   fs.writeFileSync(__root + '/core/settings/setup.json', '{"done" : false}')
+  var data = jsonFile.read(__root + '/core/settings/setup.json');
 }
 /**
- * Installs packages listed in setup.json
- * Steps:
- * 1. create "Silk-Apps" folder in user's home dir.  The folder
- *    in NodeOS will be "Apps" instead (TODO).
- * 2. install apps listed in silk-setup.json into folder
- * 3. install window manager into __root/window_manager
+ * Installs packages listed in setup.json in app folder
  */
 module.exports = function (cb) {
   cb = cb || function () {};
