@@ -95,17 +95,18 @@ module.exports.compileFolder = function (folder, expressApp, next) {
 
 /**
 * Compiles an app
-* @param {string} path - path to app's folder
+* @param {string} path - path to app's folder. Do not end with a /
 * @param {function} next - callback
 */
-appLoader.add = function (path, next) {
+appLoader.add = function (path, expressApp, next) {
+  debug(path + '/app.json');
   fs.exists(path + '/app.json', function (exists) {
-    if (exists) {
+    if (!exists) {
       return next(new Error("app doesn't have an app.json"));
     }
     var index;
-    var app = new App(folder + file, expressApp);
-    apps[app.folder] = app;
+    var app = new App(path, expressApp);
+    apps[app.path] = app;
     app.on('change', function (type, property, oldValue) {
       appLoader.clean[index] = app.clean;
       /*

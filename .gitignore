@@ -16,3 +16,5 @@ apps/
 .idea/
 
 core/settings/
+
+core/database/

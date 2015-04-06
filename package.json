@@ -12,7 +12,7 @@
     "chokidar": "^0.12.6",
     "commander": "2.5.0",
     "express": "^4.10.1",
-    "github-downloader": "0.0.2",
+    "github-downloader": "0.0.3",
     "json-file": "^0.1.0",
     "jspath": "latest",
     "localtunnel": "1.5.0",
@@ -20,7 +20,8 @@
     "npmi": "^0.1.2",
     "nw": "^0.12.0",
     "rsvp": "latest",
-    "sockjs": "~0.3.12"
+    "sockjs": "~0.3.12",
+    "tingodb": "^0.3.4"
   },
   "repository": {
     "type": "git",

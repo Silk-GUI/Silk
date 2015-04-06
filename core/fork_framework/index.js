@@ -1,9 +1,30 @@
 var appLoader = require(__dirname + '/app_loader.js'),
-  apps,
-  methods = require(__dirname + "/ws2fork_com.js"),
-  connId = 0;
+    db = require(__root + '/core/db.js'),
+    db2 = require(__root + '/core/db.js'),
+    methods = require(__dirname + "/ws2fork_com.js"),
+    connId = 0,
+    apps;
+
+// get list of external apps;
+var externalApps = db.collection("external_apps");
 
 module.exports = function (app, wss, next) {
+  // external apps
+  var externalList = externalApps.find();
+  externalList.toArray(function (err, docs) {
+    if(err) {
+      return
+    }
+    for(var i = 0; i < docs.length; ++i) {
+      var item = docs[i];
+      appLoader.add(item.path, app, function (err, data) {
+        console.log('apploader err ', err);
+        console.log('appLoader data ', data);
+      });
+    }
+  });
+
+  //internal apps
   appLoader.compileFolder(__root + '/apps', app, function (err) {
     next(err, appLoader.clean);
   });
