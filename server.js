@@ -54,18 +54,18 @@ function Spinner() {
   };
 }
 
-var spinner = new Spinner();
-spinner.start();
-// hides spinner and shows url when finished loading;
-function loader() {
-  loaded += 1;
-  if (loaded === toLoad) {
-    spinner.stop();
-    process.stdout.write('\r ' + url);
-    console.log('');
-  }
-}
 function start () {
+    var spinner = new Spinner();
+    spinner.start();
+    // hides spinner and shows url when finished loading;
+    function loader() {
+      loaded += 1;
+      if (loaded === toLoad) {
+        spinner.stop();
+        process.stdout.write('\r ' + url);
+        console.log('');
+      }
+    }
     app.get('/', function (req, res) {
         res.sendFile(__root + "/window-manager/public/index.html");
     });
