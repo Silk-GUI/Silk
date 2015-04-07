@@ -6,5 +6,6 @@
 		"Silk-GUI/file-explorer",
 		"Silk-GUI/appManager",
 		"Silk-GUI/app-defaults"
-	]
+	],
+	"windowManager": "Silk-GUI/Sleek"
 }
