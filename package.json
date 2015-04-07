@@ -12,7 +12,7 @@
     "chokidar": "^0.12.6",
     "commander": "2.5.0",
     "express": "^4.10.1",
-    "github-downloader": "0.0.3",
+    "github-downloader": "^0.1.0",
     "json-file": "^0.1.0",
     "jspath": "latest",
     "localtunnel": "1.5.0",
@@ -37,7 +37,7 @@
     "Silk"
   ],
   "optionalDependencies": {
-    "tty.js": "Silk-GUI/tty.js"
+    "tty.js": "https://github.com/Silk-GUI/tty.js.git"
   },
   "scripts": {
     "start": "node server.js",

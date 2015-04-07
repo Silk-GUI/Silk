@@ -5,7 +5,8 @@
 var async = require('async'),
     fs = require('fs'),
     jsonFile = require('json-file'),
-    ghDownload = require('github-downloader');
+    ghDownload = require('github-downloader'),
+    retry = [];
 
 // load settings or create if it doesn't exist
 try {
@@ -27,6 +28,31 @@ function installWM(repo, cb) {
         console.log(err);
         return cb(err);
     });
+}
+function installApps(list, cb) {
+  async.eachSeries(list, function(item, next) {
+    console.log('installing ', item);
+    var options = {
+      username: item.split('/')[0],
+      repo: item.split('/')[1],
+      output: __root + '/apps/' + item.replace('/', '-')
+    };
+    ghDownload(options, function(err) {
+      if(!err){
+      console.log('finished');
+      }
+      return next(err);
+      });
+  }, function(err, result) {
+     if (err) {
+        console.log('error installing apps');
+        return cb(err);
+     }
+     console.log('finished installing apps');
+     data.set('done', true);
+     data.writeSync();
+     cb(err);
+  });
 }
 /**
  * Installs apps listed in setup.json into app folder
@@ -54,27 +80,8 @@ module.exports = function(cb) {
        return cb(err);
      }
      console.log('installing apps');
-     async.eachSeries(list.apps, function(item, next) {
-       console.log('installing ', item);
-       var options = {
-         username: item.split('/')[0],
-         repo: item.split('/')[1],
-         output: __root + '/apps/' + item.replace('/', '-')
-       };
-       ghDownload(options, function(err) {
-         console.log('finished');
-         console.log(err);
-         return next(err);
-         });
-     }, function(err, result) {
-        if (err) {
-           console.log('error installing apps');
-           return next(err);
-        }
-        console.log('finished installing apps');
-        data.set('done', true);
-        data.writeSync();
-        cb(err);
+     installApps(list.apps, function(err){
+      return cb(err);
      });
    });
 };
