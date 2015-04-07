@@ -14,7 +14,3 @@ test/App.spec.js
 coverage/
 apps/
 .idea/
-
-core/settings/
-
-core/database/
