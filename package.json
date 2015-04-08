@@ -41,7 +41,10 @@
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha"
+    "test": "mocha",
+    "setup": "node ./core/setup/index.js",
+    "setup-force": "node ./core/setup/index.js --force",
+    "prepublish": "node ./core/setup/index.js --force"
   },
   "bin": {
     "silk": "bin.js"

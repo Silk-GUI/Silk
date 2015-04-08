@@ -4,6 +4,7 @@ var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
 var setup = require('./core/setup/');
+
 process.on('SIGINT', function() {
     // put prompt on line after ^c
     console.log("");
@@ -112,18 +113,4 @@ function start () {
         require('./core/nw/open.js')(program.devtools);
     }
 }
-
-// check if silk finished setting up
-if(setup.ready() === true ){
-    start();
-} else {
-    setup(function (err) {
-        if(err) {
-            console.log('error setting up silk: ', err);
-            console.log('please report this at https://github.com/Silk-GUI/Silk/issues');
-            return;
-        }
-        // finished setting up. We can start now
-        start();
-    });
-}
+start();

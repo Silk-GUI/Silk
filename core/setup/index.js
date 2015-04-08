@@ -8,6 +8,10 @@ var async = require('async'),
     ghDownload = require('github-downloader'),
     retry = [];
 
+if(module.parent === null) {
+    var __root = './';
+}
+
 // load settings or create if it doesn't exist
 try {
     var data = jsonFile.read(__root + '/core/settings/setup.json');
@@ -61,11 +65,6 @@ module.exports = function(cb) {
   cb = cb || function() {};
   var list;
   console.log('setting up');
-  // check if it is already done
-  if (data.get('done') === true) {
-      return cb(new Error('already done setting up'));
-  }
-
    data.writeSync();
 
    // get list of apps
@@ -92,3 +91,24 @@ module.exports = function(cb) {
 module.exports.ready = function() {
     return data.get('done');
 };
+
+if(module.parent === null) {
+  // run with npm run setup[-force]
+  if(module.exports.ready() === true) {
+    console.log('Silk is already setup.');
+    if(process.argv[2] !== "--force") {
+      return console.log('Use "npm run setup-force" to setup again');
+    }
+    // force is so we can continue
+    console.log('Ran with --force.  Continueing ...');
+  }
+  module.exports(function (err) {
+        if(err) {
+            console.log('error setting up silk: ', err);
+            console.log('please report this at https://github.com/Silk-GUI/Silk/issues');
+            // throwing so prepublish script cancels publishing
+            throw err;
+        }
+        console.log('finished setting up!');
+  });
+}
