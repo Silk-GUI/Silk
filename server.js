@@ -78,7 +78,10 @@ function start () {
 
     server = app.listen(3000, function () {
         var add = server.address();
-        url = 'Silk at http://' + add.address + ':' + add.port;
+        // IPv6 addresses start with ::ffff:.  Is there any
+        // problems with removing it?
+        var address = add.address.replace('::ffff:', '');
+        url = 'Silk at http://' + address + ':' + add.port;
         loader();
     });
 

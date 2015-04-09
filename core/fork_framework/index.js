@@ -1,6 +1,5 @@
 var appLoader = require(__dirname + '/app_loader.js'),
     db = require(__root + '/core/db.js'),
-    db2 = require(__root + '/core/db.js'),
     methods = require(__dirname + "/ws2fork_com.js"),
     connId = 0,
     apps;
@@ -8,9 +7,7 @@ var appLoader = require(__dirname + '/app_loader.js'),
 // get list of external apps;
 var externalApps = db.collection("external_apps");
 
-
-module.exports = function (app, wss, next) {
-  // external apps
+function loadExternalApps () {
   var externalList = externalApps.find();
   function externalApp(item) {
     appLoader.add(item.path, app, function(err, data) {
@@ -20,13 +17,25 @@ module.exports = function (app, wss, next) {
   }
   externalList.toArray(function (err, docs) {
     if(err) {
-      return;
+      // the setting folder doesn't exist
+      if(err.code === 'ENOENT') {
+        var settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+        settingsDir += "/.silk-gui";
+        console.log('creating settings folder at ' + settingsDir);
+        var mkdirp = require('mkdirp');
+        mkdirp.sync(settingsDir + '/core/database');
+        // try again
+        return loadExternalApps();
+      }
     }
     for(var i = 0; i < docs.length; ++i) {
       externalApp(item);
     }
   });
-
+}
+module.exports = function (app, wss, next) {
+  // external apps
+  loadExternalApps();
   //internal apps
   appLoader.compileFolder(__root + '/apps', app, function (err) {
     next(err, appLoader.clean);

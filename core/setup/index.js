@@ -8,9 +8,8 @@ var async = require('async'),
     ghDownload = require('github-downloader'),
     retry = [];
 
-if(module.parent === null) {
+
     var __root = './';
-}
 
 // load settings or create if it doesn't exist
 try {

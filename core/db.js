@@ -1,3 +1,5 @@
 var Db = require('tingodb')().Db;
-var db = new Db(__root + '/core/database', {});
+var settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+settingsDir += "/.silk-gui";
+var db = new Db(settingsDir + '/core/database', {});
 module.exports = db;
