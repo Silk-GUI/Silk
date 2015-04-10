@@ -5,7 +5,7 @@
 var async = require('async'),
     fs = require('fs'),
     jsonFile = require('json-file'),
-    ghDownload = require('github-downloader'),
+    ghDownload = require('download-github-repo'),
     retry = [];
 
 
@@ -26,7 +26,7 @@ function installWM(repo, cb) {
         repo: repo.split('/')[1],
         output: __root + '/window-manager/'
     };
-    ghDownload(options, function(err) {
+    ghDownload(repo, __root + '/window-manager', function(err) {
         console.log('finished');
         console.log(err);
         return cb(err);
@@ -40,7 +40,7 @@ function installApps(list, cb) {
       repo: item.split('/')[1],
       output: __root + '/apps/' + item.replace('/', '-')
     };
-    ghDownload(options, function(err) {
+    ghDownload(item, __root + '/apps/' + item.replace('/', '-'), function(err) {
       if(!err){
       console.log('finished');
       }
