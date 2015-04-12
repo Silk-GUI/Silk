@@ -23,7 +23,7 @@ var app = express(),
   loaded = 0;
 
 program
-  .version('0.3.0')
+  .version('0.4.0')
   .option('-r, --remote', 'Remotely access Silk')
   .option('-d, --dev', 'Show debug messages')
   .option('-o, --open', 'Open Silk in a window')

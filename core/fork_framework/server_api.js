@@ -61,7 +61,7 @@ serverAPI['apps/restart'] = function (folderName, message) {
 };
 
 serverAPI['apps/start'] = function (path, message) {
-  Silk.get('aps/add')(path, function(err){
+  Silk.get('apps/add')(path, function(err){
     if(err){
       return;
     }
