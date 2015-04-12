@@ -25,13 +25,13 @@ silk
 ```
 silk - Starts silk
     -d - outputs more information to terminal.  Useful for debugging
-    -r - gives you a url to visit to use silk remotely
+    -r - gives you an url to visit to use silk remotely
     -o - opens Silk GUI in a full screen window
 ```
 
 [Available Apps](https://github.com/zodern/Silk/wiki/Apps)
 
-## Create App
+## Create an App
 
 Silk helps you create apps.
 [Get Started!](https://github.com/zodern/Silk/wiki/Basics-Of-Making-an-App)
@@ -46,7 +46,7 @@ The core does basically three things:
 
 The window manager takes care of what is shown on the screen. The window manager that is included with Silk GUI is  [Sleek](https://github.com/Silk-GUI/Sleek).
 
-Everything else is done with apps.  Headless apps are similar to services in Windows and take care of other features of the OS that is not doen in the core, such as the app defaults.
+Everything else is done with apps.  Headless apps are similar to services in Windows and take care of other features of the OS that is not done in the core, such as the app defaults.
 
 ## Contribute
 
