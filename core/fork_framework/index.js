@@ -1,9 +1,42 @@
 var appLoader = require(__dirname + '/app_loader.js'),
-  apps,
-  methods = require(__dirname + "/ws2fork_com.js"),
-  connId = 0;
+    db = require(__root + '/core/db.js'),
+    methods = require(__dirname + "/ws2fork_com.js"),
+    connId = 0,
+    apps;
 
+// get list of external apps;
+var externalApps = db.collection("external_apps");
+
+function loadExternalApps () {
+  var externalList = externalApps.find();
+  function externalApp(item) {
+    appLoader.add(item.path, app, function(err, data) {
+      console.log('apploader err ', err);
+      console.log('appLoader data ', data);
+    });
+  }
+  externalList.toArray(function (err, docs) {
+    if(err) {
+      // the setting folder doesn't exist
+      if(err.code === 'ENOENT') {
+        var settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+        settingsDir += "/.silk-gui";
+        console.log('creating settings folder at ' + settingsDir);
+        var mkdirp = require('mkdirp');
+        mkdirp.sync(settingsDir + '/core/database');
+        // try again
+        return loadExternalApps();
+      }
+    }
+    for(var i = 0; i < docs.length; ++i) {
+      externalApp(item);
+    }
+  });
+}
 module.exports = function (app, wss, next) {
+  // external apps
+  loadExternalApps();
+  //internal apps
   appLoader.compileFolder(__root + '/apps', app, function (err) {
     next(err, appLoader.clean);
   });

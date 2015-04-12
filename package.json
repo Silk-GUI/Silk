@@ -1,6 +1,6 @@
 {
   "name": "silk-gui",
-  "version": "0.3.3",
+  "version": "0.4.0",
   "description": "GUI for developers and Node OS",
   "author": "zodern",
   "license": "MIT",
@@ -12,14 +12,18 @@
     "chokidar": "^0.12.6",
     "commander": "2.5.0",
     "express": "^4.10.1",
+    "download-github-repo": "^0.1.3",
+    "json-file": "^0.1.0",
     "jspath": "latest",
     "localtunnel": "1.5.0",
     "mime": "~1.2.11",
+    "mkdirp": "^0.5.0",
     "npmi": "^0.1.2",
     "nw": "^0.12.0",
-    "os-utils": "0.0.14",
+    "resolve": "^1.1.6",
     "rsvp": "latest",
-    "sockjs": "~0.3.12"
+    "sockjs": "~0.3.12",
+    "tingodb": "^0.3.4"
   },
   "repository": {
     "type": "git",
@@ -34,11 +38,14 @@
     "Silk"
   ],
   "optionalDependencies": {
-    "tty.js": "Silk-GUI/tty.js"
+    "tty.js": "https://github.com/Silk-GUI/tty.js.git"
   },
   "scripts": {
     "start": "node server.js",
-    "test": "mocha"
+    "test": "mocha",
+    "setup": "node ./core/setup/index.js",
+    "setup-force": "node ./core/setup/index.js --force",
+    "prepublish": "node ./core/setup/index.js --force"
   },
   "bin": {
     "silk": "bin.js"

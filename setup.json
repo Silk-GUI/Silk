@@ -1,0 +1,11 @@
+{
+	"apps" : [
+		"Silk-GUI/text-editor",
+		"Silk-GUI/terminal",
+		"Silk-GUI/task-manager",
+		"Silk-GUI/file-explorer",
+		"Silk-GUI/appManager",
+		"Silk-GUI/app-defaults"
+	],
+	"windowManager": "Silk-GUI/Sleek"
+}
