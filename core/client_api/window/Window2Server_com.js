@@ -69,7 +69,9 @@ if(typeof module != "undefined" && module.exports){
     var port = (typeof wp != "undefined")?wp:(document.cookie.pwp)?document.cookie.pwp:3000+(parseInt(url[3].substring(1))-3000);
     console.log(port);
     window.DocumentHost = new Server(url[2],port);
-    if(url[4])
-      window.ApplicationFork = new Server(url[2],port,url[4].substring(1)+"-");
+    if(url[4]) {
+      // TODO: find a way to get app name without using url
+      window.ApplicationFork = new Server(url[2],port,'');
+    }
   })(document.URL);
 }
