@@ -5,7 +5,8 @@
 		"Silk-GUI/task-manager",
 		"Silk-GUI/file-explorer",
 		"Silk-GUI/appManager",
-		"Silk-GUI/app-defaults"
+		"Silk-GUI/app-defaults",
+		"zodern/Silk-Tunnel-Client"
 	],
 	"windowManager": "Silk-GUI/Sleek"
 }
