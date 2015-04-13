@@ -3,7 +3,6 @@ var http = require('http');
 var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
-var setup = require('./core/setup/');
 
 process.on('SIGINT', function() {
     // put prompt on line after ^c
