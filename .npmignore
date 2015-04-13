@@ -4,15 +4,17 @@ roadmap
 .brackets.json
 .idea/
 coverage/
-apps/
+
+apps/*
 # We want these apps to be included with Silk GUi
 # when we publish
-!apps/Silk-GUI-app-defaults
-!apps/Silk-GUI-appManager
-!apps/Silk-GUI-file-explorer
-!apps/Silk-GUI-task-manager
-!apps/Silk-GUI-terminal
-!apps/Silk-GUI-text-editor
+!apps/Silk-GUI-app-defaults/
+!apps/Silk-GUI-appManager/
+!apps/Silk-GUI-file-explorer/
+!apps/Silk-GUI-task-manager/
+!apps/Silk-GUI-terminal/
+!apps/Silk-GUI-text-editor/
+!apps/zodern-Silk-Tunnel-Client/
 
 # We also want the window manager
 # included when we publish
