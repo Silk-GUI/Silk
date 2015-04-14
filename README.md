@@ -3,9 +3,9 @@
 GUI For Developers (and Node OS)
 
 [![David](https://img.shields.io/david/Silk-GUI/Silk.svg?style=flat-square)](https://david-dm.org/Silk-GUI/Silk) [![Travis](https://img.shields.io/travis/Silk-GUI/Silk.svg?style=flat-square)](https://travis-ci.org/Silk-GUI/Silk)
-[![Codacy](https://img.shields.io/codacy/e72fea3635914f5a98e1ccb42bf656e3.svg?style=flat-square)](https://www.codacy.com/app/zmodern/Silk)
-[![npm](https://img.shields.io/npm/dm/silk-gui.svg?style=flat-square)](https://www.npmjs.com/package/silk-gui) 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Silk-GUI/Silk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![npm](https://img.shields.io/npm/dm/silk-gui.svg?style=flat-square)](https://www.npmjs.com/package/silk-gui) 
+
 
 ### Plans
 - Fast and Lightweight
