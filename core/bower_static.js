@@ -16,8 +16,11 @@ function raw(path,next){
   path = path.split("/").slice(2);
   var wp = path;
   path = __root+"/bower_components/"+path[0]+"/";
-  fs.readFile(path+"/bower.json",function(err,file){
-    if(err) return next();
+  fs.readFile(path+"bower.json",function(err,file){
+    if(err) { 
+      console.log('error reading ', path,'/bower.json');
+      return next();
+    }
     file = JSON.parse(file);
     if(!("main" in file)) return next();
     if(!Array.isArray(file.main))
