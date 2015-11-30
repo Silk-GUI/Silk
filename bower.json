@@ -27,6 +27,7 @@
     "hint.css": "*"
   },
   "resolutions": {
-    "jquery": ">=1.9.1"
+    "jquery": ">=1.9.1",
+    "materialize": "~0.97.3"
   }
 }

@@ -395,7 +395,8 @@ function App(path, expressApp, urlPath) {
         bower.commands
           .install([dep + '#' + d[dep]], {
             save: false,
-            force: true
+            force: true,
+            forceLatest: true
           })
           .on('error', function (err) {
             console.log('error isntalling ' + dep);
