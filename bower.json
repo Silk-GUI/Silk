@@ -17,14 +17,10 @@
   ],
   "dependencies": {
     "jschannel": "*",
-    "vue": "~0.11.0",
-    "jquery": "~2.1.1",
     "fontawesome": "*",
     "rsvp": "*",
     "eventEmitter": "*",
-    "jspath": "*",
-    "color-thief": "*",
-    "hint.css": "*"
+    "jspath": "*"
   },
   "resolutions": {
     "jquery": ">=1.9.1",

@@ -1,24 +1,25 @@
+var express = require('express');
 var appLoader = require(__dirname + '/app_loader.js'),
-    db = require(__root + '/core/db.js'),
-    methods = require(__dirname + "/ws2fork_com.js"),
-    connId = 0,
-    apps;
+  db = require(__root + '/core/db.js'),
+  methods = require(__dirname + "/ws2fork_com.js"),
+  connId = 0,
+  apps;
 
 // get list of external apps;
 var externalApps = db.collection("external_apps");
 
-function loadExternalApps () {
+function loadExternalApps() {
   var externalList = externalApps.find();
   function externalApp(item) {
-    appLoader.add(item.path, app, function(err, data) {
+    appLoader.add(item.path, app, function (err, data) {
       console.log('apploader err ', err);
       console.log('appLoader data ', data);
     });
   }
   externalList.toArray(function (err, docs) {
-    if(err) {
+    if (err) {
       // the setting folder doesn't exist
-      if(err.code === 'ENOENT') {
+      if (err.code === 'ENOENT') {
         var settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
         settingsDir += "/.silk-gui";
         console.log('creating settings folder at ' + settingsDir);
@@ -28,7 +29,7 @@ function loadExternalApps () {
         return loadExternalApps();
       }
     }
-    for(var i = 0; i < docs.length; ++i) {
+    for (var i = 0; i < docs.length; ++i) {
       externalApp(item);
     }
   });
@@ -81,3 +82,23 @@ module.exports = function (app, wss, next) {
   });
 
 };
+
+// load window manager as an app
+module.exports.startWindowManager = function (expressApp, callback) {
+  var app = new appLoader.App(__root + '/window-manager', expressApp, '/');
+  app.init({
+    createRouter: false
+  }, function (e, d) {
+    expressApp.use(express.static(__root + '/window-manager/public'));
+    expressApp.get('/', function (req, res) {
+      res.sendFile(__root + "/window-manager/public/index.html");
+    });
+    //methods.addFork(app.fork);
+    console.log('window manager', e, d);
+    app.start(function (e, d) {
+      methods.addFork(app.fork);
+      callback(e, d);
+    });
+
+    })
+}

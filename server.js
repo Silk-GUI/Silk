@@ -66,12 +66,12 @@ function start () {
         console.log('');
       }
     }
-    app.get('/', function (req, res) {
-        res.sendFile(__root + "/window-manager/public/index.html");
-    });
+    // app.get('/', function (req, res) {
+    //     res.sendFile(__root + "/window-manager/public/index.html");
+    // });
 
 // static files for client
-    app.use(express.static(__dirname + '/window-manager/public'));
+    //app.use(express.static(__dirname + '/window-manager/public'));
     app.get(/^\/bc\//, require(__root + "/core/bower_static.js"));
     app.get("/api.js", require(__root + "/core/client_api.js"));
 
@@ -101,8 +101,13 @@ function start () {
         prefix: '/ws'
     });
 
-    require(__root + "/core/fork_framework")(app, wss, function () {
+   var forkFramework = require(__root + "/core/fork_framework");
+   forkFramework(app, wss, function () {
         loader();
+    });
+    
+    forkFramework.startWindowManager(app, function(e, d){
+       console.log('started app', e, d); 
     });
 
     require('./core/remote.js');

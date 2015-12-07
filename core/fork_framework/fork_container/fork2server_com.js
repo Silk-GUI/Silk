@@ -21,6 +21,7 @@ MethodCall.prototype.exec = function(){
     });
   }catch(e){
     console.log('error in method ' + this.name);
+    console.dir(e);
     console.log(e.trace);
     return this.sendErr(e);
   }

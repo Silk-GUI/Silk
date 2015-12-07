@@ -11,3 +11,4 @@ coverage/
 apps/
 window-manager/
 .idea/
+.vscode/*

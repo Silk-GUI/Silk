@@ -68,7 +68,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
            */
           appLoader.emit('change');
         });
-        app.once('ready', function (err) {
+        app.init(function (err) {
           if (err) {
             console.log(err);
             return next(err);
@@ -104,7 +104,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
  * @param {object} expressApp - an express app that will be used for routing
  * @param {function} next - callback
  */
-appLoader.add = function (path, expressApp, next) {
+appLoader.add = function (path, expressApp,  next) {
   debug(path + '/app.json');
   fs.exists(path + '/app.json', function (exists) {
     if (!exists) {
@@ -122,7 +122,7 @@ appLoader.add = function (path, expressApp, next) {
        */
       appLoader.emit('change');
     });
-    app.once('ready', function (err) {
+    app.init(function (err) {
       if (err) {
         console.log(err);
         return next(err);
@@ -218,7 +218,8 @@ function App(path, expressApp, urlPath) {
       try {
         that.json = JSON.parse(contents);
       } catch (e) {
-        console.log(e);
+        var error = 'Error parsing JSON for ' + that.folder + ' app';
+        console.log('error with parsing JSON');
         return next(e);
       }
 
@@ -485,7 +486,8 @@ function App(path, expressApp, urlPath) {
           console.log('[' + that.name + '] ' + data);
         });
         fork.stderr.on('data', function (data) {
-          console.log('[' + that.name + '] ' + data);
+          console.dir(data);
+          console.log('[Error in ' + that.name + '] ' + data);
         });
 
       } catch (e) {
@@ -521,34 +523,40 @@ function App(path, expressApp, urlPath) {
       });
     });
   }.bind(this);
-
-  var init = function (next) {
+ 
+  /**
+   * Loads app.json, validates it, installs bower and npm dependencies, and then 
+   * optionally creates the router.
+   *  
+   * @param {boolean} options.createRouter - if false, the router is not created
+   */
+  this.init = function (options, next) {
+    if(typeof options === "function") {
+      next = options;
+    }
     this.loadJSON(function (err) {
       if (err) {
         this.valid = false;
         return next(err);
       }
       that.validate(function (err) {
+        if (err) {
+          next(err);
+        }
         that.bowerDependencies(function (err) {
+          if (err) {
+            next(err);
+          }
           that.npmDependencies(function (err) {
-            createRouter();
+            if(!(options && options.createRouter)){
+              createRouter();
+            }
             return next(err);
           });
         });
       });
     });
   }.bind(this);
-
-  init(function (err) {
-    /**
-     * Ready event.  Fired when done loading json and validating.  Might not be valid.
-     * Any changes to the app later are emitted as change event
-     *
-     * @event App#ready
-     * @type {error}
-     */
-    that.emit('ready', err);
-  });
-}
+} 
 
 util.inherits(App, events.EventEmitter);
