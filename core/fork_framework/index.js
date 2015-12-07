@@ -65,10 +65,6 @@ module.exports = function (app, wss, next) {
     Silk.set('apps/clean', appLoader.clean);
   });
 
-  app.get("/windows.json", function (req, res, next) {
-    res.type("json").send(appLoader.clean);
-  });
-
   wss.on('connection', function (conn) {
     conn.id = connId++;
     debug("connected");
