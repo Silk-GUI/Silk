@@ -274,7 +274,7 @@ function App(path, expressApp, urlPath) {
     async.each(["url", "icon"], function (prop, next) {
       // we know the required urls are here from checkJSON
       /*jshint -W018 */
-      if (!prop in j) {
+      if (!(prop in j)) {
         return next();
       }
       /*jshint +W018 */
