@@ -11,8 +11,8 @@ process.on('SIGINT', function() {
 });
 
 // has info and state of various parts of Silk.  Used mainly be api.
-var watchData = require('./core/watch_data.js');
-global.Silk = new watchData();
+var WatchData = require('./core/watch_data.js');
+global.Silk = new WatchData();
 var app = express(),
   server,
   wss,
@@ -76,11 +76,10 @@ function start () {
     app.get("/api.js", require(__root + "/core/client_api.js"));
 
     server = app.listen(3000, function () {
-        var add = server.address();
+        var address = server.address();
         // IPv6 addresses start with ::ffff:.  Is there any
         // problems with removing it?
-        var address = add.address.replace('::ffff:', '');
-        url = 'Silk at http://' + address + ':' + add.port;
+        url = 'Silk at http://localhost:' + address.port;
         loader();
     });
 
