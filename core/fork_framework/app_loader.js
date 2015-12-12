@@ -397,7 +397,7 @@ function App(path, expressApp, urlPath) {
             forceLatest: true
           })
           .on('error', function (err) {
-            console.log('error isntalling ' + dep);
+            console.log('error installing bower dependency ' + dep + ' for ' + that.name);
             console.log(err);
             next();
           })
