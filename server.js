@@ -3,6 +3,7 @@ var http = require('http');
 var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
+var configJson = require('./config.json');
 
 process.on('SIGINT', function() {
     // put prompt on line after ^c
@@ -105,7 +106,7 @@ function start () {
         loader();
     });
     
-    forkFramework.startWindowManager(app, function(e, d){
+    forkFramework.startWindowManager(configJson.windowManager, app, function(e, d){
        console.log('started app', e, d); 
     });
 

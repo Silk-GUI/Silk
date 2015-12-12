@@ -80,14 +80,31 @@ module.exports = function (app, wss, next) {
 };
 
 // load window manager as an app
-module.exports.startWindowManager = function (expressApp, callback) {
-  var app = new appLoader.App(__root + '/window-manager', expressApp, '/');
+module.exports.startWindowManager = function (path, expressApp, callback) {
+  // check if path is local or a github repository
+  var localPath = false;
+  if (path.indexOf('/') === 0) {
+    localPath = true;
+  } else if (path.indexOf('./') === 0) {
+    localPath = true;
+  } else if (path.indexOf('../') === 0) {
+    localPath = true;
+  } else if (path.indexOf('~/') === 0) {
+    localPath = true;
+  }
+  if (localPath === false) {
+    //TODO: setup should install window manager in a subfolder that is name@githubUser
+    path = __root + '/window-manager';
+  } else {
+    console.log('Loading window manager from ' + path);
+  }
+  var app = new appLoader.App(path, expressApp, '/');
   app.init({
     createRouter: false
   }, function (e, d) {
-    expressApp.use(express.static(__root + '/window-manager/public'));
+    expressApp.use(express.static(path + "/public"));
     expressApp.get('/', function (req, res) {
-      res.sendFile(__root + "/window-manager/public/index.html");
+      res.sendFile(path + "/public/index.html");
     });
     //methods.addFork(app.fork);
     console.log('window manager', e, d);
@@ -96,5 +113,5 @@ module.exports.startWindowManager = function (expressApp, callback) {
       callback(e, d);
     });
 
-    })
-}
+  })
+};

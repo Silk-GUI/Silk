@@ -68,7 +68,7 @@ module.exports = function(cb) {
 
    // get list of apps
    try {
-       list = fs.readFileSync(__root + '/setup.json');
+       list = fs.readFileSync(__root + '/config.json');
        list = JSON.parse(list);
    } catch (e) {
        return cb(e);
