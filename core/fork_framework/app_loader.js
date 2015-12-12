@@ -14,7 +14,7 @@ var fs = require('fs'),
  * object of all apps
  */
 var apps = {};
-/** 
+/**
 * Array of app properties
 */
 var clean = [];
@@ -150,7 +150,7 @@ appLoader.add = function (path, expressApp,  next) {
  * @constructor
  * @param {string} path - path to folder
  * @param {express app} expressApp - an expressApp to use for routing
- * @param {string} urlPath - url path for routing.  Final route is urlPath/appFolderName/publicFile 
+ * @param {string} urlPath - url path for routing.  Final route is urlPath/appFolderName/publicFile
  * @fires App#ready
  * @fires App#change
  */
@@ -245,12 +245,9 @@ function App(path, expressApp, urlPath) {
       j.running = false;
       j.minimized = true;
     }
-    try {
-      if ('port' in j.remote) {
-        Silk.get('remote/addPort')(j.remote.port);
-      }
-    } catch (e) {
 
+    if (j.remote && 'port' in j.remote) {
+      Silk.get('remote/addPort')(j.remote.port);
     }
 
     j.folder = this.folder;
@@ -523,11 +520,11 @@ function App(path, expressApp, urlPath) {
       });
     });
   }.bind(this);
- 
+
   /**
-   * Loads app.json, validates it, installs bower and npm dependencies, and then 
+   * Loads app.json, validates it, installs bower and npm dependencies, and then
    * optionally creates the router.
-   *  
+   *
    * @param {boolean} options.createRouter - if false, the router is not created
    */
   this.init = function (options, next) {
@@ -557,6 +554,6 @@ function App(path, expressApp, urlPath) {
       });
     });
   }.bind(this);
-} 
+}
 
 util.inherits(App, events.EventEmitter);
