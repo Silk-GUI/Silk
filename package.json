@@ -6,24 +6,24 @@
   "license": "MIT",
   "preferGlobal": true,
   "dependencies": {
-    "async": "~0.9.0",
-    "bower": "^1.3.12",
+    "async": "~1.5.0",
+    "bower": "^1.7.1",
     "bower-json": "latest",
-    "chokidar": "^0.12.6",
-    "commander": "2.5.0",
-    "express": "^4.10.1",
+    "chokidar": "^1.4.1",
+    "commander": "2.9.0",
     "download-github-repo": "^0.1.3",
+    "express": "^4.10.1",
     "json-file": "^0.1.0",
     "jspath": "latest",
-    "localtunnel": "1.5.0",
-    "mime": "~1.2.11",
+    "localtunnel": "1.8.0",
+    "mime": "~1.3.4",
     "mkdirp": "^0.5.0",
-    "npmi": "^0.1.2",
+    "npmi": "^1.0.1",
     "nw": "^0.12.0",
     "resolve": "^1.1.6",
     "rsvp": "latest",
     "sockjs": "~0.3.12",
-    "tingodb": "^0.3.4"
+    "tingodb": "^0.4.2"
   },
   "repository": {
     "type": "git",
@@ -55,8 +55,8 @@
     "gulp": "^3.8.11",
     "mocha": "*",
     "mocha-jshint": "*",
-    "istanbul": "~0.2.4",
-    "coveralls": "~2.7.1",
+    "istanbul": "~0.4.1",
+    "coveralls": "~2.11.6",
     "mocha-lcov-reporter": "*"
   }
 }
