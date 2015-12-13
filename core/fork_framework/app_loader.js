@@ -381,7 +381,7 @@ function App(path, expressApp, urlPath) {
       return next();
     }
     async.eachSeries(Object.keys(d), function (dep, next) {
-      bowerJSON.read(__root + "/bower_components/" + dep, function (err, file) {
+      bowerJSON.find(__root + "/bower_components/" + dep, function (err, file) {
         if (file) {
           return next();
         }
@@ -483,7 +483,6 @@ function App(path, expressApp, urlPath) {
           console.log('[' + that.name + '] ' + data);
         });
         fork.stderr.on('data', function (data) {
-          console.dir(data);
           console.log('[Error in ' + that.name + '] ' + data);
         });
 
