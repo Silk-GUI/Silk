@@ -48,7 +48,7 @@ var log = {
     console.info(message);
   },
   warn: function (message) {
-    if(logLevel.indexOf('warn') > logLevel) {
+    if(logLevels.indexOf('warn') > logLevel) {
       return;
     }
     process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + " \r");
@@ -56,7 +56,7 @@ var log = {
     console.warn(message);
   },
   error: function (message) {
-    if(logLevel.indexOf('error') > logLevel) {
+    if(logLevels.indexOf('error') > logLevel) {
       return;
     }
     process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + " \r");
