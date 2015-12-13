@@ -1,22 +1,23 @@
-var fs = require('fs'),
-  events = require('events'),
-  async = require('async'),
-  util = require('util'),
-  express = require('express'),
-  url = require('url'),
-  npmi = require('npmi'),
-  bower = require('bower'),
-  bowerJSON = require('bower-json'),
-  chokidar = require('chokidar'),
-  child_process = require('child_process'),
-  resolve = require('resolve');
+var fs            = require('fs'),
+    events        = require('events'),
+    async         = require('async'),
+    util          = require('util'),
+    express       = require('express'),
+    url           = require('url'),
+    npmi          = require('npmi'),
+    bower         = require('bower'),
+    bowerJSON     = require('bower-json'),
+    chokidar      = require('chokidar'),
+    child_process = require('child_process'),
+    resolve       = require('resolve'),
+    log           = require('../console.js').log;
 /**
  * object of all apps
  */
 var apps = {};
 /**
-* Array of app properties
-*/
+ * Array of app properties
+ */
 var clean = [];
 /**
  * id for apps.  Increased by one for each app.
@@ -37,22 +38,22 @@ module.exports = appLoader;
  * @param {function} next - a callback
  */
 module.exports.compileFolder = function (folder, expressApp, next) {
-  if (typeof folder === 'undefined') {
+  if(typeof folder === 'undefined') {
     throw Error('compileFolder needs path to folder');
   }
 
-  if (!/\/$/.test(folder)) {
+  if(!/\/$/.test(folder)) {
     folder += '/';
   }
 
   fs.readdir(folder, function (err, files) {
-    if (err) {
+    if(err) {
       next(err);
     }
     // tries to create an app for each folder.
     async.filter(files, function (file, next) {
       fs.exists(folder + file + '/app.json', function (exists) {
-        if (!exists) {
+        if(!exists) {
           return next(new Error('app.json does not exist for ' + file));
         }
         var index;
@@ -69,22 +70,22 @@ module.exports.compileFolder = function (folder, expressApp, next) {
           appLoader.emit('change');
         });
         app.init(function (err) {
-          if (err) {
+          if(err) {
             console.log(err);
             return next(err);
           }
 
           app.start(function (err, result) {
-            if (err) {
-              debug('error starting ' + app.path, err);
+            if(err) {
+              log.debug('error starting ' + app.path, err);
               return next(err);
             }
-            if (app.clean.url !== 'headless') {
+            if(app.clean.url !== 'headless') {
               appLoader.clean.push(app.clean);
               index = appLoader.clean.length - 1;
             }
             appLoader.emit('added', app);
-            debug(app.name + ' is running');
+            log.debug(app.name + ' is running');
             next();
 
           });
@@ -104,10 +105,10 @@ module.exports.compileFolder = function (folder, expressApp, next) {
  * @param {object} expressApp - an express app that will be used for routing
  * @param {function} next - callback
  */
-appLoader.add = function (path, expressApp,  next) {
-  debug(path + '/app.json');
+appLoader.add = function (path, expressApp, next) {
+  log.debug(path + '/app.json');
   fs.exists(path + '/app.json', function (exists) {
-    if (!exists) {
+    if(!exists) {
       return next(new Error("app doesn't have an app.json"));
     }
     var index;
@@ -123,21 +124,21 @@ appLoader.add = function (path, expressApp,  next) {
       appLoader.emit('change');
     });
     app.init(function (err) {
-      if (err) {
+      if(err) {
         console.log(err);
         return next(err);
       }
 
       app.start(function (err, result) {
-        if (err) {
+        if(err) {
           return next(err);
         }
-        if (app.clean.url !== 'headless') {
+        if(app.clean.url !== 'headless') {
           appLoader.clean.push(app.clean);
           index = appLoader.clean.length - 1;
         }
         appLoader.emit('added', app);
-        debug(app.name + ' is running');
+        log.debug(app.name + ' is running');
         next();
 
       });
@@ -155,7 +156,7 @@ appLoader.add = function (path, expressApp,  next) {
  * @fires App#change
  */
 function App(path, expressApp, urlPath) {
-  if (!urlPath) {
+  if(!urlPath) {
     urlPath = '';
   }
   id += 1;
@@ -171,16 +172,16 @@ function App(path, expressApp, urlPath) {
   var that = this;
 
   /**
-  * used to change property of app and emit change event
-  * @fires changed
-  */
+   * used to change property of app and emit change event
+   * @fires changed
+   */
   this.set = function (prop, value) {
     this[prop] = value;
     this.emit('change', prop);
   }.bind(this);
 
   var createRouter = function () {
-    if (this.json.url === 'headless') {
+    if(this.json.url === 'headless') {
       return false;
     }
     this.router = express.Router();
@@ -211,7 +212,7 @@ function App(path, expressApp, urlPath) {
   this.loadJSON = function (next) {
     var that = this;
     fs.readFile(this.path + "/app.json", function (err, contents) {
-      if (err) {
+      if(err) {
         console.log(err);
         return next(err);
       }
@@ -233,20 +234,20 @@ function App(path, expressApp, urlPath) {
    */
   var checkJSON = function (next) {
     var j = this.json;
-    if (!j.url) {
+    if(!j.url) {
       next(new Error(this.folder + ' app.json does not have a url'));
     }
-    if (!j.name) {
+    if(!j.name) {
       next(new Error(this.folder + ' app.json does not have a name'));
     }
 
-    if (j.url !== 'headless') {
+    if(j.url !== 'headless') {
       j.zIndex = 0;
       j.running = false;
       j.minimized = true;
     }
 
-    if (j.remote && 'port' in j.remote) {
+    if(j.remote && 'port' in j.remote) {
       Silk.get('remote/addPort')(j.remote.port);
     }
 
@@ -265,14 +266,14 @@ function App(path, expressApp, urlPath) {
     var that = this;
     var j = this.json;
 
-    if (j.url === "headless") {
+    if(j.url === "headless") {
       return next();
     }
 
     async.each(["url", "icon"], function (prop, next) {
       // we know the required urls are here from checkJSON
       /*jshint -W018 */
-      if (!(prop in j)) {
+      if(!(prop in j)) {
         return next();
       }
       /*jshint +W018 */
@@ -283,15 +284,15 @@ function App(path, expressApp, urlPath) {
       var parsed = url.parse(j[prop]);
 
       // if local file, make sure it exists.
-      if (!url.host) {
+      if(!url.host) {
         fs.exists(j.path, function (boo) {
-          if (!boo) return next(new Error(that.name + ' ' + prop + " file does not exist"));
+          if(!boo) return next(new Error(that.name + ' ' + prop + " file does not exist"));
           next();
         });
       }
 
     }, function (err) {
-      if (err) {
+      if(err) {
         return next(err);
       }
       next(void(0), j);
@@ -303,18 +304,18 @@ function App(path, expressApp, urlPath) {
    * @param {function} next - callback
    */
   this.validate = function (next) {
-    debug('validating ' + this.path);
+    log.debug('validating ' + this.path);
     var that = this;
     async.series([
-    checkJSON,
-    checkURLs
-  ], function (err, result) {
-      if (err) {
+      checkJSON,
+      checkURLs
+    ], function (err, result) {
+      if(err) {
         console.log('not valid');
         console.log(err);
         that.valid = false;
       } else {
-        debug(that.path + ' is valid');
+        log.debug(that.path + ' is valid');
         that.valid = true;
       }
       next(err, result);
@@ -327,7 +328,7 @@ function App(path, expressApp, urlPath) {
    */
   this.npmDependencies = function (next) {
     var d = this.json.npmDependencies || {};
-    if (Object.keys(d).length === 0) {
+    if(Object.keys(d).length === 0) {
       return next();
     }
     async.eachSeries(Object.keys(d), function (dep, next) {
@@ -347,9 +348,9 @@ function App(path, expressApp, urlPath) {
           }
         };
         npmi(options, function (err, result) {
-          if (err) {
-            if (err.code === npmi.LOAD_ERR) console.log('npm load error');
-            else if (err.code === npmi.INSTALL_ERR) console.log('npm install error');
+          if(err) {
+            if(err.code === npmi.LOAD_ERR) console.log('npm load error');
+            else if(err.code === npmi.INSTALL_ERR) console.log('npm install error');
             console.log(err.message);
             return next(err.message);
           }
@@ -361,10 +362,10 @@ function App(path, expressApp, urlPath) {
       }
 
     }, function (err) {
-      if (err) console.log(err);
+      if(err) console.log(err);
       next();
     });
-    debug('npm dependencies');
+    log.debug('npm dependencies');
     var amount = d.length - 1;
     var done = 0;
     var errors = null;
@@ -376,17 +377,17 @@ function App(path, expressApp, urlPath) {
    */
   this.bowerDependencies = function (next) {
     var d = this.json.bowerDependencies || {};
-    if (Object.keys(d).length === 0) {
+    if(Object.keys(d).length === 0) {
       // no dependencies
       return next();
     }
     async.eachSeries(Object.keys(d), function (dep, next) {
       bowerJSON.find(__root + "/bower_components/" + dep, function (err, file) {
-        if (file) {
+        if(file) {
           return next();
         }
         var force = false;
-        if (d[dep] === 'latest') {
+        if(d[dep] === 'latest') {
           force = true;
         }
         console.log('installing ' + dep);
@@ -407,7 +408,7 @@ function App(path, expressApp, urlPath) {
           });
       });
     }, function (err) {
-      if (err) {
+      if(err) {
         console.log(err);
       }
       next(err);
@@ -455,7 +456,7 @@ function App(path, expressApp, urlPath) {
           var oldValue = that.status;
           clearTimeout(timeout);
           fork.removeAllListeners();
-          if (m.cmd !== 'ready') {
+          if(m.cmd !== 'ready') {
             that.status = 'error';
             fork.kill();
             /*
@@ -496,7 +497,7 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   this.stop = function (next) {
-    if (this.state !== 'running' || this.state !== 'starting') {
+    if(this.state !== 'running' || this.state !== 'starting') {
       next();
     }
     this.fork.disconnect();
@@ -513,8 +514,8 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   this.restart = function (next) {
-    this.stop(function(){
-      that.start(function(err){
+    this.stop(function () {
+      that.start(function (err) {
         next(err);
       });
     });
@@ -531,20 +532,20 @@ function App(path, expressApp, urlPath) {
       next = options;
     }
     this.loadJSON(function (err) {
-      if (err) {
+      if(err) {
         this.valid = false;
         return next(err);
       }
       that.validate(function (err) {
-        if (err) {
+        if(err) {
           next(err);
         }
         that.bowerDependencies(function (err) {
-          if (err) {
+          if(err) {
             next(err);
           }
           that.npmDependencies(function (err) {
-            if(!(options && options.createRouter)){
+            if(!(options && options.createRouter)) {
               createRouter();
             }
             return next(err);

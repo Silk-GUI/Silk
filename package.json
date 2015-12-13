@@ -41,7 +41,7 @@
     "tty.js": "https://github.com/Silk-GUI/tty.js.git"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node main.js",
     "test": "mocha",
     "setup": "node ./core/setup/index.js",
     "setup-force": "node ./core/setup/index.js --force",

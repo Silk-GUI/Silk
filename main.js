@@ -4,16 +4,14 @@ var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
 var configJson = require('./config.json');
+var logger = require('./core/console.js');
 
-process.on('SIGINT', function() {
-    // put prompt on line after ^c
-    console.log("");
-    process.exit();
-});
+process.title = "Silk GUI";
 
 // has info and state of various parts of Silk.  Used mainly be api.
 var WatchData = require('./core/watch_data.js');
 global.Silk = new WatchData();
+
 var app = express(),
   server,
   wss,
@@ -29,7 +27,11 @@ program
   .option('-o, --open', 'Open Silk in a window')
   .option('--devtools', 'Open nw.js dev tools')
   .parse(process.argv);
+if(process.argv[2] === 'help') {
+  return program.help();
+}
 
+logger.logLevel = program.dev ? 0 : 1;
 
 if(program.dev === true){
   global.debug = console.log;
@@ -38,29 +40,10 @@ if(program.dev === true){
 }
 
 
-//loading spinner
-function Spinner() {
-  this.step = 0;
-  this.pattern = '|/-\\';
-  var interval;
-  this.start = function () {
-    var that = this;
-    process.stdout.write(that.pattern[that.step] + ' Starting Silk \r');
-    interval = setInterval(function () {
-      process.stdout.write(' ' + that.pattern[that.step] + ' Starting Silk \r');
-      that.step += 1;
-      if (that.step === 4) {
-        that.step = 0;
-      }
-    }, 150);
-  };
-  this.stop = function () {
-    clearInterval(interval);
-  };
-}
+
 
 function start () {
-    var spinner = new Spinner();
+    var spinner = new logger.Spinner('Starting Silk');
     spinner.start();
     // hides spinner and shows url when finished loading;
     function loader() {
