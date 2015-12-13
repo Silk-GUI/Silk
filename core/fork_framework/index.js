@@ -1,26 +1,28 @@
 var express = require('express');
 var appLoader = require(__dirname + '/app_loader.js'),
-  db = require(__root + '/core/db.js'),
-  methods = require(__dirname + "/ws2fork_com.js"),
-    log = require('../console.js').log,
-  connId = 0,
-  apps;
+    db        = require(__root + '/core/db.js'),
+    methods   = require(__dirname + "/ws2fork_com.js"),
+    log       = require('../console.js').log,
+    connId    = 0,
+    apps;
 
 // get list of external apps;
 var externalApps = db.collection("external_apps");
 
 function loadExternalApps() {
   var externalList = externalApps.find();
+
   function externalApp(item) {
     appLoader.add(item.path, app, function (err, data) {
       console.log('apploader err ', err);
       console.log('appLoader data ', data);
     });
   }
+
   externalList.toArray(function (err, docs) {
-    if (err) {
+    if(err) {
       // the setting folder doesn't exist
-      if (err.code === 'ENOENT') {
+      if(err.code === 'ENOENT') {
         var settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
         settingsDir += "/.silk-gui";
         console.log('creating settings folder at ' + settingsDir);
@@ -47,12 +49,12 @@ module.exports = function (app, wss, next) {
   Silk.set('apps/clean', appLoader.clean);
   Silk.set('apps/add', appLoader.add);
   appLoader.on("added", function (app) {
-    if (app.state === 'running' || app.state === 'starting') {
+    if(app.state === 'running' || app.state === 'starting') {
       methods.addFork(app.fork);
       return;
     } else {
       app.once('ready', function (err) {
-        if (err) {
+        if(err) {
           console.log(err);
           return;
         }
@@ -84,16 +86,16 @@ module.exports = function (app, wss, next) {
 module.exports.startWindowManager = function (path, expressApp, callback) {
   // check if path is local or a github repository
   var localPath = false;
-  if (path.indexOf('/') === 0) {
+  if(path.indexOf('/') === 0) {
     localPath = true;
-  } else if (path.indexOf('./') === 0) {
+  } else if(path.indexOf('./') === 0) {
     localPath = true;
-  } else if (path.indexOf('../') === 0) {
+  } else if(path.indexOf('../') === 0) {
     localPath = true;
-  } else if (path.indexOf('~/') === 0) {
+  } else if(path.indexOf('~/') === 0) {
     localPath = true;
   }
-  if (localPath === false) {
+  if(localPath === false) {
     //TODO: setup should install window manager in a subfolder that is name@githubUser
     path = __root + '/window-manager';
   } else {
