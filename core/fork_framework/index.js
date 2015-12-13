@@ -66,7 +66,7 @@ module.exports = function (app, wss, next) {
   });
 
   appLoader.on('change', function () {
-    Silk.set('apps/clean', appLoader.clean);
+    apiData.set('apps/clean', appLoader.clean);
   });
 
   wss.on('connection', function (conn) {

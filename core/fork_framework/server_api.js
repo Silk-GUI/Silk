@@ -47,22 +47,22 @@ Request.prototype.exec = function () {
 serverAPI['apps/list'] = function (data, message, send) {
 
   if(message.type === 'listener') {
-    Silk.watch('apps/clean', function (prop, oldValue, currentValue) {
+    apiData.watch('apps/clean', function (prop, oldValue, currentValue) {
       send(null, currentValue);
     });
   }
-  return Silk.get('apps/clean');
+  return apiData.get('apps/clean');
 };
 
 serverAPI['apps/restart'] = function (folderName, message) {
-  console.dir(Silk.get('apps/list')[folderName]);
-  Silk.get('apps/list')[folderName].restart(function (err) {
+  console.dir(apiData.get('apps/list')[folderName]);
+  apiData.get('apps/list')[folderName].restart(function (err) {
     console.log('restarted', err);
   });
 };
 
 serverAPI['apps/start'] = function (path, message) {
-  Silk.get('apps/add')(path, function (err) {
+  apiData.get('apps/add')(path, function (err) {
     if(err) {
       return;
     }
@@ -89,19 +89,19 @@ serverAPI['apps/external/add'] = function (path, message, send) {
 
 // start remote connection for port
 serverAPI['remote/start'] = function (port) {
-  Silk.get('remote/start')(port);
+  apiData.get('remote/start')(port);
 };
 
 serverAPI['remote/close'] = function (port) {
-  Silk.get('remote/close')(port);
+  apiData.get('remote/close')(port);
 };
 
 serverAPI['remote/ports'] = function () {
-  return Silk.get('remote/ports');
+  return apiData.get('remote/ports');
 };
 
 serverAPI['remote/addPort'] = function (port) {
-  Silk.get('remote/addPort')(port);
+  apiData.get('remote/addPort')(port);
 };
 
 module.exports.methods = serverAPI;
