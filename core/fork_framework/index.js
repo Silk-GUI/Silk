@@ -2,6 +2,7 @@ var express = require('express');
 var appLoader = require(__dirname + '/app_loader.js'),
   db = require(__root + '/core/db.js'),
   methods = require(__dirname + "/ws2fork_com.js"),
+    log = require('../console.js').log,
   connId = 0,
   apps;
 
@@ -70,7 +71,7 @@ module.exports = function (app, wss, next) {
     debug("connected");
     conn.on('data', function (message) {
 
-      debug("websocket message: " + message);
+      log.debug("websocket message: " + message);
 
 
       methods.call(conn, message);

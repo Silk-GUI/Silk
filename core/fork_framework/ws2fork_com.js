@@ -1,8 +1,9 @@
 /*
-  Communication between - method calls from the client and app forks.  
+  Communication between - method calls from the client and app forks.
                         - Silk api calls from forks and silk methods.
 */
-var serverAPI = require('./server_api.js');
+var serverAPI = require('./server_api.js'),
+    log = require('../console.js').log;
 
 var methods = {
   wflag: false,
@@ -16,14 +17,14 @@ var methods = {
 };
 
 methods.add = function (m, fork) {
-  debug('adding method ' + m.name);
+  log.debug('adding method ' + m.name);
   this.responders[m.name] = fork;
   this.fork_resp[fork.pid].push(m.name);
 };
 
 methods.send = function (message) {
   if (!this.requests[message.id]) {
-    debug("user removed or no request");
+    log.debug("user removed or no request");
     return;
   }
   this.requests[message.id].write(JSON.stringify(message));

@@ -27,19 +27,12 @@ program
   .option('-o, --open', 'Open Silk in a window')
   .option('--devtools', 'Open nw.js dev tools')
   .parse(process.argv);
+
 if(process.argv[2] === 'help') {
   return program.help();
 }
 
 logger.logLevel = program.dev ? 0 : 1;
-
-if(program.dev === true) {
-  global.debug = console.log;
-} else {
-  global.debug = function () {
-  };
-}
-
 
 function start() {
   var spinner = new logger.Spinner('Starting Silk');
@@ -58,7 +51,7 @@ function start() {
   //     res.sendFile(__root + "/window-manager/public/index.html");
   // });
 
-// static files for client
+  // static files for client
   //app.use(express.static(__dirname + '/window-manager/public'));
   app.get(/^\/bc\//, require(__root + "/core/bower_static.js"));
   app.get("/api.js", require(__root + "/core/client_api.js"));
