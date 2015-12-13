@@ -46,7 +46,7 @@ module.exports = function (app, wss, next) {
   Silk.set('apps/clean', appLoader.clean);
   Silk.set('apps/add', appLoader.add);
   appLoader.on("added", function (app) {
-    if (app.status === 'running' || 'starting') {
+    if (app.state === 'running' || app.state === 'starting') {
       methods.addFork(app.fork);
       return;
     } else {
@@ -113,5 +113,5 @@ module.exports.startWindowManager = function (path, expressApp, callback) {
       callback(e, d);
     });
 
-  })
+  });
 };
