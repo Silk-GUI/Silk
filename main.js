@@ -5,6 +5,7 @@ var SockJS = require('sockjs');
 var program = require('commander');
 var configJson = require('./config.json');
 var logger = require('./core/console.js');
+var apiData = require('./core/api_data.js');
 
 process.title = "Silk GUI";
 
@@ -24,7 +25,8 @@ program
   .option('--devtools', 'Open nw.js dev tools')
   .parse(process.argv);
 
-if(process.argv[2] === 'help') {
+if(process.argv[1] === 'help' || process.argv[2] === 'help') {
+  // silk help or npm start help was run.
   return program.help();
 }
 
@@ -33,6 +35,7 @@ logger.logLevel = program.dev ? 0 : 1;
 function start() {
   var spinner = new logger.Spinner('Starting Silk');
   spinner.start();
+
   // hides spinner and shows url when finished loading;
   function loader() {
     loaded += 1;
@@ -43,21 +46,24 @@ function start() {
     }
   }
 
-  // app.get('/', function (req, res) {
-  //     res.sendFile(__root + "/window-manager/public/index.html");
-  // });
-
   // static files for client
-  //app.use(express.static(__dirname + '/window-manager/public'));
   app.get(/^\/bc\//, require(__root + "/core/bower_static.js"));
   app.get("/api.js", require(__root + "/core/client_api.js"));
 
-  server = app.listen(3000, function () {
+  server = app.listen(3000, function (err) {
+
     var address = server.address();
-    // IPv6 addresses start with ::ffff:.  Is there any
-    // problems with removing it?
     url = 'Silk at http://localhost:' + address.port;
     loader();
+  });
+
+  server.on('error', function (err){
+    if(err.code === 'EADDRINUSE') {
+      console.log('Another process is using port 3000');
+    } else {
+      console.trace(err);
+    }
+    process.exit();
   });
 
   var sockOptions = {
@@ -89,7 +95,7 @@ function start() {
   require('./core/remote.js');
 
   if(program.remote) {
-    Silk.get('remote/start')(true);
+    apiData.get('remote/start')(true);
   }
 
   if(program.open) {
