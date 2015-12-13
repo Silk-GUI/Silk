@@ -1,8 +1,9 @@
 // API for apps.  Available to app forks.
-var db = require(__root + '/core/db.js'),
-  serverAPI = {},
-  requests = [],
-  externalApps = db.collection('external_apps');
+var db           = require(__root + '/core/db.js'),
+    serverAPI    = {},
+    requests     = [],
+    externalApps = db.collection('external_apps'),
+    apiData      = require(__root + '/core/api_data.js');
 
 function Request(message, fork) {
   this.message = message;
@@ -34,7 +35,7 @@ Request.prototype.exec = function () {
   }
   // only send if something is returned.  If nothing is returned,
   // the api should use send().
-  if(typeof error === "undefined" && typeof result === "undefined"){
+  if(typeof error === "undefined" && typeof result === "undefined") {
     // nothing to send
     return;
   }
@@ -45,7 +46,7 @@ Request.prototype.exec = function () {
 //API for apps
 serverAPI['apps/list'] = function (data, message, send) {
 
-  if (message.type === 'listener') {
+  if(message.type === 'listener') {
     Silk.watch('apps/clean', function (prop, oldValue, currentValue) {
       send(null, currentValue);
     });
@@ -55,14 +56,14 @@ serverAPI['apps/list'] = function (data, message, send) {
 
 serverAPI['apps/restart'] = function (folderName, message) {
   console.dir(Silk.get('apps/list')[folderName]);
-  Silk.get('apps/list')[folderName].restart(function(err){
+  Silk.get('apps/list')[folderName].restart(function (err) {
     console.log('restarted', err);
   });
 };
 
 serverAPI['apps/start'] = function (path, message) {
-  Silk.get('apps/add')(path, function(err){
-    if(err){
+  Silk.get('apps/add')(path, function (err) {
+    if(err) {
       return;
     }
     console.log('started app');
@@ -83,7 +84,7 @@ serverAPI['apps/external/add'] = function (path, message, send) {
 
 // API for remote
 
-// once remote notifies Silk global of changes, 
+// once remote notifies Silk global of changes,
 // we can allow listeners.
 
 // start remote connection for port

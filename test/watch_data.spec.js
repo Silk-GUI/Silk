@@ -1,7 +1,7 @@
 var chai = require('chai'),
 	expect = chai.expect;
 var __root = '../';
-var watchData = require(__root + '/core/watch_data.js');
+var watchData = require(__root + '/core/api_data.js');
 var data;
 describe('watchData', function () {
 	beforeEach(function(){

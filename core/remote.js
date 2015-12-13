@@ -1,4 +1,5 @@
 var domain = require('domain'),
+    apiData = require('./api_data.js');
   ports = {},
   autoStart = false;
 /**
@@ -107,7 +108,7 @@ function removePort(port) {
   ports[port].close();
   delete ports[port];
 }
-Silk.set('remote/start', start);
-Silk.set('remote/close', close);
-Silk.set('remote/ports', ports);
-Silk.set('remote/addPort', addPort);
+apiData.set('remote/start', start);
+apiData.set('remote/close', close);
+apiData.set('remote/ports', ports);
+apiData.set('remote/addPort', addPort);

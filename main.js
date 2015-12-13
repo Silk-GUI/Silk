@@ -8,10 +8,6 @@ var logger = require('./core/console.js');
 
 process.title = "Silk GUI";
 
-// has info and state of various parts of Silk.  Used mainly be api.
-var WatchData = require('./core/watch_data.js');
-global.Silk = new WatchData();
-
 var app    = express(),
     server,
     wss,

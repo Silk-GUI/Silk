@@ -10,7 +10,8 @@ var fs            = require('fs'),
     chokidar      = require('chokidar'),
     child_process = require('child_process'),
     resolve       = require('resolve'),
-    log           = require('../console.js').log;
+    log           = require('../console.js').log,
+    apiData       = require('../api_data.js');
 /**
  * object of all apps
  */
@@ -248,7 +249,7 @@ function App(path, expressApp, urlPath) {
     }
 
     if(j.remote && 'port' in j.remote) {
-      Silk.get('remote/addPort')(j.remote.port);
+      apiData.get('remote/addPort')(j.remote.port);
     }
 
     j.folder = this.folder;

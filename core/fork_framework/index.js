@@ -3,6 +3,7 @@ var appLoader = require(__dirname + '/app_loader.js'),
     db        = require(__root + '/core/db.js'),
     methods   = require(__dirname + "/ws2fork_com.js"),
     log       = require('../console.js').log,
+    apiData   = require('../api_data.js'),
     connId    = 0,
     apps;
 
@@ -45,9 +46,9 @@ module.exports = function (app, wss, next) {
     next(err, appLoader.clean);
   });
 
-  Silk.set("apps/list", appLoader.apps);
-  Silk.set('apps/clean', appLoader.clean);
-  Silk.set('apps/add', appLoader.add);
+  apiData.set("apps/list", appLoader.apps);
+  apiData.set('apps/clean', appLoader.clean);
+  apiData.set('apps/add', appLoader.add);
   appLoader.on("added", function (app) {
     if(app.state === 'running' || app.state === 'starting') {
       methods.addFork(app.fork);

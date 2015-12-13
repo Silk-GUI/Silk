@@ -1,9 +1,9 @@
 /**
-* @file Constructer to Stores prop and value pairs and alerts listeners on change 
+* @file Constructer to Stores prop and value pairs and alerts listeners on change
 */
 
 /**
-* Stores prop and value pairs and alerts listeners on change 
+* Stores prop and value pairs and alerts listeners on change
 * @constructer
 */
 WatchData = function () {
@@ -65,4 +65,4 @@ WatchData = function () {
 	}.bind(this);
 };
 
-module.exports = WatchData;
+module.exports = new WatchData();
