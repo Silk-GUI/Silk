@@ -30,9 +30,13 @@ program
   .option('--devtools', 'Open nw.js dev tools')
   .parse(process.argv);
 
-/*jshint -W030, -W033 */
-program.dev === true ? global.debug = console.log : global.debug = function () {};
-/*jshint +W030, +W033 */
+
+if(program.dev === true){
+  global.debug = console.log;
+} else {
+  global.debug = function () {};
+}
+
 
 //loading spinner
 function Spinner() {
@@ -105,9 +109,9 @@ function start () {
    forkFramework(app, wss, function () {
         loader();
     });
-    
+
     forkFramework.startWindowManager(configJson.windowManager, app, function(e, d){
-       console.log('started app', e, d); 
+       console.log('started app', e, d);
     });
 
     require('./core/remote.js');
