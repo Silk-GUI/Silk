@@ -29,8 +29,7 @@ if(process.argv[1] === 'help' || process.argv[2] === 'help') {
   // silk help or npm start help was run.
   return program.help();
 }
-
-logger.logLevel = program.dev ? 0 : 1;
+logger.logLevel(program.dev ? 0 : 1);
 
 function start() {
   var spinner = new logger.Spinner('Starting Silk');
