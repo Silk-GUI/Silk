@@ -3,7 +3,8 @@ var db           = require(__root + '/core/db.js'),
     serverAPI    = {},
     requests     = [],
     externalApps = db.collection('external_apps'),
-    apiData      = require(__root + '/core/api_data.js');
+    apiData      = require(__root + '/core/api_data.js'),
+    lodash       = require('lodash');
 
 function Request(message, fork) {
   this.message = message;
@@ -52,6 +53,28 @@ serverAPI['apps/list'] = function (data, message, send) {
     });
   }
   return apiData.get('apps/clean');
+};
+
+serverAPI['apps/state'] = function (data, message, send) {
+  var clean = apiData.get('apps/clean');
+  var apps = apiData.get('apps/list');
+
+
+  var results = [];
+  if(message.type === 'listener') {
+    apiData.watch('apps/list', function () {
+      clean.forEach(function (app) {
+        app.state = apps[app.folder].state;
+        results.push(app);
+      });
+      send(null, results);
+    });
+  }
+  clean.forEach(function (app) {
+    app.state = apps[app.folder].state;
+    results.push(app);
+  });
+  return results;
 };
 
 serverAPI['apps/restart'] = function (folderName, message) {
