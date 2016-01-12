@@ -255,6 +255,7 @@ function App(path, expressApp, urlPath) {
     j.folder = this.folder;
     j.path = this.path;
     this.name = j.name;
+    j.id = this.id;
     this.clean = JSON.parse(JSON.stringify(j));
     next(void(0), j);
   }.bind(this);
