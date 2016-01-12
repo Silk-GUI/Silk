@@ -2,13 +2,14 @@ var __api = __dirname+"/client_api";
 var bowerstatic = require(__dirname+"/bower_static.js");
 var async = require("async");
 var fs = require("fs");
+var logger = require("./console.js").log;
 
 module.exports = function(req,res,next){
   res.setHeader('content-type', 'application/javascript');
 	bowerstatic.raw("/bc/eventEmitter",function(ee){
-    debug(ee);
+    logger.debug(ee);
 	bowerstatic.raw("/bc/rsvp",function(rsvp){
-    debug(rsvp);
+    logger.debug(rsvp);
   async.eachSeries([
 		ee,
 		rsvp,

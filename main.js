@@ -88,7 +88,10 @@ function start() {
   });
 
   forkFramework.startWindowManager(configJson.windowManager, app, function (e, d) {
-    console.log('started app', e, d);
+    if(e) {
+      console.log('error starting window manager');
+      console.log(e);
+    }
   });
 
   require('./core/remote.js');

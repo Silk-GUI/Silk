@@ -21,8 +21,7 @@ MethodCall.prototype.exec = function(){
     });
   }catch(e){
     console.log('error in method ' + this.name);
-    console.dir(e);
-    console.log(e.trace);
+    console.log(e.stack);
     return this.sendErr(e);
   }
   if(typeof result != "undefined")

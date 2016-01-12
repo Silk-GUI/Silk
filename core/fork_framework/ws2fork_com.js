@@ -78,6 +78,7 @@ methods.call = function (ws, message) {
     console.log("typeof: " + typeof message);
   }
   if (!(message.name in this.responders)) {
+    console.log("method not found", message);
     //console.log(JSON.stringify(message));
     return ws.write(JSON.stringify({
       id: message.id,

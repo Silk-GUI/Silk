@@ -9,7 +9,7 @@ var fs = require('fs'),
 /**
  * Wrapper around jsonFile to create file it
  * it doesn't exist and automatically save changes
- * @param {string] settings - json file with this name will be used/created.
+ * @param {string} settings - json file with this name will be used/created.
  * @constructor
  */
 function Settings (settings) {
