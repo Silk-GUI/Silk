@@ -33,14 +33,14 @@ function Spinner(message) {
 
 var log = {
   debug: function (message) {
-    if(logLevels.indexOf('debug') > logLevel) {
+    if(logLevels.indexOf('debug') < logLevel) {
       return;
     }
     process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + " \r");
     console.log(message);
   },
   info: function (message) {
-    if(logLevels.indexOf('info') > logLevel) {
+    if(logLevels.indexOf('info') < logLevel) {
       return;
     }
     process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + " \r");
@@ -48,7 +48,7 @@ var log = {
     console.info(message);
   },
   warn: function (message) {
-    if(logLevels.indexOf('warn') > logLevel) {
+    if(logLevels.indexOf('warn') < logLevel) {
       return;
     }
     process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + " \r");
@@ -56,7 +56,7 @@ var log = {
     console.warn(message);
   },
   error: function (message) {
-    if(logLevels.indexOf('error') > logLevel) {
+    if(logLevels.indexOf('error') < logLevel) {
       return;
     }
     process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + " \r");
@@ -67,5 +67,11 @@ var log = {
 
 module.exports = {
   log: log,
-  Spinner: Spinner
+  Spinner: Spinner,
+  logLevel: function (number) {
+    if(typeof number === 'undefined') {
+      return logLevel;
+    }
+    logLevel = number;
+  }
 };
