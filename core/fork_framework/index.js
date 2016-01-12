@@ -50,8 +50,9 @@ module.exports = function (app, wss, next) {
   apiData.set('apps/clean', appLoader.clean);
   apiData.set('apps/add', appLoader.add);
   appLoader.on("added", function (app) {
+    methods.addFork(app.fork);
     if(app.state === 'running' || app.state === 'starting') {
-      methods.addFork(app.fork);
+     // methods.addFork(app.fork);
       return;
     } else {
       app.once('ready', function (err) {
@@ -59,7 +60,7 @@ module.exports = function (app, wss, next) {
           console.log(err);
           return;
         }
-        methods.addFork(app.fork);
+       // methods.addFork(app.fork);
       });
     }
 
@@ -71,7 +72,7 @@ module.exports = function (app, wss, next) {
 
   wss.on('connection', function (conn) {
     conn.id = connId++;
-    debug("connected");
+    log.debug("connected");
     conn.on('data', function (message) {
 
       log.debug("websocket message: " + message);
@@ -110,8 +111,7 @@ module.exports.startWindowManager = function (path, expressApp, callback) {
     expressApp.get('/', function (req, res) {
       res.sendFile(path + "/public/index.html");
     });
-    //methods.addFork(app.fork);
-    console.log('window manager', e, d);
+
     app.start(function (e, d) {
       methods.addFork(app.fork);
       callback(e, d);
