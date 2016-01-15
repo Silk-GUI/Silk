@@ -49,7 +49,10 @@ module.exports = function (app, wss, next) {
   apiData.set("apps/list", appLoader.apps);
   apiData.set('apps/clean', appLoader.clean);
   apiData.set('apps/add', appLoader.add);
+
   appLoader.on("added", function (app) {
+    apiData.set('apps/clean', appLoader.clean);
+    apiData.set('apps/list', appLoader.apps);
     methods.addFork(app.fork);
     if(app.state === 'running' || app.state === 'starting') {
      // methods.addFork(app.fork);
@@ -68,6 +71,7 @@ module.exports = function (app, wss, next) {
 
   appLoader.on('change', function () {
     apiData.set('apps/clean', appLoader.clean);
+    apiData.set('apps/list', appLoader.apps);
   });
 
   wss.on('connection', function (conn) {

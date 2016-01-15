@@ -46,7 +46,6 @@ Request.prototype.exec = function () {
 
 //API for apps
 serverAPI['apps/list'] = function (data, message, send) {
-
   if(message.type === 'listener') {
     apiData.watch('apps/clean', function (prop, oldValue, currentValue) {
       send(null, currentValue);
@@ -58,12 +57,17 @@ serverAPI['apps/list'] = function (data, message, send) {
 serverAPI['apps/state'] = function (data, message, send) {
   var clean = apiData.get('apps/clean');
   var apps = apiData.get('apps/list');
+  console.log(message);
 
 
   var results = [];
   if(message.type === 'listener') {
+    console.log('listening to apps/clean');
+
     apiData.watch('apps/list', function () {
       clean.forEach(function (app) {
+        console.log('apps/clean changed');
+
         app.state = apps[app.folder].state;
         results.push(app);
       });
