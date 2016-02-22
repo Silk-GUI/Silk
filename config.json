@@ -8,5 +8,5 @@
 		"Silk-GUI/app-defaults",
 		"zodern/Silk-Tunnel-Client"
 	],
-	"windowManager": "/Users/Micaiah/dev/silk-wm/Sleek"
+	"windowManager": "Silk-GUI/Sleek"
 }
