@@ -40,7 +40,6 @@ Request.prototype.exec = function () {
     // nothing to send
     return;
   }
-  console.log(typeof error);
   this.send(error, result);
 };
 
