@@ -39,7 +39,7 @@
     "Silk"
   ],
   "optionalDependencies": {
-    "tty.js": "https://github.com/Silk-GUI/tty.js.git"
+    "tty.js": "Silk-GUI/tty.js.git"
   },
   "scripts": {
     "start": "node main.js",
