@@ -101,7 +101,12 @@ MessageRouter.prototype.routeMessage = function(message,user,retFn){
           retFn(message,user);
         };
         this._returns.on(message.id,fn);
-        message.user.on('close',this.removeListener.bind(this,message.id,fn));
+        try {
+          // throws when message router used for window.postMessage
+          message.user.on('close', this.removeListener.bind(this, message.id, fn));
+        } catch (e) {
+          console.log(e);
+        }
         break;
       case "abort":
         this._returns.removeAllListeners(message.id);
