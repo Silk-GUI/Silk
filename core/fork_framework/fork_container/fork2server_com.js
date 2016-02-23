@@ -41,7 +41,7 @@ MethodCall.prototype.sendResult = function (result){
     id: this.id,
     ws: this.ws.id,
     error: null,
-    data: result,
+    data: result
   }});
 };
 

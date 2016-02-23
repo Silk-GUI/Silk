@@ -75,7 +75,7 @@ serverAPI['apps/state'] = function (data, message, send) {
     });
   }
   clean.forEach(function (app) {
-    app.state = apps[app.folder].state;
+    app.state = apps[app.path].state;
     results.push(app);
   });
   return results;

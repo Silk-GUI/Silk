@@ -10,37 +10,42 @@ var appLoader = require(__dirname + '/app_loader.js'),
 // get list of external apps;
 var externalApps = db.collection("external_apps");
 
-function loadExternalApps() {
-  var externalList = externalApps.find();
+function loadExternalApps(app) {
 
   function externalApp(item) {
+    console.log('loading external app ' + item);
     appLoader.add(item.path, app, function (err, data) {
       console.log('apploader err ', err);
       console.log('appLoader data ', data);
     });
   }
 
-  externalList.toArray(function (err, docs) {
-    if(err) {
-      // the setting folder doesn't exist
-      if(err.code === 'ENOENT') {
-        var settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-        settingsDir += "/.silk-gui";
-        console.log('creating settings folder at ' + settingsDir);
-        var mkdirp = require('mkdirp');
-        mkdirp.sync(settingsDir + '/core/database');
-        // try again
-        return loadExternalApps();
+  externalApps.find()
+    .toArray(function (err, docs) {
+      if(err) {
+        // the setting folder doesn't exist
+        if(err.code === 'ENOENT') {
+          var settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+          settingsDir += "/.silk-gui";
+          console.log('creating settings folder at ' + settingsDir);
+          var mkdirp = require('mkdirp');
+          mkdirp.sync(settingsDir + '/core/database');
+          // try again
+          return loadExternalApps();
+        }
+
+        console.trace('err with external list', err);
+        return;
       }
-    }
-    for (var i = 0; i < docs.length; ++i) {
-      externalApp(item);
-    }
-  });
+      console.dir(docs);
+      for (var i = 0; i < docs.length; ++i) {
+        externalApp(docs[i]);
+      }
+    });
 }
 module.exports = function (app, wss, next) {
   // external apps
-  loadExternalApps();
+  loadExternalApps(app);
   //internal apps
   appLoader.compileFolder(__root + '/apps', app, function (err) {
     next(err, appLoader.clean);
@@ -55,7 +60,7 @@ module.exports = function (app, wss, next) {
     apiData.set('apps/list', appLoader.apps);
     methods.addFork(app.fork);
     if(app.state === 'running' || app.state === 'starting') {
-     // methods.addFork(app.fork);
+      // methods.addFork(app.fork);
       return;
     } else {
       app.once('ready', function (err) {
@@ -63,7 +68,7 @@ module.exports = function (app, wss, next) {
           console.log(err);
           return;
         }
-       // methods.addFork(app.fork);
+        // methods.addFork(app.fork);
       });
     }
 

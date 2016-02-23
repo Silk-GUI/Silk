@@ -59,7 +59,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
         }
         var index;
         var app = new App(folder + file, expressApp);
-        apps[app.folder] = app;
+        apps[app.path] = app;
         app.on('change', function (type, property, oldValue) {
           console.log('appLoader caught change event');
           appLoader.clean[index] = app.clean;
@@ -140,7 +140,7 @@ appLoader.add = function (path, expressApp, next) {
         }
         appLoader.emit('added', app);
         log.debug(app.name + ' is running');
-        next();
+        next(null, app);
 
       });
     });
@@ -194,7 +194,7 @@ function App(path, expressApp, urlPath) {
   watcher.on('change', function (path) {
     console.log('app.json changed');
     console.log(that.name);
-    init(function (err) {
+    that.init(function (err) {
       /**
        * Change event
        * Something changed in the app.json
