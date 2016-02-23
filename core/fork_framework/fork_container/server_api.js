@@ -4,6 +4,11 @@ var requests = {};
 var call = function (method, data, cb) {
   var id = new Date().getTime() + '-' + Math.random();
 
+  if(typeof data === 'function') {
+    cb = data;
+    data = null;
+  }
+
   requests[id] = {
     cb: cb,
     type: 'call'
@@ -36,7 +41,7 @@ var listen = function (method, data, cb) {
       type: 'listener'
     }
   });
-  
+
 };
 var removeListener = function (id) {
   var request = requests[id];
