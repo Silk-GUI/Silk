@@ -13,10 +13,12 @@ var externalApps = db.collection("external_apps");
 function loadExternalApps(app) {
 
   function externalApp(item) {
-    console.log('loading external app ' + item);
-    appLoader.add(item.path, app, function (err, data) {
-      console.log('apploader err ', err);
-      console.log('appLoader data ', data);
+    console.log('loading external app ' + item.path);
+    appLoader.add(item.path, app, {isExternal: true}, function (err, data) {
+      if(err) {
+        console.log('error loading app');
+        console.log(err);
+      }
     });
   }
 
@@ -37,7 +39,7 @@ function loadExternalApps(app) {
         console.trace('err with external list', err);
         return;
       }
-      console.dir(docs);
+      //console.dir(docs);
       for (var i = 0; i < docs.length; ++i) {
         externalApp(docs[i]);
       }
