@@ -10,6 +10,7 @@ var fs            = require('fs'),
     chokidar      = require('chokidar'),
     child_process = require('child_process'),
     resolve       = require('resolve'),
+    _path          = require('path'),
     log           = require('../console.js').log,
     apiData       = require('../api_data.js');
 /**
@@ -30,6 +31,7 @@ appLoader.clean = clean;
 appLoader.App = App;
 appLoader.apps = apps;
 
+var appFolder = _path.resolve(__dirname, '../../apps');
 module.exports = appLoader;
 
 /**
@@ -160,6 +162,11 @@ function App(path, expressApp, urlPath) {
   if(!urlPath) {
     urlPath = '';
   }
+
+  if(path.indexOf(appFolder) !== 0) {
+    this.isExternal = true;
+  }
+
   id += 1;
   this.id = id;
   this.json = {};
@@ -242,6 +249,7 @@ function App(path, expressApp, urlPath) {
       next(new Error(this.folder + ' app.json does not have a name'));
     }
 
+    //TODO: this should be done by the window manager
     if(j.url !== 'headless') {
       j.zIndex = 0;
       j.running = false;
@@ -257,6 +265,7 @@ function App(path, expressApp, urlPath) {
     this.name = j.name;
     j.id = this.id;
     this.clean = JSON.parse(JSON.stringify(j));
+    this.clean.isExternal = this.isExternal;
     next(void(0), j);
   }.bind(this);
 
