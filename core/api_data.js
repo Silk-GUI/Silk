@@ -49,7 +49,7 @@ WatchData = function () {
 	* @param {string} prop - name of property to return value for
 	*/
 	this.get = function (prop) {
-		return this.data[prop].value;
+		return this.data[prop]? this.data[prop].value : undefined;
 	}.bind(this);
 
 	/**
