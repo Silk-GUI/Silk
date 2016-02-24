@@ -59,7 +59,7 @@ var done = function (message) {
   try {
     requests[id].cb(error, result);
   } catch (e) {
-
+    console.log('error in callback', e.stack);
   }
 
   // call requests are deleted after first return

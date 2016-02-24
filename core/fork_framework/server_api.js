@@ -38,6 +38,7 @@ Request.prototype.exec = function () {
   // the api should use send().
   if(typeof error === "undefined" && typeof result === "undefined") {
     // nothing to send
+    console.log('nothing returned');
     return;
   }
   this.send(error, result);
@@ -81,7 +82,6 @@ serverAPI['apps/state'] = function (data, message, send) {
 };
 
 serverAPI['apps/restart'] = function (folderName, message) {
-  console.dir(apiData.get('apps/list')[folderName]);
   apiData.get('apps/list')[folderName].restart(function (err) {
     console.log('restarted', err);
   });
