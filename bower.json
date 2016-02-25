@@ -20,7 +20,8 @@
     "fontawesome": "*",
     "rsvp": "*",
     "eventEmitter": "*",
-    "jspath": "*"
+    "jspath": "*",
+    "sockjs-client": "*"
   },
   "resolutions": {
     "jquery": ">=1.9.1",
