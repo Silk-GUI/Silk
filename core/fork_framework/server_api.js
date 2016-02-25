@@ -87,12 +87,18 @@ serverAPI['apps/restart'] = function (folderName, message) {
   });
 };
 
-serverAPI['apps/start'] = function (path, message) {
+serverAPI['apps/add'] = function (path, message) {
   apiData.get('apps/add')(path, function (err) {
     if(err) {
       return;
     }
     console.log('started app');
+  });
+};
+
+serverAPI['apps/start'] = function (path, message, send) {
+  apiData.get('apps/list')[path].start(function (e, r) {
+    send(e, r);
   });
 };
 
