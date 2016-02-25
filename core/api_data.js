@@ -22,7 +22,7 @@ WatchData = function () {
 		if(listeners.length === 0){
 			return;
 		}
-		for(var i = 0; listeners < i; ++i) {
+		for(var i = 0; i < listeners.length; ++i) {
 			listeners[i](prop, oldValue, currentValue);
 		}
 	}.bind(this);
