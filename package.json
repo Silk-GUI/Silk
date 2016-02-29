@@ -24,7 +24,8 @@
     "resolve": "^1.1.6",
     "rsvp": "latest",
     "sockjs": "~0.3.12",
-    "tingodb": "^0.4.2"
+    "tingodb": "^0.4.2",
+    "silk-electron": "Silk-GUI/silk-electron"
   },
   "repository": {
     "type": "git",
