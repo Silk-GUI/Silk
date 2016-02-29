@@ -10,9 +10,10 @@ var fs            = require('fs'),
     chokidar      = require('chokidar'),
     child_process = require('child_process'),
     resolve       = require('resolve'),
-    _path          = require('path'),
+    _path         = require('path'),
     log           = require('../console.js').log,
-    apiData       = require('../api_data.js');
+    apiData       = require('../api_data.js'),
+    nextLoader    = require('../app_framework/loader.js');
 /**
  * object of all apps
  */
@@ -56,45 +57,54 @@ module.exports.compileFolder = function (folder, expressApp, next) {
     }
     // tries to create an app for each folder.
     async.filter(files, function (file, next) {
-      fs.exists(folder + file + '/app.json', function (exists) {
-        if(!exists) {
-          return next(new Error('app.json does not exist for ' + file));
-        }
-        var index;
-        var app = new App(folder + file, expressApp);
-        apps[app.path] = app;
-        app.on('change', function (type, property, oldValue) {
-          appLoader.clean[index] = app.clean;
-          /*
-           * Change event
-           * An app's properties change
-           * @event appLoader#change
-           */
-          appLoader.emit('change');
-        });
-        app.init(function (err) {
-          if(err) {
-            console.log(err);
-            return next(err);
-          }
-
-          app.start(function (err, result) {
-            if(err) {
-              log.debug('error starting ' + app.path, err);
-              return next(err);
-            }
-            if(app.clean.url !== 'headless') {
-              appLoader.clean.push(app.clean);
-              index = appLoader.clean.length - 1;
-            }
-            appLoader.emit('added', app);
-            log.debug(app.name + ' is running');
-            next();
-
-          });
-        });
-
-      });
+      appLoader.add(folder + file, expressApp, next);
+      //fs.exists(folder + file + '/app.json', function (exists) {
+      //  if(!exists) {
+      //    return next(new Error('app.json does not exist for ' + file));
+      //  }
+      //  var index;
+      //  var app = new App(folder + file, expressApp);
+      //  apps[app.path] = app;
+      //  app.on('change', function (type, property, oldValue) {
+      //    appLoader.clean[index] = app.clean;
+      //    /*
+      //     * Change event
+      //     * An app's properties change
+      //     * @event appLoader#change
+      //     */
+      //    appLoader.emit('change', app);
+      //  });
+      //  app.init(function (err) {
+      //    if(err) {
+      //      console.log(err);
+      //      return next(err);
+      //    }
+      //
+      //    if(app.clean.url !== 'headless') {
+      //      appLoader.clean.push(app.clean);
+      //      index = appLoader.clean.length - 1;
+      //    }
+      //    appLoader.emit('added', app);
+      //   //log.debug(app.name + ' is running');
+      //    next();
+      //
+      //    //app.start(function (err, result) {
+      //    //  if(err) {
+      //    //    log.debug('error starting ' + app.path, err);
+      //    //    return next(err);
+      //    //  }
+      //    //  if(app.clean.url !== 'headless') {
+      //    //    appLoader.clean.push(app.clean);
+      //    //    index = appLoader.clean.length - 1;
+      //    //  }
+      //    //  appLoader.emit('added', app);
+      //    //  log.debug(app.name + ' is running');
+      //    //  next();
+      //    //
+      //    //});
+      //  });
+      //
+      //});
     }, function (err, result) {
       next(err, result);
     });
@@ -106,31 +116,49 @@ module.exports.compileFolder = function (folder, expressApp, next) {
  * Compiles an app
  * @param {string} path - path to app's folder. Do not end with a /
  * @param {object} expressApp - an express app that will be used for routing
- * @param {object} options - has property "isExternal"
  * @param {function} next - callback
  */
-appLoader.add = function (path, expressApp, options, next) {
+appLoader.add = function (path, expressApp, next) {
+
+  /**
+   * If the app.json doesn't exist, we check for a package.json.
+   * If it does exist we send the path to the new app loader.
+   */
+  function tryNextLoader() {
+    fs.exists(path + '/package.json', function (exists) {
+      console.log("exists", exists);
+      if(!exists) {
+        return next(new Error("app doesn't have an app.json"));
+      }
+      nextLoader.add(path, expressApp, function(e, app) {
+        if(e) {
+          return;
+        }
+        //console.log('received result', e, app);
+        console.log(path);
+        apps[app.path] = app;
+        appLoader.clean.push(app.clean());
+      });
+    });
+  }
+
   log.debug(path + '/app.json');
   fs.exists(path + '/app.json', function (exists) {
     if(!exists) {
-      return next(new Error("app doesn't have an app.json"));
+      return tryNextLoader();
     }
     var index;
     var app = new App(path, expressApp);
     apps[app.path] = app;
 
-    if(options && options.isExternal) {
-      app.isExternal = true;
-    }
-
-    app.on('change', function (type, property, oldValue) {
+    app.on('change', function () {
       appLoader.clean[index] = app.clean;
       /*
        * Change event
        * An app's properties change
        * @event appLoader#change
        */
-      appLoader.emit('change');
+      appLoader.emit('change', app);
     });
     app.init(function (err) {
       if(err) {
@@ -138,19 +166,26 @@ appLoader.add = function (path, expressApp, options, next) {
         return next(err);
       }
 
-      app.start(function (err, result) {
-        if(err) {
-          return next(err);
-        }
-        if(app.clean.url !== 'headless') {
-          appLoader.clean.push(app.clean);
-          index = appLoader.clean.length - 1;
-        }
-        appLoader.emit('added', app);
-        log.debug(app.name + ' is running');
-        next(null, app);
+      if(app.clean.url !== 'headless') {
+        appLoader.clean.push(app.clean);
+        index = appLoader.clean.length - 1;
+      }
+      appLoader.emit('added', app);
+      next(null, app);
 
-      });
+      //app.start(function (err, result) {
+      //  if(err) {
+      //    return next(err);
+      //  }
+      //  if(app.clean.url !== 'headless') {
+      //    appLoader.clean.push(app.clean);
+      //    index = appLoader.clean.length - 1;
+      //  }
+      //  appLoader.emit('added', app);
+      //  log.debug(app.name + ' is running');
+      //  next(null, app);
+      //
+      //});
     });
   });
 };
@@ -265,7 +300,7 @@ function App(path, expressApp, urlPath) {
     if(j.remote && 'port' in j.remote) {
       try {
         apiData.get('remote/addPort')(j.remote.port);
-      } catch(e) {
+      } catch (e) {
         // sometimes the remote/addPort is not added yet.
       }
     }
@@ -486,13 +521,13 @@ function App(path, expressApp, urlPath) {
             that.emit('change');
             return next(new Error(that.name + ' sending messages before initialization'));
           }
+          console.log('=== running');
           that.state = 'running';
           /*
            * change event
            * State change
            * @event App#change
            */
-          debugger;
           that.emit('change');
           next();
         });

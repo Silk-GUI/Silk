@@ -14,7 +14,7 @@ function loadExternalApps(app) {
 
   function externalApp(item) {
     console.log('loading external app ' + item.path);
-    appLoader.add(item.path, app, {isExternal: true}, function (err, data) {
+    appLoader.add(item.path, app, function (err, data) {
       if(err) {
         console.log('error loading app');
         console.log(err);
@@ -60,7 +60,6 @@ module.exports = function (app, wss, next) {
   appLoader.on("added", function (app) {
     apiData.set('apps/clean', appLoader.clean);
     apiData.set('apps/list', appLoader.apps);
-    methods.addFork(app.fork);
     if(app.state === 'running' || app.state === 'starting') {
       // methods.addFork(app.fork);
       return;
@@ -76,7 +75,13 @@ module.exports = function (app, wss, next) {
 
   });
 
-  appLoader.on('change', function () {
+  appLoader.on('change', function (app) {
+    console.log('change detected');
+
+    if(app.state === 'running' || app.state === 'starting') {
+      methods.addFork(app.fork);
+    }
+
     apiData.set('apps/clean', appLoader.clean);
     apiData.set('apps/list', appLoader.apps);
   });
@@ -125,6 +130,7 @@ module.exports.startWindowManager = function (path, expressApp, callback) {
 
     app.start(function (e, d) {
       methods.addFork(app.fork);
+      console.log('app running');
       callback(e, d);
     });
 
