@@ -64,11 +64,10 @@ serverAPI['apps/state'] = function (data, message, send) {
   if(message.type === 'listener') {
     console.log('listening to apps/clean');
 
-    apiData.watch('apps/list', function () {
+    apiData.watch('apps/list', function (prop, oldValue, currentValue) {
       clean.forEach(function (app) {
         console.log('apps/clean changed');
-
-        app.state = apps[app.folder].state;
+        app.state = currentValue[app.path].state;
         results.push(app);
       });
       send(null, results);
