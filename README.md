@@ -1,21 +1,22 @@
 # Silk
 
-GUI For Developers (and Node OS)
+GUI For Developers and Node OS.
 
 [![David](https://img.shields.io/david/Silk-GUI/Silk.svg?style=flat-square)](https://david-dm.org/Silk-GUI/Silk) [![Travis](https://img.shields.io/travis/Silk-GUI/Silk.svg?style=flat-square)](https://travis-ci.org/Silk-GUI/Silk)
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Silk-GUI/Silk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://img.shields.io/gitter/room/Silk-GUI/Silk.svg?style=flat-square)](https://gitter.im/Silk-GUI/Silk?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![npm](https://img.shields.io/npm/dm/silk-gui.svg?style=flat-square)](https://www.npmjs.com/package/silk-gui) 
 
-
-### Plans
+### Goals
 - Fast and Lightweight
 - Designed for Developers
-- Experiment with new ideas
-- Client (window manager and apps) don't care if it is on the same or a different computer than the server
+- Modular
+- Just work (try to fix problems automatically, or, if unable, explain how to fix them)
+- Enhance your productivity
+- Window Manager's and app's client can run on different computer than server
 
 [Roadmap](https://github.com/zodern/Silk/wiki/Roadmap)
 
-## To Install
+## Get started
 ```
 npm i -g silk-gui 
 silk
@@ -29,38 +30,45 @@ silk - Starts silk
     -o - opens Silk GUI in a full screen window
 ```
 
+Open `localhost:3000` or the remote url in a web browser.
+
+## Apps
+
 [Available Apps](https://github.com/zodern/Silk/wiki/Apps)
+
+Install apps using the App Manager.
 
 ## Create an App
 
-Silk helps you create apps.
+It is simple to create an app for Silk.
 [Get Started!](https://github.com/zodern/Silk/wiki/Basics-Of-Making-an-App)
  
 ## How It Works
 
 The core does basically three things:
 
-1. Make the window manager available at localhost:3000
-2. Handle the apps. This includes validating and starting apps, installing their dependencies, and making it easier to debug.
-3. Provide an api. The server api allows apps to access the core. The client api helps the front end of apps to communicate with their server and the window manager.
+1. Routing. Though apps using the new app framework have their own server and router.
+2. Manage the apps.
+3. Provide an api. There is a client api for apps to interact with the window manager and their server, as well as a server api for interacting with the core.
 
-The window manager takes care of what is shown on the screen. The window manager that is included with Silk GUI is  [Sleek](https://github.com/Silk-GUI/Sleek).
+The window manager that is included with Silk GUI by default is  [Sleek](https://github.com/Silk-GUI/Sleek).
 
-Everything else is done with apps.  Headless apps are similar to services in Windows and take care of other features of the OS that is not done in the core, such as the app defaults.
+All of the remainaing functionality is handled by apps, such as the app defaults app.
 
 ## Contribute
 
 All contributions are greatly appreciated.  
 
-To contribute to core:
+To run locally:
 ```
 git clone https://github.com/zodern/Silk.git
 cd Silk
 npm install
 bower install
 ```
+## Related Projects
 
-The included apps are in their own repository.
+Apps:
 
 - [File Explorer](https://github.com/Silk-GUI/file-explorer)
 - [Text Editor](https://github.com/Silk-GUI/text-editor)
@@ -70,6 +78,6 @@ The included apps are in their own repository.
 - [App Defaults](https://github.com/Silk-GUI/app-defaults)
 - [Tunnel Client](https://github.com/formula1/Silk-Tunnel-Client)
 
-The window manager is [here](https://github.com/Silk-GUI/Sleek)
+[Window Manager](https://github.com/Silk-GUI/Sleek)
 
-The remote server that is used with the Tunnel Client is [here](https://github.com/formula1/Silk-Server)
+[Remote Server](https://github.com/formula1/Silk-Server)
