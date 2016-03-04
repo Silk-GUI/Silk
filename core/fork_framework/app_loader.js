@@ -138,6 +138,7 @@ appLoader.add = function (path, expressApp, next) {
         //console.log('received result', e, app);
         apps[app.path] = app;
         appLoader.clean.push(app.clean());
+        next();
       });
     });
   }
