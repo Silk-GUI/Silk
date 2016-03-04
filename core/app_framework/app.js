@@ -9,7 +9,8 @@ var async         = require('async'),
 
 var silkElectron = require('silk-electron');
 
-var nextId = 0;
+// start higher to not conflict with old app loader
+var nextId = 500;
 
 /**
  * Manages a single app
@@ -143,10 +144,16 @@ App.prototype.start = function start(next) {
   };
   self.fork = child_process.fork(this.path, [], forkOpts);
 
-  setTimeout(function () {
-    next();
-    silkElectron.remove(self.path);
-  }, 3000);
+  self.fork.once('message', function (message) {
+    if(message.cmd === 'ready') {
+      self.state = 'running';
+
+      silkElectron.remove(self.path);
+
+      next();
+
+    }
+  });
 
 };
 
