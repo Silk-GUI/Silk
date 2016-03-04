@@ -1,3 +1,25 @@
+v. Next
+
+Core
+- External apps api. External apps are apps that are located outside of the app folder.
+- Setup command to install default apps and window manager
+- Apps are in separate repositories but are bundled when publishing
+- App's url contains their id
+- Npm Deps are installed in the app's folder
+- Database stored in ~/.silk-gui
+- App Manager more reliable
+- Url to load in browser is always shown correctly
+- Window Manager is loaded as app
+- Improve error messages when failed installing bower deps for app
+- Only install missing bower deps
+- Remove globals
+- Add server api to get state of apps
+- Add apps/add server api which does what apps/start formerly did
+- apps/start now starts an already added app
+- Fix changed events in app loader
+- Apps are not started automatically. The window manager has to use server apis to start an app.
+- New app framework that is compatible with electron
+
 v.0.4
 Core
 - Switch to sockjs
