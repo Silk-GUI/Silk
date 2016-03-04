@@ -130,7 +130,6 @@ module.exports.startWindowManager = function (path, expressApp, callback) {
 
     app.start(function (e, d) {
       methods.addFork(app.fork);
-      console.log('app running');
       callback(e, d);
     });
 

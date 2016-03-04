@@ -126,16 +126,16 @@ appLoader.add = function (path, expressApp, next) {
    */
   function tryNextLoader() {
     fs.exists(path + '/package.json', function (exists) {
-      console.log("exists", exists);
       if(!exists) {
         return next(new Error("app doesn't have an app.json"));
       }
+      log.debug("Attempting to use new app loader");
+
       nextLoader.add(path, expressApp, function(e, app) {
         if(e) {
           return;
         }
         //console.log('received result', e, app);
-        console.log(path);
         apps[app.path] = app;
         appLoader.clean.push(app.clean());
       });
@@ -521,7 +521,6 @@ function App(path, expressApp, urlPath) {
             that.emit('change');
             return next(new Error(that.name + ' sending messages before initialization'));
           }
-          console.log('=== running');
           that.state = 'running';
           /*
            * change event

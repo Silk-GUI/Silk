@@ -15,7 +15,6 @@ var nextId = 0;
  * will handle events. If that is not needed this can be used directly.
  */
 function App(path, expressApp, next) {
-  console.log('--- loading app ---');
   var self = this;
 
   self.id = nextId;
