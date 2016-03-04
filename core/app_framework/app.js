@@ -144,11 +144,12 @@ App.prototype.start = function start(next) {
   };
   self.fork = child_process.fork(this.path, [], forkOpts);
 
+  setTimeout(function () {
+    silkElectron.remove(self.path);
+  }, 2000);
   self.fork.once('message', function (message) {
     if(message.cmd === 'ready') {
       self.state = 'running';
-
-      silkElectron.remove(self.path);
 
       next();
 
