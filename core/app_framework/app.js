@@ -22,8 +22,8 @@ function App(path, expressApp, next) {
 
   self.state = 'stopped';
   self.path = path;
-  self.expressApp = expressApp;
   self.packageJson = {};
+  self.expressApp = expressApp;
 
   process.nextTick(self.init.bind(self, next));
 
@@ -47,7 +47,14 @@ App.prototype.loadJSON = function loadJSON(next) {
       self.name = j.name;
       self.title = self.name;
       self.url = j.silk.url;
-      self.icon = pathUtil.resolve(self.path, self.icon || '');
+      self.icon = j.icon;
+
+      self.expressApp.get('/icon/' + self.name, function (req, res) {
+        res.sendfile(pathUtil.resolve(self.path, self.icon), function () {
+         res.end();
+        });
+      });
+
     } catch (e) {
       console.log(e);
       return next(new Error('Error parsing package.json.'));
@@ -71,10 +78,11 @@ App.prototype.init = function init(next) {
 App.prototype.clean = function clean() {
   var self = this;
   return {
+    name: self.name,
     url: self.url,
     title: self.title,
     path: self.path,
-    icon: self.icon
+    icon: '/icon/' + self.name
   };
 };
 
