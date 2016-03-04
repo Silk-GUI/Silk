@@ -65,6 +65,7 @@ serverAPI['apps/state'] = function (data, message, send) {
     console.log('listening to apps/clean');
 
     apiData.watch('apps/list', function (prop, oldValue, currentValue) {
+      results = [];
       clean.forEach(function (app) {
         console.log('apps/clean changed');
         app.state = currentValue[app.path].state;
