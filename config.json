@@ -1,13 +1,13 @@
 {
-	"apps" : [
-		"Silk-GUI/text-editor",
-		"Silk-GUI/terminal",
-		"Silk-GUI/task-manager",
-		"Silk-GUI/file-explorer",
-		"Silk-GUI/appManager",
-		"Silk-GUI/app-defaults",
-		"zodern/Silk-Tunnel-Client",
-        "zodern/stretto"
-	],
 	"windowManager": "Silk-GUI/Sleek"
+  "apps": [
+    "Silk-GUI/text-editor",
+    "Silk-GUI/terminal",
+    "Silk-GUI/task-manager",
+    "Silk-GUI/file-explorer",
+    "Silk-GUI/appManager",
+    "Silk-GUI/app-defaults",
+    "zodern/Silk-Tunnel-Client",
+    "zodern/stretto"
+  ],
 }
