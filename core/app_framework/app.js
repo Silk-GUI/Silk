@@ -3,7 +3,9 @@ var async         = require('async'),
     fs            = require('fs'),
     util          = require('util'),
     pathUtil      = require('path'),
-    child_process = require('child_process');
+    child_process = require('child_process'),
+    lodash        = require('lodash'),
+    npmi          = require('npmi');
 
 var silkElectron = require('silk-electron');
 
@@ -51,7 +53,7 @@ App.prototype.loadJSON = function loadJSON(next) {
 
       self.expressApp.get('/icon/' + self.name, function (req, res) {
         res.sendfile(pathUtil.resolve(self.path, self.icon), function () {
-         res.end();
+          res.end();
         });
       });
 
@@ -63,9 +65,38 @@ App.prototype.loadJSON = function loadJSON(next) {
   });
 };
 
+App.prototype.installDeps = function installDeps(next) {
+  var self = this;
+  fs.readdir(self.path + '/node_modules', function (e, r) {
+    if((e && e.code === 'ENOENT') || (r.length < lodash.keys(self.packageJson.dependencies).length / 2)) {
+      console.log('installing deps');
+      if(self.packageJson.scripts && self.packageJson.scripts['setup-silk']) {
+        child_process.exec('npm run setup-silk', function () {
+          console.log('finished npm run setup-silk');
+        });
+      } else if(self.packageJson.scripts && self.packageJson.scripts.setup) {
+        child_process.exec('npm run setup', {
+          cwd: self.path
+        }, function () {
+          console.log('finished npm run setup');
+        });
+      } else {
+        npmi({
+          path: self.path
+        }, function (err, result) {
+          console.log(err, result);
+        });
+      }
+
+    } else {
+      return next(e);
+    }
+  });
+};
+
 App.prototype.init = function init(next) {
   var self = this;
-  async.series([self.loadJSON.bind(self)], function (err) {
+  async.series([self.loadJSON.bind(self), self.installDeps.bind(self)], function (err) {
     if(err) {
       console.log('error loading', self);
       console.log(err);
