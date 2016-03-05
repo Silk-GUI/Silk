@@ -27,7 +27,8 @@ program
 
 if(process.argv[1] === 'help' || process.argv[2] === 'help') {
   // silk help or npm start help was run.
-  return program.help();
+  program.help();
+  process.exit(0);
 }
 logger.logLevel(program.dev ? 0 : 1);
 

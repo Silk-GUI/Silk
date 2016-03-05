@@ -18,3 +18,5 @@ window-manager/
 # Visual Studio Code
 .vscode/*
 typings/*
+
+docs/hexo/node_modules/*
