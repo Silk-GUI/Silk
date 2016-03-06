@@ -110,6 +110,7 @@ App.prototype.init = function init(next) {
 App.prototype.clean = function clean() {
   var self = this;
   return {
+    id: self.id,
     name: self.name,
     url: self.url,
     title: self.title,
