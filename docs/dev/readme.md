@@ -1,12 +1,9 @@
-title: Dev Docs
-layout: page
----
-
 This guide will help you create an app for Silk GUI.
 
 Currently, there are two ways to create an app in Silk
-- the old fork framework. Apps have an app.json
-- the new app loader which is compatible with electron. Apps have a package.json
+
+- The old fork framework. Apps have an app.json and follow a certain structure.
+- The new app loader which is compatible with electron. Apps have a package.json.
 
 The fork framework will be removed after all core apps have been migrated,
 so this guide will cover the app framework.
@@ -24,6 +21,20 @@ want a graphical way to remotely access a server. The third is users of NodeOS.
 - If your app would be useful while accessing a server, Silk GUI is a perfect
 platform. 
 - If your app is a normal desktop app, you will reach an additional group of people. 
-Also, your app will run on other linux GUIs, OSX, and windows with no modifications.
+Also, your app will run on linux, OSX, and windows with no modifications.
 
-[First step - download boilerplate code](boilerplate.html)
+### Step 1 - Download Boilerplate
+
+__Prerequisites__ You need to have this software installed before continuing
+
+- [Git](http://git-scm.com/)
+- [Node.js](https://nodejs.org/)
+
+Next, open the terminal and type:
+
+```bash 
+git clone https://github.com/Silk-GUI/silk-boilerplate.git
+cd silk-boilerplate
+npm install
+```
+
