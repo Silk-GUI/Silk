@@ -22,7 +22,6 @@ program
   .option('-r, --remote', 'Remotely access Silk')
   .option('-d, --dev', 'Show debug messages')
   .option('-o, --open', 'Open Silk in a window')
-  .option('--devtools', 'Open nw.js dev tools')
   .parse(process.argv);
 
 if(process.argv[1] === 'help' || process.argv[2] === 'help') {
@@ -102,7 +101,7 @@ function start() {
   }
 
   if(program.open) {
-    require('./core/nw/open.js')(program.devtools);
+    require('./core/electron/open.js')(program.devtools);
   }
 }
 start();
