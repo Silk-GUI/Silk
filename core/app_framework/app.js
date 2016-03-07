@@ -5,7 +5,8 @@ var async         = require('async'),
     pathUtil      = require('path'),
     child_process = require('child_process'),
     lodash        = require('lodash'),
-    npmi          = require('npmi');
+    npmi          = require('npmi'),
+    methods       = require('../fork_framework/ws2fork_com.js');
 
 var silkElectron = require('silk-electron');
 
@@ -147,14 +148,13 @@ App.prototype.start = function start(next) {
     stdio: 'pipe'
   };
   self.fork = child_process.fork(this.path, [], forkOpts);
-
+  methods.addFork(self.fork);
   setTimeout(function () {
     silkElectron.remove(self.path);
   }, 2000);
   self.fork.on('message', function (message) {
     if(message.cmd === 'ready') {
       self.state = 'running';
-
       next();
       self.fork.removeAllListeners();
 
