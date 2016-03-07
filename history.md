@@ -1,4 +1,4 @@
-v. Next
+v.0.5.0
 
 Core
 - External apps api. External apps are apps that are located outside of the app folder.
