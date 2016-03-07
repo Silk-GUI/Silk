@@ -18,7 +18,9 @@ Core
 - apps/start now starts an already added app
 - Fix changed events in app loader
 - Apps are not started automatically. The window manager has to use server apis to start an app.
+- Headless apps always run
 - New app framework that is compatible with electron
+- Use electron instead of nw.js when silk runs with `--open` option.
 
 v.0.4
 Core
