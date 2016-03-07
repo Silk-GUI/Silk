@@ -148,11 +148,12 @@ App.prototype.start = function start(next) {
   setTimeout(function () {
     silkElectron.remove(self.path);
   }, 2000);
-  self.fork.once('message', function (message) {
+  self.fork.on('message', function (message) {
     if(message.cmd === 'ready') {
       self.state = 'running';
 
       next();
+      self.fork.removeAllListeners();
 
     }
   });
