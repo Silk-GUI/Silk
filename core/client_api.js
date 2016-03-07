@@ -6,7 +6,7 @@ var logger = require("./console.js").log;
 
 module.exports = function(req,res,next){
   res.setHeader('content-type', 'application/javascript');
-	bowerstatic.raw("/bc/eventEmitter",function(ee){
+	bowerstatic.raw("/bc/eventEmitter" ,function(ee){
     logger.debug(ee);
 	bowerstatic.raw("/bc/rsvp",function(rsvp){
     logger.debug(rsvp);
