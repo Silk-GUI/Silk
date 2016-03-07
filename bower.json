@@ -18,7 +18,7 @@
   "dependencies": {
     "jschannel": "*",
     "fontawesome": "*",
-    "rsvp": "*",
+    "rsvp": "3.0.16",
     "eventEmitter": "*",
     "jspath": "*",
     "sockjs-client": "*"
