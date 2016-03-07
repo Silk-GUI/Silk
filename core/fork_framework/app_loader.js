@@ -127,7 +127,8 @@ appLoader.add = function (path, expressApp, next) {
   function tryNextLoader() {
     fs.exists(path + '/package.json', function (exists) {
       if(!exists) {
-        return next(new Error("app doesn't have an app.json"));
+        console.log(path);
+        return next(new Error("app doesn't have an app.json or package.json"));
       }
       log.debug("Attempting to use new app loader");
 
@@ -170,6 +171,12 @@ appLoader.add = function (path, expressApp, next) {
       if(app.clean.url !== 'headless') {
         appLoader.clean.push(app.clean);
         index = appLoader.clean.length - 1;
+      } else {
+        // headless apps need to always run
+        app.start(function (err, result){
+          console.log("started" + app.path);
+          console.log(err, result);
+        });
       }
       appLoader.emit('added', app);
       next(null, app);
