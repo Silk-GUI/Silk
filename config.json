@@ -1,5 +1,5 @@
 {
-	"windowManager": "Silk-GUI/Sleek"
+  "windowManager": "Silk-GUI/Sleek",
   "apps": [
     "Silk-GUI/text-editor",
     "Silk-GUI/terminal",
@@ -9,5 +9,5 @@
     "Silk-GUI/app-defaults",
     "zodern/Silk-Tunnel-Client",
     "zodern/stretto"
-  ],
+  ]
 }

@@ -74,18 +74,21 @@ App.prototype.installDeps = function installDeps(next) {
       if(self.packageJson.scripts && self.packageJson.scripts['setup-silk']) {
         child_process.exec('npm run setup-silk', function () {
           console.log('finished npm run setup-silk');
+          next();
         });
       } else if(self.packageJson.scripts && self.packageJson.scripts.setup) {
         child_process.exec('npm run setup', {
           cwd: self.path
         }, function () {
           console.log('finished npm run setup');
+          next();
         });
       } else {
         npmi({
           path: self.path
         }, function (err, result) {
           console.log(err, result);
+          next(err);
         });
       }
 
