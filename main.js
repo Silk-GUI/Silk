@@ -6,102 +6,57 @@ var program = require('commander');
 var configJson = require('./config.json');
 var logger = require('./core/console.js');
 var apiData = require('./core/api_data.js');
+var endedWith = require('./core/util/ended_with.js');
+
+//commands
+var run = require('./core/commands/run.js'),
+    addApp = require('./core/commands/add_app.js'),
+    removeApp = require('./core/commands/remove_app.js');
 
 process.title = "Silk GUI";
 
-var app    = express(),
-    server,
-    wss,
-    windows,
-    url,
-    toLoad = 2,
-    loaded = 0;
+
 
 program
   .version('0.5.2')
   .option('-r, --remote', 'Remotely access Silk')
   .option('-d, --dev', 'Show debug messages')
-  .option('-o, --open', 'Open Silk in a window')
+  .option('-o, --open', 'Open Silk in a window');
+
+program
+  .command('run')
+  .description('Starts silk. Default command.')
+  .action(run);
+
+program
+  .command('add-app [path]')
+  .description('add app')
+  .action(addApp);
+
+program
+  .command('remove-app [path]')
+  .description('remove app')
+  .action(removeApp);
+
+program
   .parse(process.argv);
 
-if(process.argv[1] === 'help' || process.argv[2] === 'help') {
+var lastArgv = process.argv[process.argv.length -1];
+//console.log(lastArgv);
+if(lastArgv === 'help' || lastArgv === 'help') {
   // silk help or npm start help was run.
   program.help();
   process.exit(0);
 }
-logger.logLevel(program.dev ? 0 : 1);
 
-function start() {
-  var spinner = new logger.Spinner('Starting Silk');
-  spinner.start();
 
-  // hides spinner and shows url when finished loading;
-  function loader() {
-    loaded += 1;
-    if(loaded === toLoad) {
-      spinner.stop();
-      process.stdout.write('\r ' + url);
-      console.log('');
-    }
-  }
-
-  // static files for client
-  app.get(/^\/bc\//, require(__root + "/core/bower_static.js"));
-  app.get("/api.js", require(__root + "/core/client_api.js"));
-
-  server = app.listen(3000, function (err) {
-
-    var address = server.address();
-    url = 'Silk at http://localhost:' + address.port;
-    loader();
-  });
-
-  server.on('error', function (err){
-    if(err.code === 'EADDRINUSE') {
-      console.log('Another process is using port 3000');
-    } else {
-      console.trace(err);
-    }
-    process.exit();
-  });
-
-  var sockOptions = {
-    sockjs_url: '//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js'
-  };
-
-  if(!program.dev) {
-    sockOptions.log = function (severity, message) {
-      if(severity === 'error') {
-        console.log(message);
-      }
-    };
-  }
-
-  wss = SockJS.createServer(sockOptions);
-  wss.installHandlers(server, {
-    prefix: '/ws'
-  });
-
-  var forkFramework = require(__root + "/core/fork_framework");
-  forkFramework(app, wss, function () {
-    loader();
-  });
-
-  forkFramework.startWindowManager(configJson.windowManager, app, function (e, d) {
-    if(e) {
-      console.log('error starting window manager');
-      console.log(e);
-    }
-  });
-
-  require('./core/remote.js');
-
-  if(program.remote) {
-    apiData.get('remote/start')(true);
-  }
-
-  if(program.open) {
-    require('./core/electron/open.js')(program.devtools);
-  }
+// Silk was run with no command, so we do the default
+// Setting a default command appears to be broken in commander.js
+// so we implement it ourselves.
+if(lastArgv === 'silk-gui') {
+  console.log('no command');
+} else if(endedWith(lastArgv, 'main.js')){
+  run();
 }
-start();
+
+logger.logLevel(program.dev ? 0 : 1);
