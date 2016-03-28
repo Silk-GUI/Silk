@@ -12,7 +12,7 @@ function addApp(path) {
       console.log(err);
       return;
     }
-    if(data != null) {
+    if(data !== null) {
       console.log('app already added');
       return;
     }

@@ -57,12 +57,9 @@ serverAPI['apps/list'] = function (data, message, send) {
 serverAPI['apps/state'] = function (data, message, send) {
   var clean = apiData.get('apps/clean');
   var apps = apiData.get('apps/list');
-  console.log(message);
-
 
   var results = [];
   if(message.type === 'listener') {
-    console.log('listening to apps/clean');
 
     apiData.watch('apps/list', function (prop, oldValue, currentValue) {
       results = [];

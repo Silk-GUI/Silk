@@ -13,7 +13,7 @@ var externalApps = db.collection("external_apps");
 function loadExternalApps(app) {
 
   function externalApp(item) {
-    console.log('loading external app ' + item.path);
+    log.debug('loading external app ' + item.path);
     appLoader.add(item.path, app, function (err, data) {
       if(err) {
         console.log('error loading app');
@@ -76,7 +76,6 @@ module.exports = function (app, wss, next) {
   });
 
   appLoader.on('change', function (app) {
-    console.log('change detected');
 
     if(app.state === 'running' || app.state === 'starting') {
       methods.addFork(app.fork);

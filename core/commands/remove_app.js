@@ -1,11 +1,11 @@
 var db = require('../db.js');
 
-var externalApps = db.collection("external_apps");
+var externalApps = db.collections.appId;
 
 function removeApp (path) {
   console.log('removing app ' + path);
   externalApps.remove({path: path}, function () {
-    console.log('finished')
+    console.log('finished');
   });
 }
 
