@@ -6,7 +6,8 @@ var async         = require('async'),
     child_process = require('child_process'),
     lodash        = require('lodash'),
     npmi          = require('npmi'),
-    methods       = require('../fork_framework/ws2fork_com.js');
+    methods       = require('../fork_framework/ws2fork_com.js'),
+    db            = require('../db.js');
 
 var silkElectron = require('silk-electron');
 
@@ -34,6 +35,26 @@ function App(path, expressApp, next) {
 }
 
 util.inherits(App, events.EventEmitter);
+
+/**
+ * Loads the app's id from the database
+ * @param next
+ */
+App.prototype.loadId = function loadId(next) {
+  var self = this;
+  db.collections.appId.findOne({path: self.path}, function (err, data) {
+    console.log(err, data);
+    if(data == undefined) {
+      db.collections.appId.insert({path: self.path}, function (err, document) {
+        self.id = document._id;
+        next(err, document._id);
+      });
+    } else {
+      self.id = data._id;
+      next(err, data._id);
+    }
+  });
+};
 
 /**
  * Loads the package.json in the app's directory.
@@ -101,12 +122,13 @@ App.prototype.installDeps = function installDeps(next) {
 
 App.prototype.init = function init(next) {
   var self = this;
-  async.series([self.loadJSON.bind(self), self.installDeps.bind(self)], function (err) {
+  async.series([self.loadJSON.bind(self), self.installDeps.bind(self), self.loadId.bind(self)], function (err) {
     if(err) {
       console.log('error loading', self);
       console.log(err);
       return next(err);
     }
+    console.log('id ' + self.id);
     next(null, self);
   });
 };
