@@ -6,7 +6,6 @@ module.exports = db;
 
 module.exports.collections = {
   externalApps: db.collection("external_apps"),
-  appId: db.collection("app_id")
+  appId: db.collection("app_id"),
+  finishedSetup: db.collection("appFinishedSetup")
 };
-
-console.dir(new db.ObjectID().toHexString());

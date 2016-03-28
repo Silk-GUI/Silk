@@ -19,7 +19,7 @@ var nextId = 500;
  * This will usually be used indirectly through the app loader which
  * will handle events. If that is not needed this can be used directly.
  */
-function App(path, expressApp, next) {
+function App (path, expressApp, next) {
   var self = this;
 
   self.id = nextId;
@@ -40,12 +40,11 @@ util.inherits(App, events.EventEmitter);
  * Loads the app's id from the database
  * @param next
  */
-App.prototype.loadId = function loadId(next) {
+App.prototype.loadId = function loadId (next) {
   var self = this;
-  db.collections.appId.findOne({path: self.path}, function (err, data) {
-    console.log(err, data);
-    if(data == undefined) {
-      db.collections.appId.insert({path: self.path}, function (err, document) {
+  db.collections.appId.findOne({ path: self.path }, function (err, data) {
+    if (data == undefined) {
+      db.collections.appId.insert({ path: self.path }, function (err, document) {
         self.id = document._id;
         next(err, document._id);
       });
@@ -60,10 +59,10 @@ App.prototype.loadId = function loadId(next) {
  * Loads the package.json in the app's directory.
  * @param next - callback
  */
-App.prototype.loadJSON = function loadJSON(next) {
+App.prototype.loadJSON = function loadJSON (next) {
   var self = this;
   fs.readFile(self.path + '/package.json', function (err, contents) {
-    if(err) {
+    if (err) {
       return next(err);
     }
     try {
@@ -88,42 +87,53 @@ App.prototype.loadJSON = function loadJSON(next) {
   });
 };
 
-App.prototype.installDeps = function installDeps(next) {
+App.prototype.installDeps = function installDeps (next) {
   var self = this;
-  fs.readdir(self.path + '/node_modules', function (e, r) {
-    if((e && e.code === 'ENOENT') || (r.length < lodash.keys(self.packageJson.dependencies).length / 2)) {
-      console.log('installing deps');
-      if(self.packageJson.scripts && self.packageJson.scripts['setup-silk']) {
+  var finishedSetup = db.collections.finishedSetup;
+
+  function finish () {
+    finishedSetup.insert({path: self.path});
+  }
+
+  finishedSetup.findOne({ path: self.path }, function (err, document) {
+    if (err) {
+      return next(err);
+    }
+    if(document == null) {
+      // setup never finished. run it now
+      if (self.packageJson.scripts && self.packageJson.scripts['setup-silk']) {
         child_process.exec('npm run setup-silk', function () {
           console.log('finished npm run setup-silk');
+          finish();
           next();
         });
-      } else if(self.packageJson.scripts && self.packageJson.scripts.setup) {
+      } else if (self.packageJson.scripts && self.packageJson.scripts.setup) {
         child_process.exec('npm run setup', {
           cwd: self.path
         }, function () {
           console.log('finished npm run setup');
+          finish();
           next();
         });
       } else {
         npmi({
           path: self.path
         }, function (err, result) {
-          console.log(err, result);
+          console.log('finished npm install');
+          finish();
           next(err);
         });
       }
-
     } else {
-      return next(e);
+      next(null);
     }
   });
 };
 
-App.prototype.init = function init(next) {
+App.prototype.init = function init (next) {
   var self = this;
   async.series([self.loadJSON.bind(self), self.installDeps.bind(self), self.loadId.bind(self)], function (err) {
-    if(err) {
+    if (err) {
       console.log('error loading', self);
       console.log(err);
       return next(err);
@@ -133,7 +143,7 @@ App.prototype.init = function init(next) {
   });
 };
 
-App.prototype.clean = function clean() {
+App.prototype.clean = function clean () {
   var self = this;
   return {
     id: self.id,
@@ -145,7 +155,7 @@ App.prototype.clean = function clean() {
   };
 };
 
-App.prototype.start = function start(next) {
+App.prototype.start = function start (next) {
   var self = this;
 
   // check if it has server
@@ -175,7 +185,7 @@ App.prototype.start = function start(next) {
     silkElectron.remove(self.path);
   }, 2000);
   self.fork.on('message', function (message) {
-    if(message.cmd === 'ready') {
+    if (message.cmd === 'ready') {
       self.state = 'running';
       next();
       self.fork.removeAllListeners();
@@ -184,6 +194,5 @@ App.prototype.start = function start(next) {
   });
 
 };
-
 
 module.exports = App;
