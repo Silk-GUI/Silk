@@ -45,6 +45,8 @@
   },
   "scripts": {
     "start": "node main.js",
+    "lint": "./node_modules/.bin/eslint ./core/app_framework/*",
+    "pretest": "npm run lint",
     "test": "mocha",
     "setup": "node ./core/setup/index.js",
     "setup-force": "node ./core/setup/index.js --force",
@@ -56,6 +58,9 @@
   "devDependencies": {
     "chai": "*",
     "coveralls": "~2.11.6",
+    "eslint": "^2.5.3",
+    "eslint-config-airbnb": "^6.2.0",
+    "eslint-plugin-react": "^4.2.3",
     "gulp": "^3.8.11",
     "istanbul": "~0.4.1",
     "mocha": "*",
