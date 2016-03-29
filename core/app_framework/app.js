@@ -1,14 +1,12 @@
-var async         = require('async'),
-    events        = require('events'),
-    fs            = require('fs'),
-    util          = require('util'),
-    pathUtil      = require('path'),
-    child_process = require('child_process'),
-    lodash        = require('lodash'),
-    npmi          = require('npmi'),
-    methods       = require('../fork_framework/ws2fork_com.js'),
-    db            = require('../db.js');
-
+var async = require('async');
+var events = require('events');
+var fs = require('fs');
+var util = require('util');
+var pathUtil = require('path');
+var childProcess = require('child_process');
+var npmi = require('npmi');
+var methods = require('../fork_framework/ws2fork_com.js');
+var db = require('../db.js');
 var silkElectron = require('silk-electron');
 
 // start higher to not conflict with old app loader
@@ -19,7 +17,7 @@ var nextId = 500;
  * This will usually be used indirectly through the app loader which
  * will handle events. If that is not needed this can be used directly.
  */
-function App (path, expressApp, next) {
+function App(path, expressApp, next) {
   var self = this;
 
   self.id = nextId;
@@ -31,7 +29,6 @@ function App (path, expressApp, next) {
   self.expressApp = expressApp;
 
   process.nextTick(self.init.bind(self, next));
-
 }
 
 util.inherits(App, events.EventEmitter);
@@ -40,13 +37,16 @@ util.inherits(App, events.EventEmitter);
  * Loads the app's id from the database
  * @param next
  */
-App.prototype.loadId = function loadId (next) {
+App.prototype.loadId = function loadId(next) {
   var self = this;
   db.collections.appId.findOne({ path: self.path }, function (err, data) {
-    if (data == undefined) {
+    if (data === undefined || data === null) {
       db.collections.appId.insert({ path: self.path }, function (err, document) {
+        if (err) {
+          return console.log(err);
+        }
         self.id = document._id;
-        next(err, document._id);
+        return next(err, document._id);
       });
     } else {
       self.id = data._id;
@@ -59,14 +59,16 @@ App.prototype.loadId = function loadId (next) {
  * Loads the package.json in the app's directory.
  * @param next - callback
  */
-App.prototype.loadJSON = function loadJSON (next) {
+App.prototype.loadJSON = function loadJSON(next) {
   var self = this;
+  var j;
+
   fs.readFile(self.path + '/package.json', function (err, contents) {
     if (err) {
       return next(err);
     }
     try {
-      var j = JSON.parse(contents);
+      j = JSON.parse(contents);
       self.packageJson = j;
       self.name = j.name;
       self.title = self.name;
@@ -78,37 +80,36 @@ App.prototype.loadJSON = function loadJSON (next) {
           res.end();
         });
       });
-
     } catch (e) {
       console.log(e);
       return next(new Error('Error parsing package.json.'));
     }
-    next(null, self.packageJson);
+    return next(null, self.packageJson);
   });
 };
 
-App.prototype.installDeps = function installDeps (next) {
+App.prototype.installDeps = function installDeps(next) {
   var self = this;
   var finishedSetup = db.collections.finishedSetup;
 
-  function finish () {
-    finishedSetup.insert({path: self.path});
+  function finish() {
+    finishedSetup.insert({ path: self.path });
   }
 
   finishedSetup.findOne({ path: self.path }, function (err, document) {
     if (err) {
       return next(err);
     }
-    if(document == null) {
+    if (document === null) {
       // setup never finished. run it now
       if (self.packageJson.scripts && self.packageJson.scripts['setup-silk']) {
-        child_process.exec('npm run setup-silk', function () {
+        childProcess.exec('npm run setup-silk', function () {
           console.log('finished npm run setup-silk');
           finish();
           next();
         });
       } else if (self.packageJson.scripts && self.packageJson.scripts.setup) {
-        child_process.exec('npm run setup', {
+        childProcess.exec('npm run setup', {
           cwd: self.path
         }, function () {
           console.log('finished npm run setup');
@@ -118,7 +119,7 @@ App.prototype.installDeps = function installDeps (next) {
       } else {
         npmi({
           path: self.path
-        }, function (err, result) {
+        }, function (err) {
           console.log('finished npm install');
           finish();
           next(err);
@@ -130,9 +131,13 @@ App.prototype.installDeps = function installDeps (next) {
   });
 };
 
-App.prototype.init = function init (next) {
+App.prototype.init = function init(next) {
   var self = this;
-  async.series([self.loadJSON.bind(self), self.installDeps.bind(self), self.loadId.bind(self)], function (err) {
+  async.series([
+    self.loadJSON.bind(self),
+    self.installDeps.bind(self),
+    self.loadId.bind(self)
+  ], function (err) {
     if (err) {
       console.log('error loading', self);
       console.log(err);
@@ -143,7 +148,7 @@ App.prototype.init = function init (next) {
   });
 };
 
-App.prototype.clean = function clean () {
+App.prototype.clean = function clean() {
   var self = this;
   return {
     id: self.id,
@@ -155,8 +160,13 @@ App.prototype.clean = function clean () {
   };
 };
 
-App.prototype.start = function start (next) {
+App.prototype.start = function start(next) {
   var self = this;
+  var forkOpts = {
+    cwd: __root,
+    env: process.env,
+    stdio: 'pipe'
+  };
 
   // check if it has server
   try {
@@ -173,13 +183,8 @@ App.prototype.start = function start (next) {
   // we first need to link the modules electron provides
   silkElectron.add(self.path);
 
-  //var modulePath = pathUtil.resolve(__dirname, '../fork_framework/fork_container/fork2server_com.js');
-  var forkOpts = {
-    cwd: __root,
-    env: process.env,
-    stdio: 'pipe'
-  };
-  self.fork = child_process.fork(this.path, [], forkOpts);
+
+  self.fork = childProcess.fork(this.path, [], forkOpts);
   methods.addFork(self.fork);
   setTimeout(function () {
     silkElectron.remove(self.path);
@@ -189,10 +194,8 @@ App.prototype.start = function start (next) {
       self.state = 'running';
       next();
       self.fork.removeAllListeners();
-
     }
   });
-
 };
 
 module.exports = App;

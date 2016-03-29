@@ -86,7 +86,7 @@ methods.call = function (ws, message) {
       error: "method " + message.name + " does not exist"
     }));
   }
-  console.log('ws id is :' + ws.id);
+  log.debug('ws id is :' + ws.id);
   if (!this.users[ws.id]) {
     this.users[ws.id] = ws;
     ws.on("close", function () {

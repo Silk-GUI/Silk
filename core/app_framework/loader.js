@@ -5,11 +5,12 @@ var Loader = {
   add: function (path, expressApp, next) {
     var self = this;
 
-    if(path in self.apps) {
-      return next(null, self.apps[path]);
+    if (path in self.apps) {
+      console.log('app found');
+      next(null, self.apps[path]);
+    } else {
+      self.apps[path] = new App(path, expressApp, next);
     }
-
-    self.apps[path] = new App(path, expressApp, next);
   }
 };
 
