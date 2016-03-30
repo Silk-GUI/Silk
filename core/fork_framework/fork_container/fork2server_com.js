@@ -103,6 +103,7 @@ Silk.api = serverAPI;
 global.methods = methods;
 
 process.nextTick(function(){
+  process.title = process.env.app;
   require(process.env.start);
 });
 
