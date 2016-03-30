@@ -1,9 +1,9 @@
 /*
-  Communication between - method calls from the client and app forks.
-                        - Silk api calls from forks and silk methods.
-*/
+ Communication between - method calls from the client and app forks.
+ - Silk api calls from forks and silk methods.
+ */
 var serverAPI = require('./server_api.js'),
-    log = require('../console.js').log;
+    log       = require('../console.js').log;
 
 var methods = {
   wflag: false,
@@ -49,15 +49,15 @@ methods.addFork = function (fork) {
   this.forks[fork.pid] = fork;
   fork.on("message", function (message) {
     switch (message.cmd) {
-    case "send":
-      methods.send(message.message);
-      break;
-    case "add":
-      methods.add(message, fork);
-      break;
-    case "server api":
-      serverAPI.call(message, fork);
-      break;
+      case "send":
+        methods.send(message.message);
+        break;
+      case "add":
+        methods.add(message, fork);
+        break;
+      case "server api":
+        serverAPI.call(message, fork);
+        break;
     }
   }.bind(this));
   fork.on("error", function (e) {
@@ -96,10 +96,12 @@ methods.call = function (ws, message) {
       }
       delete this.user_reqs[ws.id];
       for (var fork in this.forks) {
-        this.forks[fork].send({
-          cmd: "disconnect",
-          ws: ws.id
-        });
+        if (fork.connected) {
+          this.forks[fork].send({
+            cmd: "disconnect",
+            ws: ws.id
+          });
+        }
       }
     }.bind(this));
     this.user_reqs[ws.id] = [];

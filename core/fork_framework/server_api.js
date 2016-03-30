@@ -12,14 +12,18 @@ function Request(message, fork) {
   this.fork = fork;
 }
 Request.prototype.send = function (error, result) {
-  this.fork.send({
-    cmd: 'server api',
-    message: {
-      id: this.id,
-      error: error,
-      result: result
-    }
-  });
+  try {
+    this.fork.send({
+      cmd: 'server api',
+      message: {
+        id: this.id,
+        error: error,
+        result: result
+      }
+    });
+  } catch (e) {
+    // fork has been stopped
+  }
 };
 
 Request.prototype.exec = function () {
@@ -36,7 +40,7 @@ Request.prototype.exec = function () {
   }
   // only send if something is returned.  If nothing is returned,
   // the api should use send().
-  if(typeof error === "undefined" && typeof result === "undefined") {
+  if (typeof error === "undefined" && typeof result === "undefined") {
     // nothing to send
     console.log('nothing returned');
     return;
@@ -46,7 +50,7 @@ Request.prototype.exec = function () {
 
 //API for apps
 serverAPI['apps/list'] = function (data, message, send) {
-  if(message.type === 'listener') {
+  if (message.type === 'listener') {
     apiData.watch('apps/clean', function (prop, oldValue, currentValue) {
       send(null, currentValue);
     });
@@ -59,7 +63,7 @@ serverAPI['apps/state'] = function (data, message, send) {
   var apps = apiData.get('apps/list');
 
   var results = [];
-  if(message.type === 'listener') {
+  if (message.type === 'listener') {
 
     apiData.watch('apps/list', function (prop, oldValue, currentValue) {
       results = [];
@@ -77,15 +81,17 @@ serverAPI['apps/state'] = function (data, message, send) {
   return results;
 };
 
-serverAPI['apps/restart'] = function (folderName, message) {
-  apiData.get('apps/list')[folderName].restart(function (err) {
+serverAPI['apps/restart'] = function (path, message, send) {
+  console.log(apiData.get('apps/list')[path]);
+  apiData.get('apps/list')[path].restart(function (err) {
+    send(err);
     console.log('restarted', err);
   });
 };
 
 serverAPI['apps/add'] = function (path, message) {
   apiData.get('apps/add')(path, function (err) {
-    if(err) {
+    if (err) {
       return;
     }
     console.log('started app');
@@ -100,11 +106,11 @@ serverAPI['apps/start'] = function (path, message, send) {
 
 serverAPI['apps/external/add'] = function (path, message, send) {
   // make sure it isn't already added
-  externalApps.findOne({path: path}, function (err, data) {
-    if(err) {
+  externalApps.findOne({ path: path }, function (err, data) {
+    if (err) {
       return send(err);
     }
-    externalApps.insert({path: path}, function (err, data) {
+    externalApps.insert({ path: path }, function (err, data) {
       send(err);
     });
   });

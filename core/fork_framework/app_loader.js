@@ -494,7 +494,8 @@ function App(path, expressApp, urlPath) {
         var forkOpts = {
           cwd: __root,
           env: {
-            start: this.path
+            start: this.path,
+            app: this.name
           },
           silent: true,
           stdio: 'pipe'
@@ -559,7 +560,8 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   this.stop = function (next) {
-    if(that.state !== 'running' || that.state !== 'starting') {
+    if(that.state !== 'running' && that.state !== 'starting') {
+      console.log('already stopped ' + that.state);
       next();
     }
     that.fork.disconnect();
@@ -576,7 +578,7 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   this.restart = function (next) {
-    this.stop(function () {
+    that.stop(function () {
       that.start(function (err) {
         next(err);
       });
