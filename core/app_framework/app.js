@@ -8,6 +8,7 @@ var npmi = require('npmi');
 var methods = require('../fork_framework/ws2fork_com.js');
 var db = require('../db.js');
 var silkElectron = require('silk-electron');
+var path = require('path');
 
 // start higher to not conflict with old app loader
 var nextId = 500;
@@ -73,9 +74,10 @@ App.prototype.loadJSON = function loadJSON(next) {
       self.name = j.name;
       self.title = self.name;
       self.url = j.silk.url;
-      self.icon = j.icon;
+      self.icon = j.icon || path.join(__root, 'core/public/images/default-logo.png');
 
-      self.expressApp.get('/icon/' + self.name, function (req, res) {
+      console.log(self.icon, j.icon);
+      self.expressApp.get('/icon/' + self.id, function (req, res) {
         res.sendfile(pathUtil.resolve(self.path, self.icon), function () {
           res.end();
         });
@@ -134,16 +136,15 @@ App.prototype.installDeps = function installDeps(next) {
 App.prototype.init = function init(next) {
   var self = this;
   async.series([
+    self.loadId.bind(self),
     self.loadJSON.bind(self),
-    self.installDeps.bind(self),
-    self.loadId.bind(self)
+    self.installDeps.bind(self)
   ], function (err) {
     if (err) {
       console.log('error loading', self);
       console.log(err);
       return next(err);
     }
-    console.log('id ' + self.id);
     next(null, self);
   });
 };
@@ -156,7 +157,7 @@ App.prototype.clean = function clean() {
     url: self.url,
     title: self.title,
     path: self.path,
-    icon: '/icon/' + self.name
+    icon: '/icon/' + self.id
   };
 };
 
