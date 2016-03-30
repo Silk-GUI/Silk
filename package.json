@@ -45,7 +45,7 @@
   },
   "scripts": {
     "start": "node main.js",
-    "lint": "./node_modules/.bin/eslint ./core/app_framework/*",
+    "lint": "./node_modules/.bin/eslint *",
     "pretest": "npm run lint",
     "test": "mocha",
     "setup": "node ./core/setup/index.js",
@@ -64,7 +64,7 @@
     "gulp": "^3.8.11",
     "istanbul": "~0.4.1",
     "mocha": "*",
-    "mocha-jshint": "*",
+    "mocha-eslint": "^2.0.2",
     "mocha-lcov-reporter": "*",
     "rewire": "^2.5.1"
   }

@@ -1,23 +1,23 @@
 var db = require('../db.js');
 
 function addApp(path) {
+  var externalApps = db.collection('external_apps');
   path = path || process.cwd();
+
   console.log('adding ' + path);
 
-  var externalApps = db.collection("external_apps");
-
-  externalApps.findOne({path: path}, function (err, data) {
-    if(err) {
+  externalApps.findOne({ path: path }, function (err, data) {
+    if (err) {
       console.log('error');
       console.log(err);
       return;
     }
-    if(data !== null) {
+    if (data !== null) {
       console.log('app already added');
       return;
     }
-    externalApps.insert({path: path}, function (err, data) {
-      if(err) {
+    externalApps.insert({ path: path }, function (err) {
+      if (err) {
         console.log('error');
         console.log(err);
         return;
@@ -28,4 +28,3 @@ function addApp(path) {
 }
 
 module.exports = addApp;
-

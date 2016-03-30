@@ -1,0 +1,4 @@
+extends: ../.eslintrc.yml
+
+rules:
+  vars-on-top: 1

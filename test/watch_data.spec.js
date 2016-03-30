@@ -1,5 +1,5 @@
-var chai   = require('chai'),
-    expect = chai.expect;
+var chai = require('chai');
+var expect = chai.expect;
 var __root = '../';
 var watchData = require(__root + '/core/api_data.js');
 var it = require('mocha/lib/mocha.js').it;
@@ -9,7 +9,7 @@ var describe = require('mocha/lib/mocha.js').describe;
 var data = watchData;
 describe('watchData', function () {
   beforeEach(function () {
-    if(data) {
+    if (data) {
       data.data = {};
     }
   });
@@ -23,7 +23,7 @@ describe('watchData', function () {
     it('should replace value if property exists', function () {
       // set initial value
       data.set('testProperty', 'testValue');
-      //replace value
+      // replace value
       data.set('testProperty', 'newValue');
       var value = data.get('testProperty');
       expect(value).to.equal('newValue');
@@ -62,7 +62,6 @@ describe('watchData', function () {
         done();
       });
       data.set('testProperty', data2);
-
     });
   });
 });
