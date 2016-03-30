@@ -2,3 +2,8 @@ extends: ../.eslintrc.yml
 
 rules:
   vars-on-top: 1
+
+globals:
+  describe: 1
+  beforeEach: 1
+  it: 1
