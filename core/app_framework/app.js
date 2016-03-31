@@ -71,7 +71,7 @@ App.prototype.loadJSON = function loadJSON(next) {
     try {
       j = JSON.parse(contents);
       self.packageJson = j;
-      self.name = j.name;
+      self.name = j.productName || j.name;
       self.title = self.name;
       self.url = j.silk.url;
       self.icon = j.icon || path.join(__root, 'core/public/images/default-logo.png');
