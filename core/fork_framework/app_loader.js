@@ -175,7 +175,6 @@ appLoader.add = function (path, expressApp, next) {
         // headless apps need to always run
         app.start(function (err, result){
           console.log("started" + app.path);
-          console.log(err, result);
         });
       }
       appLoader.emit('added', app);

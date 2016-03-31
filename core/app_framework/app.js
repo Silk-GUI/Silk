@@ -76,7 +76,6 @@ App.prototype.loadJSON = function loadJSON(next) {
       self.url = j.silk.url;
       self.icon = j.icon || path.join(__root, 'core/public/images/default-logo.png');
 
-      console.log(self.icon, j.icon);
       self.expressApp.get('/icon/' + self.id, function (req, res) {
         res.sendfile(pathUtil.resolve(self.path, self.icon), function () {
           res.end();
@@ -196,6 +195,22 @@ App.prototype.start = function start(next) {
       next();
       self.fork.removeAllListeners();
     }
+  });
+};
+
+App.prototype.stop = function start (next) {
+  var self = this;
+  self.fork.disconnect();
+  self.fork.kill();
+  self.fork.removeAllListeners();
+  self.state = 'stopped';
+  next();
+};
+
+App.prototype.restart = function restart (next) {
+  var self = this;
+  self.stop(function () {
+    self.start(next);
   });
 };
 
