@@ -83,8 +83,8 @@ if(lastArgv === 'help' || lastArgv === 'help') {
 // Silk was run with no command, so we do the default
 // Setting a default command appears to be broken in commander.js
 // so we implement it ourselves.
-if(lastArgv === 'silk-gui') {
-  console.log('no command');
+if(lastArgv === 'silk') {
+  run();
 } else if(endedWith(lastArgv, 'main.js')) {
   run();
 }
