@@ -193,7 +193,6 @@ App.prototype.start = function start(next) {
     if (message.cmd === 'ready') {
       self.state = 'running';
       next();
-      self.fork.removeAllListeners();
     }
   });
 };

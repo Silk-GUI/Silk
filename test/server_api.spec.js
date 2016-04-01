@@ -7,11 +7,10 @@ global.__root = path.resolve(__dirname, '../');
 var serverApi = rewire('../core/fork_framework/server_api.js');
 var apiData = require('../core/api_data.js');
 
-describe("server_api", function () {
+describe('server_api', function () {
   var message;
 
-
-  describe("call", function () {
+  describe('call', function () {
 
     beforeEach(function () {
       message = {
@@ -25,17 +24,16 @@ describe("server_api", function () {
 
     });
 
-    it("should run method", function (done) {
+    it('should run method', function (done) {
       var reset = serverApi.__set__('serverAPI', {
         'test': function () {
           return true;
         }
       });
 
-
       var fork = {
         send: function (message) {
-          expect(message.cmd).to.equal("server api");
+          expect(message.cmd).to.equal('server api');
           expect(message.message.id).to.equal(1);
           expect(message.message.result).to.equal(true);
           expect(message.message.error).to.equal(undefined);
@@ -47,7 +45,7 @@ describe("server_api", function () {
       serverApi.call(message, fork);
     });
 
-    it("should handle error in method", function (done) {
+    it('should handle error in method', function (done) {
       var reset = serverApi.__set__('serverAPI', {
         'test': function () {
           throw new Error('test');
@@ -69,9 +67,9 @@ describe("server_api", function () {
   });
   describe('methods', function () {
     describe('apps/list', function (done2) {
-      it("should send updates to listeners", function (done) {
+      it('should send updates to listeners', function (done) {
 
-        var data = [{'abc': 'xyz'}, {test: true}];
+        var data = [{ 'abc': 'xyz' }, { test: true }];
         apiData.set('apps/clean', data);
 
         message.type = 'listener';
@@ -85,7 +83,7 @@ describe("server_api", function () {
 
         // expect(result).to.equal(data);
 
-        data[0] = {'abc': 'test'};
+        data[0] = { 'abc': 'test' };
         console.log(data);
         apiData.set('apps/clean', data);
       });
