@@ -6,10 +6,11 @@ var async = require('async'),
     fs = require('fs'),
     jsonFile = require('json-file'),
     ghDownload = require('download-github-repo'),
-    retry = [];
+    retry = [],
+    path = require('path');
 
 
-    var __root = './';
+    var __root = path.resolve(__dirname, '../../');
 
 // load settings or create if it doesn't exist
 try {
@@ -33,6 +34,7 @@ function installWM(repo, cb) {
     });
 }
 function installApps(list, cb) {
+  console.log('installing apps into ' + __root + '/apps/');
   async.eachSeries(list, function(item, next) {
     console.log('installing ', item);
     var options = {
