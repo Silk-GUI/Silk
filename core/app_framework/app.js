@@ -41,13 +41,14 @@ util.inherits(App, events.EventEmitter);
 App.prototype.loadId = function loadId(next) {
   var self = this;
   db.collections.appId.findOne({ path: self.path }, function (err, data) {
-    if (data === undefined || data === null) {
+    if (data === null) {
+      console.log('generating id');
       db.collections.appId.insert({ path: self.path }, function (err, document) {
         if (err) {
           return console.log(err);
         }
-        self.id = document._id;
-        return next(err, document._id);
+        self.id = document[0]._id;
+        return next(err, document[0]._id);
       });
     } else {
       self.id = data._id;
