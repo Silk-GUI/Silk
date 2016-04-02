@@ -4,6 +4,7 @@ var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
 var updateNotifier = require('update-notifier');
+var path = require('path');
 
 var configJson = require('./config.json');
 var logger = require('./core/console.js');
@@ -13,7 +14,7 @@ var endedWith = require('./core/util/ended_with.js');
 // if the environment variable is set to 1,
 // this will log the file and line that outputs
 // to the terminal
-if(process.env.TRACE_CONSOLE) {
+if (process.env.TRACE_CONSOLE) {
   ['log', 'warn'].forEach(function (method) {
     var old = console[method];
     console[method] = function () {
@@ -47,7 +48,6 @@ var run       = require('./core/commands/run.js'),
 
 process.title = "Silk GUI";
 
-
 program
   .version(pkg.version)
   .option('-r, --remote', 'Remotely access Silk')
@@ -73,19 +73,21 @@ program
   .parse(process.argv);
 
 var lastArgv = process.argv[process.argv.length - 1];
-if(lastArgv === 'help' || lastArgv === 'help') {
+if (lastArgv === 'help' || lastArgv === 'help') {
   // silk help or npm start help was run.
   program.help();
   process.exit(0);
 }
 
-
 // Silk was run with no command, so we do the default
 // Setting a default command appears to be broken in commander.js
 // so we implement it ourselves.
-if(lastArgv === 'silk') {
+console.log(lastArgv);
+if (lastArgv === 'silk') {
   run();
-} else if(endedWith(lastArgv, 'main.js')) {
+} else if (endedWith(lastArgv, 'main.js')) {
+  run();
+} else if (endedWith(lastArgv, path.sep + 'bin' + path.sep + 'silk')) {
   run();
 }
 
