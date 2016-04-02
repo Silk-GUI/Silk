@@ -15,6 +15,7 @@ apps/*
 !apps/Silk-GUI-terminal/
 !apps/Silk-GUI-text-editor/
 !apps/zodern-Silk-Tunnel-Client/
+!apps/zodern-stretto/
 
 # We also want the window manager
 # included when we publish
