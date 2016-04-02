@@ -113,7 +113,7 @@ App.prototype.installDeps = function installDeps(next) {
         childProcess.exec('npm run setup', {
           cwd: self.path
         }, function () {
-          console.log('finished npm run setup');
+          console.log('finished npm run setup for ' + self.name);
           finish();
           next();
         });
@@ -121,6 +121,10 @@ App.prototype.installDeps = function installDeps(next) {
         npmi({
           path: self.path
         }, function (err) {
+          if(err) {
+            console.log('error in npm install:');
+            console.log(err);
+          }
           console.log('finished npm install');
           finish();
           next(err);
