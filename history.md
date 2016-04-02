@@ -1,3 +1,55 @@
+v.0.5.3
+
+Core
+- Add command `add-app` to add current dir as external app
+- Add command `remove-app` to remove current dir as external app
+- Move default command into `run` command
+- When `silk` is run with no command, run the `run` command
+- Update notification
+- App id is saved in database
+- Database stores if the install finished for each app
+- Add eslint
+- Fixed restarting apps
+- Fork framework set's app process to app name
+- Setup code climate to use eslint settings
+- App framework uses default logo
+- App framework will use productName in package.json if available
+- Fixed calling server api's from apps using app framework
+- Fixed prepublish script
+- Stretto is now included with Silk when being published
+- Fixed ids for apps using App Framework conflicting with apps using Fork Framework
+
+File Explorer
+- Opens to home folder instead of the root folder
+
+Task Manager
+- Only list apps that are running
+- Fix restarting apps
+- Fix memory chart scale
+
+bower_static
+- Pull bower routing out of core into module so apps can easily use it
+
+Terminal
+- Update tty.js
+- Use new app framework
+
+App Manager
+- Use app framework
+
+silk-electron
+- Works on linux
+
+v.0.5.2
+
+Core
+- Fix RSVP version
+
+v.0.5.1
+
+Core
+- Fix RSVP version
+
 v.0.5.0
 
 Core
