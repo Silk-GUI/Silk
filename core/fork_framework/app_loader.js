@@ -24,9 +24,10 @@ var apps = {};
 var clean = [];
 /**
  * id for apps.  Increased by one for each app.
+ * starts at 800 to avoid conflict with new app framework
  * @type {number}
  */
-var id = 0;
+var id = 800;
 var appLoader = new events.EventEmitter();
 appLoader.clean = clean;
 appLoader.App = App;
