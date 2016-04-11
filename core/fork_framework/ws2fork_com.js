@@ -58,6 +58,9 @@ methods.addFork = function (fork) {
       case "server api":
         serverAPI.call(message, fork);
         break;
+      case "electron":
+        serverAPI.electronMessage(message, fork);
+        break;
     }
   }.bind(this));
   fork.on("error", function (e) {

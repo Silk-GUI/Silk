@@ -48,6 +48,15 @@ Request.prototype.exec = function () {
   this.send(error, result);
 };
 
+// handle electron messages
+var electronListeners = [];
+
+function electronMessage(message, fork) {
+  electronListeners.forEach(function (listener) {
+    listener(message);
+  });
+}
+
 //API for apps
 serverAPI['apps/list'] = function (data, message, send) {
   if (message.type === 'listener') {
@@ -111,6 +120,18 @@ serverAPI['apps/external/add'] = function (path, message, send) {
     }
     externalApps.insert({ path: path }, function (err, data) {
       send(err);
+    });
+  });
+};
+
+//API for window manager to communicate with electron apps
+serverAPI['electron/windowRawEvents'] = function (path, message, send) {
+  electronListeners.push(function (message) {
+    send({
+      window: message.window,
+      app: message.app,
+      name: message.name,
+      value: message.value
     });
   });
 };
