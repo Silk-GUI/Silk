@@ -10,13 +10,13 @@ function trace(text) {
   if (text[text.length - 1] == '\n') {
     text = text.substring(0, text.length - 1);
   }
-  console.log((performance.now() / 1000).toFixed(3) + ": " + text);
+  console.log((performance.now() / 1000).toFixed(3) + ': ' + text);
 }
 
 if (navigator.mozGetUserMedia) {
-  console.log("This appears to be Firefox");
+  console.log('This appears to be Firefox');
 
-  webrtcDetectedBrowser = "firefox";
+  webrtcDetectedBrowser = 'firefox';
 
   webrtcDetectedVersion =
                   parseInt(navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1]);
@@ -35,7 +35,7 @@ if (navigator.mozGetUserMedia) {
   getUserMedia = navigator.mozGetUserMedia.bind(navigator);
 
   // Creates iceServer from the url for FF.
-  createIceServer = function(url, username, password) {
+  createIceServer = function (url, username, password) {
     var iceServer = null;
     var url_parts = url.split(':');
     if (url_parts[0].indexOf('stun') === 0) {
@@ -46,7 +46,7 @@ if (navigator.mozGetUserMedia) {
                 url.indexOf('?transport') === -1)) {
       // Create iceServer with turn url.
       // Ignore the transport parameter from TURN url.
-      var turn_url_parts = url.split("?");
+      var turn_url_parts = url.split('?');
       iceServer = { 'url': turn_url_parts[0],
                     'credential': password,
                     'username': username };
@@ -55,35 +55,35 @@ if (navigator.mozGetUserMedia) {
   };
 
   // Attach a media stream to an element.
-  attachMediaStream = function(element, stream) {
-    console.log("Attaching media stream");
+  attachMediaStream = function (element, stream) {
+    console.log('Attaching media stream');
     element.mozSrcObject = stream;
     element.play();
   };
 
-  reattachMediaStream = function(to, from) {
-    console.log("Reattaching media stream");
+  reattachMediaStream = function (to, from) {
+    console.log('Reattaching media stream');
     to.mozSrcObject = from.mozSrcObject;
     to.play();
   };
 
   // Fake get{Video,Audio}Tracks
-  MediaStream.prototype.getVideoTracks = function() {
+  MediaStream.prototype.getVideoTracks = function () {
     return [];
   };
 
-  MediaStream.prototype.getAudioTracks = function() {
+  MediaStream.prototype.getAudioTracks = function () {
     return [];
   };
 } else if (navigator.webkitGetUserMedia) {
-  console.log("This appears to be Chrome");
+  console.log('This appears to be Chrome');
 
-  webrtcDetectedBrowser = "chrome";
+  webrtcDetectedBrowser = 'chrome';
   webrtcDetectedVersion =
              parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
 
   // Creates iceServer from the url for Chrome.
-  createIceServer = function(url, username, password) {
+  createIceServer = function (url, username, password) {
     var iceServer = null;
     var url_parts = url.split(':');
     if (url_parts[0].indexOf('stun') === 0) {
@@ -92,7 +92,7 @@ if (navigator.mozGetUserMedia) {
     } else if (url_parts[0].indexOf('turn') === 0) {
       if (webrtcDetectedVersion < 28) {
         // For pre-M28 chrome versions use old TURN format.
-        var url_turn_parts = url.split("turn:");
+        var url_turn_parts = url.split('turn:');
         iceServer = { 'url': 'turn:' + username + '@' + url_turn_parts[1],
                       'credential': password };
       } else {
@@ -113,7 +113,7 @@ if (navigator.mozGetUserMedia) {
   getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
 
   // Attach a media stream to an element.
-  attachMediaStream = function(element, stream) {
+  attachMediaStream = function (element, stream) {
     if (typeof element.srcObject !== 'undefined') {
       element.srcObject = stream;
     } else if (typeof element.mozSrcObject !== 'undefined') {
@@ -125,30 +125,30 @@ if (navigator.mozGetUserMedia) {
     }
   };
 
-  reattachMediaStream = function(to, from) {
+  reattachMediaStream = function (to, from) {
     to.src = from.src;
   };
 
   // The representation of tracks in a stream is changed in M26.
   // Unify them for earlier Chrome versions in the coexisting period.
   if (!webkitMediaStream.prototype.getVideoTracks) {
-    webkitMediaStream.prototype.getVideoTracks = function() {
+    webkitMediaStream.prototype.getVideoTracks = function () {
       return this.videoTracks;
     };
-    webkitMediaStream.prototype.getAudioTracks = function() {
+    webkitMediaStream.prototype.getAudioTracks = function () {
       return this.audioTracks;
     };
   }
 
   // New syntax of getXXXStreams method in M26.
   if (!webkitRTCPeerConnection.prototype.getLocalStreams) {
-    webkitRTCPeerConnection.prototype.getLocalStreams = function() {
+    webkitRTCPeerConnection.prototype.getLocalStreams = function () {
       return this.localStreams;
     };
-    webkitRTCPeerConnection.prototype.getRemoteStreams = function() {
+    webkitRTCPeerConnection.prototype.getRemoteStreams = function () {
       return this.remoteStreams;
     };
   }
 } else {
-  console.log("Browser does not appear to be WebRTC-capable");
+  console.log('Browser does not appear to be WebRTC-capable');
 }

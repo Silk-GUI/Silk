@@ -3,7 +3,7 @@
  - Silk api calls from forks and silk methods.
  */
 var serverAPI = require('./server_api.js'),
-    log       = require('../console.js').log;
+  log = require('../console.js').log;
 
 var methods = {
   wflag: false,
@@ -24,14 +24,14 @@ methods.add = function (m, fork) {
 
 methods.send = function (message) {
   if (!this.requests[message.id]) {
-    log.debug("user removed or no request");
+    log.debug('user removed or no request');
     return;
   }
   this.requests[message.id].write(JSON.stringify(message));
 };
 
 methods.removeFork = function (fork, code, signal) {
-  console.log(code + " " + signal);
+  console.log(code + ' ' + signal);
 
   // delete methods from this fork
   for (var i in this.responders) {
@@ -47,26 +47,26 @@ methods.removeFork = function (fork, code, signal) {
 methods.addFork = function (fork) {
   this.fork_resp[fork.pid] = [];
   this.forks[fork.pid] = fork;
-  fork.on("message", function (message) {
+  fork.on('message', function (message) {
     switch (message.cmd) {
-      case "send":
+      case 'send':
         methods.send(message.message);
         break;
-      case "add":
+      case 'add':
         methods.add(message, fork);
         break;
-      case "server api":
+      case 'server api':
         serverAPI.call(message, fork);
         break;
-      case "electron":
+      case 'electron':
         serverAPI.electronMessage(message, fork);
         break;
     }
   }.bind(this));
-  fork.on("error", function (e) {
+  fork.on('error', function (e) {
     console.log(e);
   });
-  fork.on("close", function (code, signal) {
+  fork.on('close', function (code, signal) {
     methods.removeFork(fork, code, signal);
   });
 };
@@ -75,24 +75,24 @@ methods.call = function (ws, message) {
   try {
     message = JSON.parse(message);
   } catch (e) {
-    console.log("ERROR");
-    console.log("err:" + e);
-    console.log("mess: " + message);
-    console.log("typeof: " + typeof message);
+    console.log('ERROR');
+    console.log('err:' + e);
+    console.log('mess: ' + message);
+    console.log('typeof: ' + typeof message);
   }
   if (!(message.name in this.responders)) {
-    console.log("method not found", message);
-    //console.log(JSON.stringify(message));
+    console.log('method not found', message);
+    // console.log(JSON.stringify(message));
     return ws.write(JSON.stringify({
       id: message.id,
       ws: ws.id,
-      error: "method " + message.name + " does not exist"
+      error: 'method ' + message.name + ' does not exist'
     }));
   }
   log.debug('ws id is :' + ws.id);
   if (!this.users[ws.id]) {
     this.users[ws.id] = ws;
-    ws.on("close", function () {
+    ws.on('close', function () {
       delete this.users[ws.id];
       for (var i in this.user_reqs[ws.id]) {
         delete this.requests[this.user_reqs[ws.id][i]];
@@ -101,7 +101,7 @@ methods.call = function (ws, message) {
       for (var fork in this.forks) {
         if (fork.connected) {
           this.forks[fork].send({
-            cmd: "disconnect",
+            cmd: 'disconnect',
             ws: ws.id
           });
         }

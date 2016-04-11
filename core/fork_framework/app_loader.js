@@ -1,19 +1,19 @@
-var fs            = require('fs'),
-    events        = require('events'),
-    async         = require('async'),
-    util          = require('util'),
-    express       = require('express'),
-    url           = require('url'),
-    npmi          = require('npmi'),
-    bower         = require('bower'),
-    bowerJSON     = require('bower-json'),
-    chokidar      = require('chokidar'),
-    child_process = require('child_process'),
-    resolve       = require('resolve'),
-    _path         = require('path'),
-    log           = require('../console.js').log,
-    apiData       = require('../api_data.js'),
-    nextLoader    = require('../app_framework/loader.js');
+var fs = require('fs'),
+  events = require('events'),
+  async = require('async'),
+  util = require('util'),
+  express = require('express'),
+  url = require('url'),
+  npmi = require('npmi'),
+  bower = require('bower'),
+  bowerJSON = require('bower-json'),
+  chokidar = require('chokidar'),
+  child_process = require('child_process'),
+  resolve = require('resolve'),
+  _path = require('path'),
+  log = require('../console.js').log,
+  apiData = require('../api_data.js'),
+  nextLoader = require('../app_framework/loader.js');
 /**
  * object of all apps
  */
@@ -43,23 +43,23 @@ module.exports = appLoader;
  * @param {function} next - a callback
  */
 module.exports.compileFolder = function (folder, expressApp, next) {
-  if(typeof folder === 'undefined') {
+  if (typeof folder === 'undefined') {
     throw Error('compileFolder needs path to folder');
   }
 
 
-  if(!/\/$/.test(folder)) {
+  if (!/\/$/.test(folder)) {
     folder += '/';
   }
 
   fs.readdir(folder, function (err, files) {
-    if(err) {
+    if (err) {
       next(err);
     }
     // tries to create an app for each folder.
     async.filter(files, function (file, next) {
       appLoader.add(folder + file, expressApp, next);
-      //fs.exists(folder + file + '/app.json', function (exists) {
+      // fs.exists(folder + file + '/app.json', function (exists) {
       //  if(!exists) {
       //    return next(new Error('app.json does not exist for ' + file));
       //  }
@@ -105,7 +105,7 @@ module.exports.compileFolder = function (folder, expressApp, next) {
       //    //});
       //  });
       //
-      //});
+      // });
     }, function (err, result) {
       next(err, result);
     });
@@ -127,17 +127,17 @@ appLoader.add = function (path, expressApp, next) {
    */
   function tryNextLoader() {
     fs.exists(path + '/package.json', function (exists) {
-      if(!exists) {
+      if (!exists) {
         console.log(path);
         return next(new Error("app doesn't have an app.json or package.json"));
       }
-      log.debug("Attempting to use new app loader");
+      log.debug('Attempting to use new app loader');
 
-      nextLoader.add(path, expressApp, function(e, app) {
-        if(e) {
+      nextLoader.add(path, expressApp, function (e, app) {
+        if (e) {
           return;
         }
-        //console.log('received result', e, app);
+        // console.log('received result', e, app);
         apps[app.path] = app;
         appLoader.clean.push(app.clean());
         next();
@@ -147,7 +147,7 @@ appLoader.add = function (path, expressApp, next) {
 
   log.debug(path + '/app.json');
   fs.exists(path + '/app.json', function (exists) {
-    if(!exists) {
+    if (!exists) {
       return tryNextLoader();
     }
     var index;
@@ -164,24 +164,24 @@ appLoader.add = function (path, expressApp, next) {
       appLoader.emit('change', app);
     });
     app.init(function (err) {
-      if(err) {
+      if (err) {
         console.log(err);
         return next(err);
       }
 
-      if(app.clean.url !== 'headless') {
+      if (app.clean.url !== 'headless') {
         appLoader.clean.push(app.clean);
         index = appLoader.clean.length - 1;
       } else {
         // headless apps need to always run
-        app.start(function (err, result){
-          console.log("started" + app.path);
+        app.start(function (err, result) {
+          console.log('started' + app.path);
         });
       }
       appLoader.emit('added', app);
       next(null, app);
 
-      //app.start(function (err, result) {
+      // app.start(function (err, result) {
       //  if(err) {
       //    return next(err);
       //  }
@@ -193,7 +193,7 @@ appLoader.add = function (path, expressApp, next) {
       //  log.debug(app.name + ' is running');
       //  next(null, app);
       //
-      //});
+      // });
     });
   });
 };
@@ -208,11 +208,11 @@ appLoader.add = function (path, expressApp, next) {
  * @fires App#change
  */
 function App(path, expressApp, urlPath) {
-  if(!urlPath) {
+  if (!urlPath) {
     urlPath = '';
   }
 
-  if(path.indexOf(appFolder) !== 0) {
+  if (path.indexOf(appFolder) !== 0) {
     this.isExternal = true;
   }
 
@@ -238,7 +238,7 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   var createRouter = function () {
-    if(this.json.url === 'headless') {
+    if (this.json.url === 'headless') {
       return false;
     }
     this.router = express.Router();
@@ -268,8 +268,8 @@ function App(path, expressApp, urlPath) {
    */
   this.loadJSON = function (next) {
     var that = this;
-    fs.readFile(this.path + "/app.json", function (err, contents) {
-      if(err) {
+    fs.readFile(this.path + '/app.json', function (err, contents) {
+      if (err) {
         console.log(err);
         return next(err);
       }
@@ -291,21 +291,21 @@ function App(path, expressApp, urlPath) {
    */
   var checkJSON = function (next) {
     var j = this.json;
-    if(!j.url) {
+    if (!j.url) {
       next(new Error(this.folder + ' app.json does not have a url'));
     }
-    if(!j.name) {
+    if (!j.name) {
       next(new Error(this.folder + ' app.json does not have a name'));
     }
 
-    //TODO: this should be done by the window manager
-    if(j.url !== 'headless') {
+    // TODO: this should be done by the window manager
+    if (j.url !== 'headless') {
       j.zIndex = 0;
       j.running = false;
       j.minimized = true;
     }
 
-    if(j.remote && 'port' in j.remote) {
+    if (j.remote && 'port' in j.remote) {
       try {
         apiData.get('remote/addPort')(j.remote.port);
       } catch (e) {
@@ -330,33 +330,33 @@ function App(path, expressApp, urlPath) {
     var that = this;
     var j = this.json;
 
-    if(j.url === "headless") {
+    if (j.url === 'headless') {
       return next();
     }
 
-    async.each(["url", "icon"], function (prop, next) {
+    async.each(['url', 'icon'], function (prop, next) {
       // we know the required urls are here from checkJSON
-      /*jshint -W018 */
-      if(!(prop in j)) {
+      /* jshint -W018 */
+      if (!(prop in j)) {
         return next();
       }
-      /*jshint +W018 */
+      /* jshint +W018 */
 
       // create absolute url
-      j[prop] = url.resolve("http://localhost:3000/" + urlPath + j.folder + that.id + "/index.html", j[prop]);
+      j[prop] = url.resolve('http://localhost:3000/' + urlPath + j.folder + that.id + '/index.html', j[prop]);
       that.clean[prop] = j[prop];
       var parsed = url.parse(j[prop]);
 
       // if local file, make sure it exists.
-      if(!url.host) {
+      if (!url.host) {
         fs.exists(j.path, function (boo) {
-          if(!boo) return next(new Error(that.name + ' ' + prop + " file does not exist"));
+          if (!boo) return next(new Error(that.name + ' ' + prop + ' file does not exist'));
           next();
         });
       }
 
     }, function (err) {
-      if(err) {
+      if (err) {
         return next(err);
       }
       next(void(0), j);
@@ -374,7 +374,7 @@ function App(path, expressApp, urlPath) {
       checkJSON,
       checkURLs
     ], function (err, result) {
-      if(err) {
+      if (err) {
         console.log('not valid');
         console.log(err);
         that.valid = false;
@@ -392,14 +392,14 @@ function App(path, expressApp, urlPath) {
    */
   this.npmDependencies = function (next) {
     var d = this.json.npmDependencies || {};
-    if(Object.keys(d).length === 0) {
+    if (Object.keys(d).length === 0) {
       return next();
     }
     async.eachSeries(Object.keys(d), function (dep, next) {
       // check if installed
       try {
         // TODO make this async
-        resolve.sync(dep, {basedir: that.path});
+        resolve.sync(dep, { basedir: that.path });
         return next();
       } catch (e) {
         console.log('installing' + dep + 'for ' + that.name);
@@ -412,9 +412,9 @@ function App(path, expressApp, urlPath) {
           }
         };
         npmi(options, function (err, result) {
-          if(err) {
-            if(err.code === npmi.LOAD_ERR) console.log('npm load error');
-            else if(err.code === npmi.INSTALL_ERR) console.log('npm install error');
+          if (err) {
+            if (err.code === npmi.LOAD_ERR) console.log('npm load error');
+            else if (err.code === npmi.INSTALL_ERR) console.log('npm install error');
             console.log(err.message);
             return next(err.message);
           }
@@ -426,7 +426,7 @@ function App(path, expressApp, urlPath) {
       }
 
     }, function (err) {
-      if(err) console.log(err);
+      if (err) console.log(err);
       next();
     });
     log.debug('npm dependencies');
@@ -441,17 +441,17 @@ function App(path, expressApp, urlPath) {
    */
   this.bowerDependencies = function (next) {
     var d = this.json.bowerDependencies || {};
-    if(Object.keys(d).length === 0) {
+    if (Object.keys(d).length === 0) {
       // no dependencies
       return next();
     }
     async.eachSeries(Object.keys(d), function (dep, next) {
-      bowerJSON.find(__root + "/bower_components/" + dep, function (err, file) {
-        if(file) {
+      bowerJSON.find(__root + '/bower_components/' + dep, function (err, file) {
+        if (file) {
           return next();
         }
         var force = false;
-        if(d[dep] === 'latest') {
+        if (d[dep] === 'latest') {
           force = true;
         }
         console.log('installing ' + dep);
@@ -472,7 +472,7 @@ function App(path, expressApp, urlPath) {
           });
       });
     }, function (err) {
-      if(err) {
+      if (err) {
         console.log(err);
       }
       next(err);
@@ -519,7 +519,7 @@ function App(path, expressApp, urlPath) {
         fork.once('message', function (m) {
           clearTimeout(timeout);
           fork.removeAllListeners();
-          if(m.cmd !== 'ready') {
+          if (m.cmd !== 'ready') {
             that.state = 'error';
             fork.kill();
             /*
@@ -560,7 +560,7 @@ function App(path, expressApp, urlPath) {
   }.bind(this);
 
   this.stop = function (next) {
-    if(that.state !== 'running' && that.state !== 'starting') {
+    if (that.state !== 'running' && that.state !== 'starting') {
       console.log('already stopped ' + that.state);
       next();
     }
@@ -592,24 +592,24 @@ function App(path, expressApp, urlPath) {
    * @param {boolean} options.createRouter - if false, the router is not created
    */
   this.init = function (options, next) {
-    if(typeof options === "function") {
+    if (typeof options === 'function') {
       next = options;
     }
     this.loadJSON(function (err) {
-      if(err) {
+      if (err) {
         this.valid = false;
         return next(err);
       }
       that.validate(function (err) {
-        if(err) {
+        if (err) {
           next(err);
         }
         that.bowerDependencies(function (err) {
-          if(err) {
+          if (err) {
             next(err);
           }
           that.npmDependencies(function (err) {
-            if(!(options && options.createRouter)) {
+            if (!(options && options.createRouter)) {
               createRouter();
             }
             return next(err);

@@ -1,10 +1,10 @@
 // API for apps.  Available to app forks.
-var db           = require(__root + '/core/db.js'),
-    serverAPI    = {},
-    requests     = [],
-    externalApps = db.collection('external_apps'),
-    apiData      = require(__root + '/core/api_data.js'),
-    lodash       = require('lodash');
+var db = require(__root + '/core/db.js'),
+  serverAPI = {},
+  requests = [],
+  externalApps = db.collection('external_apps'),
+  apiData = require(__root + '/core/api_data.js'),
+  lodash = require('lodash');
 
 function Request(message, fork) {
   this.message = message;
@@ -40,7 +40,7 @@ Request.prototype.exec = function () {
   }
   // only send if something is returned.  If nothing is returned,
   // the api should use send().
-  if (typeof error === "undefined" && typeof result === "undefined") {
+  if (typeof error === 'undefined' && typeof result === 'undefined') {
     // nothing to send
     console.log('nothing returned for ' + this.message.message.method);
     return;
@@ -57,7 +57,7 @@ function electronMessage(message, fork) {
   });
 }
 
-//API for apps
+// API for apps
 serverAPI['apps/list'] = function (data, message, send) {
   if (message.type === 'listener') {
     apiData.watch('apps/clean', function (prop, oldValue, currentValue) {
@@ -124,7 +124,7 @@ serverAPI['apps/external/add'] = function (path, message, send) {
   });
 };
 
-//API for window manager to communicate with electron apps
+// API for window manager to communicate with electron apps
 serverAPI['electron/windowRawEvents'] = function (path, message, send) {
   electronListeners.push(function (message) {
     send({

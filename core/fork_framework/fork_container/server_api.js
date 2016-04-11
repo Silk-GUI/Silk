@@ -4,7 +4,7 @@ var requests = {};
 var call = function (method, data, cb) {
   var id = new Date().getTime() + '-' + Math.random();
 
-  if(typeof data === 'function') {
+  if (typeof data === 'function') {
     cb = data;
     data = null;
   }
@@ -15,7 +15,7 @@ var call = function (method, data, cb) {
   };
 
   process.send({
-    cmd: "server api",
+    cmd: 'server api',
     message: {
       id: id,
       method: method,
@@ -45,7 +45,7 @@ var listen = function (method, data, cb) {
 };
 var removeListener = function (id) {
   var request = requests[id];
-  if(request.type === 'call'){
+  if (request.type === 'call') {
     return;
   }
   delete requests[id];

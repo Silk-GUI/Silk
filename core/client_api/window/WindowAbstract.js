@@ -1,5 +1,5 @@
-if(typeof module != "undefined" && module.exports){
-  var MessageDuplex = require(__root+"/core/abstract/MessageDuplex.js");
+if (typeof module != 'undefined' && module.exports) {
+  var MessageDuplex = require(__root+'/core/abstract/MessageDuplex.js');
 }
 
 
@@ -12,19 +12,19 @@ if(typeof module != "undefined" && module.exports){
   @param {window} [context] - the window it will be speaking to
   @param {string} [origin=*] - the origin namespace it will be restricted to.
 */
-function WinAbs(context, origin){
-  this.origin = (origin)?origin:"*";
-  console.log("b4messdup");
-  MessageDuplex.call(this, function(message){
+function WinAbs(context, origin) {
+  this.origin = (origin) ? origin:'*';
+  console.log('b4messdup');
+  MessageDuplex.call(this, function (message) {
     message.user = null;
-    this.context.postMessage(JSON.stringify(message),this.origin);
+    this.context.postMessage(JSON.stringify(message), this.origin);
   }.bind(this));
   var that = this;
-  console.log("messdup");
-  if(context)
-    setTimeout(function(){
+  console.log('messdup');
+  if (context)
+    setTimeout(function () {
       that.open(context);
-    },10);
+    }, 10);
   return this;
 }
 
@@ -35,19 +35,19 @@ WinAbs.prototype.constructor = WinAbs;
   @memberof WinAbs
   @param {window} context - the window it will be speaking to
 */
-WinAbs.prototype.open = function(context){
-  if(typeof context === "undefined")
-     throw new Error("to construct "+arguments.callee.name+" You need to provide a window");
+WinAbs.prototype.open = function (context) {
+  if (typeof context === 'undefined')
+    throw new Error("to construct " + arguments.callee.name+' You need to provide a window');
   this.context = context;
   var that = this;
-  window.addEventListener("message",function(message){
-    if(message.source != that.context){
+  window.addEventListener('message', function (message) {
+    if (message.source != that.context) {
       return;
     }
     message = JSON.parse(message.data);
-    setTimeout(function(){
-      that.handleMessage(message,that.context);
-    },10);
+    setTimeout(function () {
+      that.handleMessage(message, that.context);
+    }, 10);
   });
   this.ready();
 };
@@ -64,8 +64,8 @@ WinAbs.prototype.open = function(context){
   @var {WinAbs} RootManager
 */
 
-if(window.parent && window.parent != window){
+if (window.parent && window.parent != window) {
   window.Manager = new WinAbs(window.parent);
-  if(window.top != window.parent)
+  if (window.top != window.parent)
     window.RootManager = new WinAbs(window.top);
 }

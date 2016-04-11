@@ -1,7 +1,7 @@
-var domain    = require('domain'),
-    apiData   = require('./api_data.js'),
-    ports     = {},
-    autoStart = false;
+var domain = require('domain'),
+  apiData = require('./api_data.js'),
+  ports = {},
+  autoStart = false;
 /**
  * Manages localtunnel for one port.
  * @constructor
@@ -34,9 +34,9 @@ function Remote(port) {
     var that = this;
     remoteDomain.run(function () {
       var localtunnel = require('localtunnel');
-      //TODO if status is stopped and url is not null try to start with the url.
+      // TODO if status is stopped and url is not null try to start with the url.
       localtunnel(that.port, function (err, tunnel) {
-        if(err) {
+        if (err) {
           console.log(err);
           this.url = null;
           this.status = 'stopped';
@@ -45,24 +45,24 @@ function Remote(port) {
         this.close = tunnel.close;
         this.url = tunnel.url;
         this.status = 'running';
-        apiData.set("remote/url", tunnel.url);
+        apiData.set('remote/url', tunnel.url);
         apiData.set('remote/ports', ports);
-        if(that.port === 3000) {
-          console.log("Go to " + tunnel.url + " to remotely access Silk");
+        if (that.port === 3000) {
+          console.log('Go to ' + tunnel.url + ' to remotely access Silk');
         }
 
-        tunnel.on("error", function (err) {
+        tunnel.on('error', function (err) {
           console.log(err);
 
         });
-        tunnel.on("close", function () {
-          console.log("remote closed");
+        tunnel.on('close', function () {
+          console.log('remote closed');
         });
       });
     });
   };
 
-  if(autoStart === true) {
+  if (autoStart === true) {
     this.start();
   }
 }
@@ -74,10 +74,10 @@ ports[3000] = new Remote(3000);
  * {number} options - localtunnel options.  Not used yet
  */
 var start = function (port) {
-  if(typeof port === 'number') {
+  if (typeof port === 'number') {
     ports[port].start();
   } else {
-    if(typeof port === 'boolean') {
+    if (typeof port === 'boolean') {
       autoStart = true;
     }
     for (port in ports) {
@@ -88,10 +88,10 @@ var start = function (port) {
 };
 
 var close = function (port) {
-  if(typeof port === 'number') {
+  if (typeof port === 'number') {
     ports[port].close();
   } else {
-    if(typeof port === 'boolean') {
+    if (typeof port === 'boolean') {
       autoStart = false;
     }
     for (port in ports) {

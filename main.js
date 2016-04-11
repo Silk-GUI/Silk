@@ -41,12 +41,12 @@ var notifier = updateNotifier({
 });
 notifier.notify();
 
-//commands
-var run       = require('./core/commands/run.js'),
-    addApp    = require('./core/commands/add_app.js'),
-    removeApp = require('./core/commands/remove_app.js');
+// commands
+var run = require('./core/commands/run.js'),
+  addApp = require('./core/commands/add_app.js'),
+  removeApp = require('./core/commands/remove_app.js');
 
-process.title = "Silk GUI";
+process.title = 'Silk GUI';
 
 program
   .version(pkg.version)

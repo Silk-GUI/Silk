@@ -4,7 +4,7 @@
  */
 
 var fs = require('fs'),
-    jsonFile = require('json-file');
+  jsonFile = require('json-file');
 
 /**
  * Wrapper around jsonFile to create file it
@@ -12,8 +12,8 @@ var fs = require('fs'),
  * @param {string} settings - json file with this name will be used/created.
  * @constructor
  */
-function Settings (settings) {
-  if(!(this instanceof Settings)) {
+function Settings(settings) {
+  if (!(this instanceof Settings)) {
     return new Settings(settings);
   }
   var self = this;

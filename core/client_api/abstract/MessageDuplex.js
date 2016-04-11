@@ -1,11 +1,11 @@
 var doAsync;
-if(typeof module != "undefined" && module.exports){
-  var MessageRouter = require(___dirname+"/MessageRouter.js");
-  var MessageWriter = require(___dirname+"/MessageWriter.js");
+if (typeof module != 'undefined' && module.exports) {
+  var MessageRouter = require(___dirname+'/MessageRouter.js');
+  var MessageWriter = require(___dirname+'/MessageWriter.js');
   doAsync = process.nextTick.bind(process);
-}else{
-  doAsync = function(fn){
-    setTimeout(fn,1);
+} else {
+  doAsync = function (fn) {
+    setTimeout(fn, 1);
   };
 }
 
@@ -20,27 +20,27 @@ if(typeof module != "undefined" && module.exports){
   @param {function} [readFn=writeFn] - Function that will be called when a MessageDuplex is reading a message
 */
 
-function MessageDuplex(wSendFn, rSendFn){
-  console.log("mesdup");
-  if(!rSendFn) rSendFn = wSendFn;
-  if(typeof wSendFn == "undefined") throw new Error("Need at least 1 function");
+function MessageDuplex(wSendFn, rSendFn) {
+  console.log('mesdup');
+  if (!rSendFn) rSendFn = wSendFn;
+  if (typeof wSendFn == 'undefined') throw new Error('Need at least 1 function');
   var _writeFn = wSendFn;
-  this.originator = Date.now()+"|"+Math.random();
+  this.originator = Date.now() + "|" + Math.random();
   var that = this;
-  wSendFn = function(message){
-    if(message.originator){
-      if(!Array.isArray(message.originator)){
-        throw new Error("something went wrong in the originator chain");
+  wSendFn = function (message) {
+    if (message.originator) {
+      if (!Array.isArray(message.originator)) {
+        throw new Error('something went wrong in the originator chain');
       }
       message.originator.push(that.originator);
-    }else{
+    } else {
       message.originator = [that.originator];
     }
     _writeFn(message);
   };
-  console.log("b4rout");
+  console.log('b4rout');
   MessageRouter.call(this, rSendFn);
-  console.log("b4writ");
+  console.log('b4writ');
   MessageWriter.call(this, wSendFn);
 }
 MessageDuplex.prototype = Object.create(MessageWriter.prototype);
@@ -55,13 +55,13 @@ MessageDuplex.prototype.processMessage = MessageRouter.prototype.processMessage;
   @param {object} message - An object containing important message information
   @param {object} user - the user you want to recieve in the {@link MessageRouter#rSendFn}
 */
-MessageDuplex.prototype.handleMessage = function(message,user){
-  if(message.originator && message.originator.indexOf(this.originator) != -1){
-    console.log("return");
+MessageDuplex.prototype.handleMessage = function (message, user) {
+  if (message.originator && message.originator.indexOf(this.originator) != -1) {
+    console.log('return');
     this.returnMessage(message);
-  }else{
-    console.log("route");
-    this.routeMessage(message,user);
+  } else {
+    console.log('route');
+    this.routeMessage(message, user);
   }
 };
 MessageDuplex.prototype.constructor = MessageDuplex;

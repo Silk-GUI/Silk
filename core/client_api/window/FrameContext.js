@@ -1,5 +1,5 @@
-if(typeof module != "undefined" && module.exports){
-  var WinAbs = require(__root+"/core/window/public/WindowAbstract.js");
+if (typeof module != 'undefined' && module.exports) {
+  var WinAbs = require(__root+'/core/window/public/WindowAbstract.js');
 }
 /**
   A managers way of talking to windows
@@ -9,23 +9,23 @@ if(typeof module != "undefined" && module.exports){
   @param {window} manager - the manager it belongs to
   @param {object} winconfig - the configuration for the window
 */
-function FrameContext(manager,winconfig){
-  manager.emit("preBuild",winconfig);
-  if(!("id" in winconfig)) throw new Error("I want to ensure you are in control");
+function FrameContext(manager, winconfig) {
+  manager.emit('preBuild', winconfig);
+  if (!('id' in winconfig)) throw new Error('I want to ensure you are in control');
   this.id = winconfig.id;
   this.manager = manager;
   this.config = winconfig;
   console.log(1);
-  Object.defineProperty(this,"state",{
+  Object.defineProperty(this,'state', {
     get: function () {
-      if(typeof this.frame == "undefined")
-        return "dormant";
+      if (typeof this.frame == 'undefined')
+        return 'dormant';
       var doc = this.frame[0].contentDocument || this.frame[0].contentWindow.document;
-      if (  doc.readyState  != 'complete' )
-        return "loading";
-      if(!this.channel)
-        return "buildingchannel";
-      return "running";
+      if ( doc.readyState != 'complete')
+        return 'loading';
+      if (!this.channel)
+        return 'buildingchannel';
+      return 'running';
     }
   });
   WinAbs.call(this);
@@ -41,17 +41,17 @@ FrameContext.prototype.constructor = FrameContext;
   @memberof FrameContext
   @param {HTMLDomElement} container - container to append to or the iframe to become
 */
-FrameContext.prototype.open = function(container){
-  if(this.state != "dormant"){
-     throw Error("This window is already open");
+FrameContext.prototype.open = function (container) {
+  if (this.state != 'dormant') {
+    throw Error('This window is already open');
   }
-  if(typeof container == "undefined")
-    throw Error("To Open, this window needs a container");
+  if (typeof container == 'undefined')
+    throw Error('To Open, this window needs a container');
   container = $(container);
-  if(container.prop("tagName").toLowerCase() != "iframe" || container.attr("src") != this.config.url){
-    this.frame = '<iframe class="content" data-name="'+this.config.title+'" src="'+this.config.url+'"></iframe>';
+  if (container.prop('tagName').toLowerCase() != 'iframe' || container.attr('src') != this.config.url) {
+    this.frame = '<iframe class="content" data-name="' + this.config.title + '" src="' + this.config.url + '"></iframe>';
     this.frame = $(this.frame);
-  }else{
+  } else {
     this.frame = container;
     console.log(this.frame);
     container = false;
@@ -59,25 +59,25 @@ FrameContext.prototype.open = function(container){
   var ret = jQuery.Deferred();
   var that = this;
   var done = 0;
-  if(container)
+  if (container)
     container.append(this.frame);
-  WinAbs.prototype.open.call(that,that.frame[0].contentWindow,function(){ret.resolve(that);});
+  WinAbs.prototype.open.call(that, that.frame[0].contentWindow, function () {ret.resolve(that);});
   return ret;
 };
 
-FrameContext.prototype.buildMethods = function(){
+FrameContext.prototype.buildMethods = function () {
   var that = this;
-  this.add("openFile", function(params,next){
-    console.log("was bound, heard files");
-    that.manager.openFile(that,params);
+  this.add('openFile', function (params, next) {
+    console.log('was bound, heard files');
+    that.manager.openFile(that, params);
     return null;
   });
-  this.add("reverse", function(s,next) {
-      console.log("received message: "+s);
-      return s.split("").reverse().join("");
+  this.add('reverse', function (s, next) {
+    console.log("received message: " + s);
+    return s.split('').reverse().join('');
   });
 };
 
-if(typeof module != "undefined" && module.exports){
+if (typeof module != 'undefined' && module.exports) {
   module.exports = FrameContext;
 }

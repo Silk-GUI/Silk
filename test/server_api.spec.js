@@ -1,6 +1,6 @@
 var rewire = require('rewire'),
-    path   = require('path'),
-    expect = require('chai').expect;
+  path = require('path'),
+  expect = require('chai').expect;
 
 global.__root = path.resolve(__dirname, '../');
 

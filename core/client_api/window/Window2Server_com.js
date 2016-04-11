@@ -1,5 +1,5 @@
-if(typeof module != "undefined" && module.exports){
-  var MessageWriter = require(__root+"/core/abstract/MessageWriter.js");
+if (typeof module != 'undefined' && module.exports) {
+  var MessageWriter = require(__root+'/core/abstract/MessageWriter.js');
 }
 
 /**
@@ -13,32 +13,32 @@ if(typeof module != "undefined" && module.exports){
   @param {string} [port=80] - the port to connect to
   @param {string} [path=""] - the path that will be appended to all namespaces
 */
-function Server(host,port,path){
+function Server(host, port, path) {
   var that = this;
-  path = (path)?path:false;
-  port = (port)?port:80;
-  MessageWriter.call(this, function(message){
-    if(path)
+  path = (path) ? path:false;
+  port = (port) ? port:80;
+  MessageWriter.call(this, function (message) {
+    if (path)
       message.name = path + message.name;
     that.socket.send(JSON.stringify(message));
   });
   // method calls that are sent and waiting an answer
   try {
-    this.host = "ws://"+host+":"+port + '/ws/websocket';
+    this.host = "ws://" + host + ":" + port + '/ws/websocket';
     this.socket = new WebSocket(this.host);
-    this.socket.onopen = function(){
+    this.socket.onopen = function () {
       that.ready();
     };
-    this.socket.onmessage = function(message){
+    this.socket.onmessage = function (message) {
       console.log(message);
-      try{
+      try {
         message = JSON.parse(message.data);
-      }catch(e){
+      } catch (e) {
         that.socket.close();
       }
       that.returnMessage(message);
     };
-    this.socket.onclose = function(){
+    this.socket.onclose = function () {
       console.log('Socket Status: ' + that.socket.readyState + ' (Closed)');
       that.stop();
     };
@@ -60,18 +60,18 @@ Server.prototype.constructor = Server;
   @var {Server} ApplicationFork
   @memberof ClientSide
 */
-if(typeof module != "undefined" && module.exports){
+if (typeof module != 'undefined' && module.exports) {
   module.exports = Server;
-}else{
+} else {
   window.DocumentHost = null;
-  (function(url){
+  (function (url) {
     url = /^(http[s]?):\/\/([0-9\.]+|[a-z\-.]+)([?::][0-9]+)?([\/][A-Za-z0-9_\-]+)?(\?.*)?/.exec(url);
-    var port = (typeof wp != "undefined")?wp:(document.cookie.pwp)?document.cookie.pwp:3000+(parseInt(url[3].substring(1))-3000);
+    var port = (typeof wp != 'undefined') ? wp:(document.cookie.pwp) ? document.cookie.pwp:3000 + (parseInt(url[3].substring(1)) - 3000);
     console.log(port);
-    window.DocumentHost = new Server(url[2],port);
-    if(url[4]) {
+    window.DocumentHost = new Server(url[2], port);
+    if (url[4]) {
       // TODO: find a way to get app name without using url
-      window.ApplicationFork = new Server(url[2],port,'');
+      window.ApplicationFork = new Server(url[2], port, '');
     }
   })(document.URL);
 }
