@@ -1,14 +1,9 @@
-global.__root = __dirname;
-var http = require('http');
-var express = require('express');
-var SockJS = require('sockjs');
+global.__root = __dirname; // eslint-disable-line
 var program = require('commander');
 var updateNotifier = require('update-notifier');
 var path = require('path');
 
-var configJson = require('./config.json');
 var logger = require('./core/console.js');
-var apiData = require('./core/api_data.js');
 var endedWith = require('./core/util/ended_with.js');
 
 // if the environment variable is set to 1,
@@ -42,9 +37,9 @@ var notifier = updateNotifier({
 notifier.notify();
 
 // commands
-var run = require('./core/commands/run.js'),
-  addApp = require('./core/commands/add_app.js'),
-  removeApp = require('./core/commands/remove_app.js');
+var run = require('./core/commands/run.js');
+var addApp = require('./core/commands/add_app.js');
+var removeApp = require('./core/commands/remove_app.js');
 
 process.title = 'Silk GUI';
 

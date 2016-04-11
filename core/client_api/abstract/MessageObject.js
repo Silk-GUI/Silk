@@ -3,16 +3,16 @@ function MessageObject(message, fn, next) {
   this.user = message.user;
   this.name = message.name;
   this.data = message.data;
-	  this.next = function (err, result) {
-		  var message = {
-			  id: this.id,
-			  user: this.user.id,
-			  error: (err) ? err.stack:null,
-			  data: (err) ? null:result
-		};
-		  next(message);
-	}.bind(this);
-	  this.exec(fn);
+  this.next = function (err, result) {
+    var message = {
+      id: this.id,
+      user: this.user.id,
+      error: (err) ? err.stack : null,
+      data: (err) ? null : result
+    };
+    next(message);
+  }.bind(this);
+  this.exec(fn);
 }
 
 MessageObject.prototype.exec = function (fn) {
@@ -22,12 +22,11 @@ MessageObject.prototype.exec = function (fn) {
   } catch (e) {
     return this.next(e);
   }
-  if (typeof result != 'undefined') {
+  if (typeof result !== 'undefined') {
     this.next(void(0), result);
   }
 };
 
-
-if (typeof module != 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = MessageObject;
 }

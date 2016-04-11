@@ -1,5 +1,3 @@
-
-
 function MessageProxy(clientSend, slaveSend) {
   this.slaves = {}; // slaves can have multiple clients at a time
   this.clients = {}; // clients can only have one slave at a time
@@ -8,9 +6,9 @@ function MessageProxy(clientSend, slaveSend) {
 }
 
 MessageProxy.prototype.clientEnter = function (client) {
-  client.id = Date.now() + "|" + Math.random();
+  client.id = Date.now() + '|' + Math.random();
   client.slave = void(0);
-  this.clients[client.id] = { id:client.id, slave:client.slave, res:client, sq:[] };
+  this.clients[client.id] = { id: client.id, slave: client.slave, res: client, sq: [] };
 };
 
 MessageProxy.prototype.bindClient = function (slave, client) {
@@ -28,7 +26,7 @@ MessageProxy.prototype.clientLeave = function (client) {
 };
 
 MessageProxy.prototype.clientMessage = function (message, client) {
-  if (message.name == 'bind') {
+  if (message.name === 'bind') {
     return this.bindClient(message, client);
   }
   if (!this.clients[client.id].slave) {
@@ -41,16 +39,16 @@ MessageProxy.prototype.clientMessage = function (message, client) {
 };
 
 MessageProxy.prototype.slaveEnter = function (slave) {
-  slave.id = Date.now() + "|" + Math.random();
+  slave.id = Date.now() + '|' + Math.random();
   slave.clients = [];
   this.slaves[slave.id] = slave;
-  this.slaveSend({ name:'id', type:'trigger', data:slave.id }, slave);
+  this.slaveSend({ name: 'id', type: 'trigger', data: slave.id }, slave);
 };
 
 MessageProxy.prototype.slaveLeave = function (slave) {
-  var that = this;
+  var self = this;
   slave.clients.forEach(function (clientid) {
-    delete that.clients[clientid].slave;
+    delete self.clients[clientid].slave;
   });
   delete this.slaves[slave.id];
   slave = null;
@@ -62,7 +60,7 @@ MessageProxy.prototype.slaveMessage = function (message, slave) {
     message.error = 'User does not exist';
     this.slaveSend(message, slave);
   }
-  if (slave.clients.indexOf(message.client) == -1) {
+  if (slave.clients.indexOf(message.client) === -1) {
     message.data = null;
     message.error = 'This local is not subscribed to this user';
     this.slaveSend(message, slave);
@@ -70,6 +68,6 @@ MessageProxy.prototype.slaveMessage = function (message, slave) {
   this.clientSend(message, this.clients[message.client]);
 };
 
-if (typeof module != 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = MessageProxy;
 }

@@ -1,19 +1,19 @@
-var fs = require('fs'),
-  events = require('events'),
-  async = require('async'),
-  util = require('util'),
-  express = require('express'),
-  url = require('url'),
-  npmi = require('npmi'),
-  bower = require('bower'),
-  bowerJSON = require('bower-json'),
-  chokidar = require('chokidar'),
-  child_process = require('child_process'),
-  resolve = require('resolve'),
-  _path = require('path'),
-  log = require('../console.js').log,
-  apiData = require('../api_data.js'),
-  nextLoader = require('../app_framework/loader.js');
+var fs            = require('fs'),
+    events        = require('events'),
+    async         = require('async'),
+    util          = require('util'),
+    express       = require('express'),
+    url           = require('url'),
+    npmi          = require('npmi'),
+    bower         = require('bower'),
+    bowerJSON     = require('bower-json'),
+    chokidar      = require('chokidar'),
+    child_process = require('child_process'),
+    resolve       = require('resolve'),
+    _path         = require('path'),
+    log           = require('../console.js').log,
+    apiData       = require('../api_data.js'),
+    nextLoader    = require('../app_framework/loader.js');
 /**
  * object of all apps
  */
@@ -46,7 +46,6 @@ module.exports.compileFolder = function (folder, expressApp, next) {
   if (typeof folder === 'undefined') {
     throw Error('compileFolder needs path to folder');
   }
-
 
   if (!/\/$/.test(folder)) {
     folder += '/';
