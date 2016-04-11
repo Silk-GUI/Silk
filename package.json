@@ -45,7 +45,7 @@
   },
   "scripts": {
     "start": "node main.js",
-    "lint": "./node_modules/.bin/eslint *",
+    "lint": "./node_modules/.bin/eslint ./",
     "pretest": "npm run lint",
     "test": "mocha",
     "setup": "node ./core/setup/index.js",
