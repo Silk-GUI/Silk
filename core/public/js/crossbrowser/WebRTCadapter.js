@@ -1,7 +1,18 @@
-/* eslint-disable */
+/* global RTCPeerConnection getUserMedia attachMediaStream reatachMediaStream */
+/* global attachMediaStream reattachMediaStream MediaStream*/
+/* global mozRTCPeerConnection mozRTCSessionDescriptin mozRTCIceCandidate */
+/* global mozRTCSessionDescription */
+/* global webrtcDetectedBrowser webrtcDetectedVersion */
+/* global webkitMediaStream webkitRTCPeerConnection webkitMediaStream*/
+/* global createIceServer */
+/* eslint-disable no-native-reassign */
 
-var webrtcDetectedVersion = null;
-
+window.RTCPeerConnection = null;
+window.getUserMedia = null;
+window.attachMediaStream = null;
+window.reattachMediaStream = null;
+window.webrtcDetectedBrowser = null;
+window.webrtcDetectedVersion = null;
 
 function trace(text) {
   // This function is used for logging.
@@ -12,12 +23,12 @@ function trace(text) {
 }
 
 if (navigator.mozGetUserMedia) {
-  console.log('This appears to be Firefox');
+  trace('This appears to be Firefox');
 
   webrtcDetectedBrowser = 'firefox';
 
   webrtcDetectedVersion =
-    parseInt(navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1]);
+    parseInt(navigator.userAgent.match(/Firefox\/([0-9]+)\./)[1], 10);
 
   // The RTCPeerConnection object.
   RTCPeerConnection = mozRTCPeerConnection;
@@ -34,21 +45,22 @@ if (navigator.mozGetUserMedia) {
 
   // Creates iceServer from the url for FF.
   createIceServer = function (url, username, password) {
+    var turnUrlParts;
     var iceServer = null;
-    var url_parts = url.split(':');
-    if (url_parts[0].indexOf('stun') === 0) {
+    var urlParts = url.split(':');
+    if (urlParts[0].indexOf('stun') === 0) {
       // Create iceServer with stun url.
-      iceServer = { 'url': url };
-    } else if (url_parts[0].indexOf('turn') === 0 &&
+      iceServer = { url: url };
+    } else if (urlParts[0].indexOf('turn') === 0 &&
       (url.indexOf('transport=udp') !== -1 ||
       url.indexOf('?transport') === -1)) {
       // Create iceServer with turn url.
       // Ignore the transport parameter from TURN url.
-      var turn_url_parts = url.split('?');
+      turnUrlParts = url.split('?');
       iceServer = {
-        'url': turn_url_parts[0],
-        'credential': password,
-        'username': username
+        url: turnUrlParts[0],
+        credential: password,
+        username: username
       };
     }
     return iceServer;
@@ -56,7 +68,7 @@ if (navigator.mozGetUserMedia) {
 
   // Attach a media stream to an element.
   attachMediaStream = function (element, stream) {
-    trace('Attaching media stream');
+    console.log('Attaching media stream');
     element.mozSrcObject = stream;
     element.play();
   };
@@ -80,29 +92,30 @@ if (navigator.mozGetUserMedia) {
 
   webrtcDetectedBrowser = 'chrome';
   webrtcDetectedVersion =
-    parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
+    parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2], 10);
 
   // Creates iceServer from the url for Chrome.
   createIceServer = function (url, username, password) {
+    var urlTurnParts;
     var iceServer = null;
-    var url_parts = url.split(':');
-    if (url_parts[0].indexOf('stun') === 0) {
+    var urlParts = url.split(':');
+    if (urlParts[0].indexOf('stun') === 0) {
       // Create iceServer with stun url.
-      iceServer = { 'url': url };
-    } else if (url_parts[0].indexOf('turn') === 0) {
+      iceServer = { url: url };
+    } else if (urlParts[0].indexOf('turn') === 0) {
       if (webrtcDetectedVersion < 28) {
         // For pre-M28 chrome versions use old TURN format.
-        var url_turn_parts = url.split('turn:');
+        urlTurnParts = url.split('turn:');
         iceServer = {
-          'url': 'turn:' + username + '@' + url_turn_parts[1],
-          'credential': password
+          url: 'turn:' + username + '@' + urlTurnParts[1],
+          credential: password
         };
       } else {
         // For Chrome M28 & above use new TURN format.
         iceServer = {
-          'url': url,
-          'credential': password,
-          'username': username
+          url: url,
+          credential: password,
+          username: username
         };
       }
     }
