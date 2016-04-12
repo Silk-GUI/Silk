@@ -21,8 +21,9 @@ rules:
   consistent-this: [2, "self"]
   block-scoped-var: 0
   # allow labels when needed
-  no-extra-label: 2
-  no-unused-labels: 2
+  #These two rules are not availalbe on code climate
+  #no-extra-label: 2
+  #no-unused-labels: 2
   no-label-var: 2
   no-labels: 0
   # there are exceptions to this rule
