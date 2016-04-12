@@ -6,8 +6,10 @@
  @interface
  @augments MessageRouter
  @augments MessageWriter
- @param {function} writwFn - Function that will be called when a MessageDuplex is ready to write a message
- @param {function} [readFn=writeFn] - Function that will be called when a MessageDuplex is reading a message
+ @param {function} writwFn - Function that will be called when a MessageDuplex is
+ ready to write a message
+ @param {function} [readFn=writeFn] - Function that will be called when a MessageDuplex is
+ reading a message
  */
 
 function MessageDuplex(wSendFn, rSendFn) {

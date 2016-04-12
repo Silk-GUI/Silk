@@ -1,32 +1,44 @@
-global.__root = __dirname; // eslint-disable-line
 var program = require('commander');
 var updateNotifier = require('update-notifier');
 var path = require('path');
 
 var logger = require('./core/console.js');
 var endedWith = require('./core/util/ended_with.js');
+// TODO: remove global
+var __root = global.__root = require('./root.js'); // eslint-disable-line no-unused-vars
+
+// commands
+var run = require('./core/commands/run.js');
+var addApp = require('./core/commands/add_app.js');
+var removeApp = require('./core/commands/remove_app.js');
+var pkg = require('./package.json');
+
+var notifier;
+var lastArgv;
 
 // if the environment variable is set to 1,
 // this will log the file and line that outputs
-// to the terminal
+// to the terminalr
 if (process.env.TRACE_CONSOLE) {
   ['log', 'warn'].forEach(function (method) {
     var old = console[method];
     console[method] = function () {
       var stack = (new Error()).stack.split(/\n/);
+      var args;
+
       // Chrome includes a single "Error" line, FF doesn't.
       if (stack[0].indexOf('Error') === 0) {
         stack = stack.slice(1);
       }
-      var args = [].slice.apply(arguments).concat([stack[1].trim()]);
+      args = [].slice.apply(arguments)
+        .concat([stack[1].trim()]);
       return old.apply(console, args);
     };
   });
 }
 
 // update notification
-var pkg = require('./package.json');
-var notifier = updateNotifier({
+notifier = updateNotifier({
   pkg: {
     name: pkg.name,
     version: pkg.version
@@ -35,11 +47,6 @@ var notifier = updateNotifier({
   defer: false
 });
 notifier.notify();
-
-// commands
-var run = require('./core/commands/run.js');
-var addApp = require('./core/commands/add_app.js');
-var removeApp = require('./core/commands/remove_app.js');
 
 process.title = 'Silk GUI';
 
@@ -67,7 +74,7 @@ program
 program
   .parse(process.argv);
 
-var lastArgv = process.argv[process.argv.length - 1];
+lastArgv = process.argv[process.argv.length - 1];
 if (lastArgv === 'help' || lastArgv === 'help') {
   // silk help or npm start help was run.
   program.help();

@@ -41,8 +41,9 @@ var listen = function (method, data, cb) {
       type: 'listener'
     }
   });
-
 };
+
+// TODO: this is not finished
 var removeListener = function (id) {
   var request = requests[id];
   if (request.type === 'call') {
@@ -72,5 +73,6 @@ var api = {};
 api.call = call;
 api.listen = listen;
 api.done = done;
+api.removeListener = removeListener;
 
 module.exports = api;

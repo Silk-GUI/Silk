@@ -116,7 +116,9 @@ DependentArray.prototype.resolve = function () {
   }
 
   for (i in this.q) {
-    this.resolveRecurs(i);
+    if (this.q.hasOwnProperty(i)) {
+      this.resolveRecurs(i);
+    }
   }
   if (Object.keys(this.q).length > 0) {
     throw new Error('Unresolved queue items: ' + JSON.stringify(Object.keys(this.q)));

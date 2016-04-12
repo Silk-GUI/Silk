@@ -1,7 +1,11 @@
+/* global Server NetworkInstance RSVP EventEmitter DocumentHost ApplicationFork */
+// eslint doesn't like how we use the global variables
+/* eslint-disable block-scoped-var */
+
 if (typeof module !== 'undefined' && module.exports) {
-  var Server = require(__root + '/window/public/Window2Server_com');
-  var NetworkInstance = require(__dirname + '/NetworkUser.js');
-  var RSVP = require('rsvp');
+  var Server = require('../window/Window2Server_com.js'); // eslint-disable-line vars-on-top
+  var NetworkInstance = require('./NetworkUser.js');  // eslint-disable-line vars-on-top
+  var RSVP = require('rsvp'); // eslint-disable-line vars-on-top
 }
 /**
  Creates a new Network host. A network host provides a manner to find users with
@@ -21,7 +25,7 @@ function NetworkHost(url, info, config, sconfig) {
   this.off = this.removeListener.bind(this);
   if (!config) {
     config = {
-      'iceServers': [
+      iceServers: [
         { url: 'stun:stun.l.google.com:19302' },
         { url: 'stun:stun1.l.google.com:19302' },
         { url: 'stun:stun2.l.google.com:19302' },
@@ -51,7 +55,7 @@ function NetworkHost(url, info, config, sconfig) {
   }
   this.config = config;
   this.sconfig = sconfig;
-  if (url && DocumentHost.url != url) {
+  if (url && DocumentHost.url !== url) {
     url = /^http(s?):\/\/([0-9\.]+|[a-z\-.]+)((?::)[0-9]+)?(.*)$/.exec(url);
     this.RTCHost = new Server(url[2], url[3] || 80);
   } else {
@@ -79,22 +83,26 @@ NetworkHost.prototype.connect = function (info) {
   }
   this.info = info;
   this.RTCHandle = this.RTCHost.pipe('RTC-user', info, function (error, data) {
-    if (error) return alert(JSON.stringify(error));
-    if (data.cmd === 'offer')
-      return that.emit('offer', data);
+    if (error) {
+      return console.error(JSON.stringify(error));
+    }
+    if (data.cmd === 'offer') {
+      return self.emit('offer', data);
+    }
     if (data.cmd === 'list') {
       console.log('list');
       return self.emit('userlist', data.data);
     }
     if (data.cmd === 'accept') {
-      if (!self.connections[data.identity])
+      if (!self.connections[data.identity]) {
         return console.log('accepting a gift ungiven');
+      }
       self.connections[data.identity].ok(data);
-      return that.emit('handshake', that.connections[data.identity]);
+      return self.emit('handshake', self.connections[data.identity]);
     }
-    if (data.cmd == 'ice') {
+    if (data.cmd === 'ice') {
       console.log('host ice');
-      that.connections[data.identity].remoteIce(data.data);
+      self.connections[data.identity].remoteIce(data.data);
     }
   });
 };
@@ -104,8 +112,13 @@ NetworkHost.prototype.connect = function (info) {
  @memberof NetworkHost
  */
 NetworkHost.prototype.closeAll = function () {
-  for (var i in this.connections)
-    this.connections[i].close();
+  var i;
+
+  for (i in this.connections) {
+    if (this.connections.hasOwnProperty(i)) {
+      this.connections[i].close();
+    }
+  }
 };
 /**
  Makes an offer directed at a specific user
@@ -116,7 +129,9 @@ NetworkHost.prototype.offer = function (identity) {
   var promise = new RSVP.Promise(function (resolve, reject) {
     this.connections[identity] = new NetworkInstance(this, identity);
     this.connections[identity].offer(identity, function (err, cur) {
-      if (err) return reject(err);
+      if (err) {
+        return reject(err);
+      }
       resolve(cur);
     });
   }.bind(this));
@@ -132,13 +147,15 @@ NetworkHost.prototype.offerAccept = function (message) {
     var identity = message.identity;
     this.connections[identity] = new NetworkInstance(this, identity);
     this.connections[identity].accept(message, function (err, cur) {
-      if (err) return reject(err);
+      if (err) {
+        return reject(err);
+      }
       resolve(cur);
     });
   }.bind(this));
   return promise;
 };
 
-if (typeof module != 'undefined' && module.exports) {
+if (typeof module !== 'undefined' && module.exports) {
   module.exports = NetworkHost;
 }

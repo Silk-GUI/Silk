@@ -3,8 +3,8 @@
  * and automatically save.
  */
 
-var fs = require('fs'),
-  jsonFile = require('json-file');
+var fs = require('fs');
+var jsonFile = require('json-file');
 
 /**
  * Wrapper around jsonFile to create file it
@@ -13,16 +13,18 @@ var fs = require('fs'),
  * @constructor
  */
 function Settings(settings) {
+  var self = this;
+  var data;
+
   if (!(this instanceof Settings)) {
     return new Settings(settings);
   }
-  var self = this;
   // settings name
   self.name = settings;
   self.path = __root + '/core/settings' + settings + '.json';
   // load file or create if it doesn't exist
   try {
-    data = jsonFile.read(path);
+    data = jsonFile.read(self.path);
   } catch (e) {
     fs.writeFileSync(self.path, '{}');
     data = jsonFile.read(self.path);

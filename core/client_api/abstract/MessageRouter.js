@@ -16,7 +16,8 @@ if (typeof module !== 'undefined' && module.exports) {
  @constructor
  @interface
  @augments EventEmitter
- @param {function} rSendFn - Function that will be called when the router wants to send to the originator {@link MessageRouter#rSendFn}.
+ @param {function} rSendFn - Function that will be called when the router wants to send to the
+ originator {@link MessageRouter#rSendFn}.
  */
 
 function MessageRouter(rSendFn) {
@@ -40,7 +41,8 @@ MessageRouter.prototype.constructor = MessageRouter;
  @abstract
  @memberof MessageRouter
  @param {object} message - The response message
- @param {object} user - that transport method that was given to us by {@link MessageRouter#RouteMessage}.
+ @param {object} user - that transport method that was given to us
+ by {@link MessageRouter#RouteMessage}.
  @return {undefined}
  */
 MessageRouter.prototype.rSendFn = function (message, user) { // eslint-disable-line no-unused-vars
@@ -50,8 +52,10 @@ MessageRouter.prototype.rSendFn = function (message, user) { // eslint-disable-l
 /**
  The method that is called when the MessageRouter responds.
  @memberof MessageRouter
- @param {object|string} keymethod - An object containing a key to listen for and an associated method
- @param {object} [method] - If there are two arguments then this adds a listener with the first argument as key and second as function
+ @param {object|string} keymethod - An object containing a key to listen for and an
+ associated method
+ @param {object} [method] - If there are two arguments then this adds a listener with the
+ first argument as key and second as function
  @return this
  */
 MessageRouter.prototype.add = function (keymethod) {

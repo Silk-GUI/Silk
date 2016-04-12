@@ -1,10 +1,17 @@
 // API for apps.  Available to app forks.
-var db = require(__root + '/core/db.js'),
-  serverAPI = {},
-  requests = [],
-  externalApps = db.collection('external_apps'),
-  apiData = require(__root + '/core/api_data.js'),
-  lodash = require('lodash');
+var db = require(__root + '/core/db.js');
+var serverAPI = {};
+var externalApps = db.collection('external_apps');
+var apiData = require(__root + '/core/api_data.js');
+
+// handle electron messages
+var electronListeners = [];
+
+function electronMessage(message) {
+  electronListeners.forEach(function (listener) {
+    listener(message);
+  });
+}
 
 function Request(message, fork) {
   this.message = message;
@@ -48,15 +55,6 @@ Request.prototype.exec = function () {
   this.send(error, result);
 };
 
-// handle electron messages
-var electronListeners = [];
-
-function electronMessage(message, fork) {
-  electronListeners.forEach(function (listener) {
-    listener(message);
-  });
-}
-
 // API for apps
 serverAPI['apps/list'] = function (data, message, send) {
   if (message.type === 'listener') {
@@ -73,7 +71,6 @@ serverAPI['apps/state'] = function (data, message, send) {
 
   var results = [];
   if (message.type === 'listener') {
-
     apiData.watch('apps/list', function (prop, oldValue, currentValue) {
       results = [];
       clean.forEach(function (app) {
@@ -97,7 +94,7 @@ serverAPI['apps/restart'] = function (path, message, send) {
   });
 };
 
-serverAPI['apps/add'] = function (path, message) {
+serverAPI['apps/add'] = function (path) {
   apiData.get('apps/add')(path, function (err) {
     if (err) {
       return;
@@ -114,11 +111,11 @@ serverAPI['apps/start'] = function (path, message, send) {
 
 serverAPI['apps/external/add'] = function (path, message, send) {
   // make sure it isn't already added
-  externalApps.findOne({ path: path }, function (err, data) {
+  externalApps.findOne({ path: path }, function (err) {
     if (err) {
       return send(err);
     }
-    externalApps.insert({ path: path }, function (err, data) {
+    externalApps.insert({ path: path }, function (err) {
       send(err);
     });
   });
@@ -164,3 +161,5 @@ module.exports.call = function (message, fork) {
   var request = new Request(message, fork);
   request.exec();
 };
+
+module.exports.electronMessage = electronMessage;

@@ -1,20 +1,21 @@
 var express = require('express');
-var appLoader = require(__dirname + '/app_loader.js'),
-  db = require(__root + '/core/db.js'),
-  methods = require(__dirname + '/ws2fork_com.js'),
-  log = require('../console.js').log,
-  apiData = require('../api_data.js'),
-  connId = 0,
-  apps;
+var mkdirp = require('mkdirp');
+
+var appLoader = require('./app_loader.js');
+var db = require(__root + '/core/db.js');
+var methods = require('./ws2fork_com.js');
+var log = require('../console.js').log;
+var apiData = require('../api_data.js');
+
+var connId = 0;
 
 // get list of external apps;
 var externalApps = db.collection('external_apps');
 
 function loadExternalApps(app) {
-
   function externalApp(item) {
     log.debug('loading external app ' + item.path);
-    appLoader.add(item.path, app, function (err, data) {
+    appLoader.add(item.path, app, function (err) {
       if (err) {
         console.log('error loading app');
         console.log(err);
@@ -24,13 +25,15 @@ function loadExternalApps(app) {
 
   externalApps.find()
     .toArray(function (err, docs) {
+      var settingsDir;
+      var i;
+
       if (err) {
         // the setting folder doesn't exist
         if (err.code === 'ENOENT') {
-          var settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+          settingsDir = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
           settingsDir += '/.silk-gui';
           console.log('creating settings folder at ' + settingsDir);
-          var mkdirp = require('mkdirp');
           mkdirp.sync(settingsDir + '/core/database');
           // try again
           return loadExternalApps();
@@ -40,11 +43,12 @@ function loadExternalApps(app) {
         return;
       }
       // console.dir(docs);
-      for (var i = 0; i < docs.length; ++i) {
+      for (i = 0; i < docs.length; ++i) {
         externalApp(docs[i]);
       }
     });
 }
+
 module.exports = function (app, wss, next) {
   // external apps
   loadExternalApps(app);
@@ -62,7 +66,6 @@ module.exports = function (app, wss, next) {
     apiData.set('apps/list', appLoader.apps);
     if (app.state === 'running' || app.state === 'starting') {
       // methods.addFork(app.fork);
-      return;
     } else {
       app.once('ready', function (err) {
         if (err) {
@@ -72,11 +75,9 @@ module.exports = function (app, wss, next) {
         // methods.addFork(app.fork);
       });
     }
-
   });
 
   appLoader.on('change', function (app) {
-
     if (app.state === 'running' || app.state === 'starting') {
       methods.addFork(app.fork);
     }
@@ -89,18 +90,16 @@ module.exports = function (app, wss, next) {
     conn.id = connId++;
     log.debug('connected');
     conn.on('data', function (message) {
-
       log.debug('websocket message: ' + message);
-
-
       methods.call(conn, message);
     });
   });
-
 };
 
 // load window manager as an app
 module.exports.startWindowManager = function (path, expressApp, callback) {
+  var app;
+
   // check if path is local or a github repository
   var localPath = false;
   if (path.indexOf('/') === 0) {
@@ -118,10 +117,10 @@ module.exports.startWindowManager = function (path, expressApp, callback) {
   } else {
     console.log('Loading window manager from ' + path);
   }
-  var app = new appLoader.App(path, expressApp, '/');
+  app = new appLoader.App(path, expressApp, '/');
   app.init({
     createRouter: false
-  }, function (e, d) {
+  }, function () {
     expressApp.use(express.static(path + '/public'));
     expressApp.get('/', function (req, res) {
       res.sendFile(path + '/public/index.html');
@@ -131,6 +130,5 @@ module.exports.startWindowManager = function (path, expressApp, callback) {
       methods.addFork(app.fork);
       callback(e, d);
     });
-
   });
 };

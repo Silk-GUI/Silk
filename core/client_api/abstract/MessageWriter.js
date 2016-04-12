@@ -1,4 +1,6 @@
 /* global EventEmitter RSVP StreamPromise */
+// eslint does not like how we define RSVP, StreamPromise, and EventEmitter
+/* eslint-disable block-scoped-var */
 
 if (typeof module !== 'undefined') {
   var RSVP = require('rsvp'); // eslint-disable-line vars-on-top
@@ -10,7 +12,8 @@ if (typeof module !== 'undefined') {
  An io listener that sends messages to the functions wanting to handle them.
  @interface
  @augments EventEmitter
- @param {function} wSendFn - Function that will be called when you wish to write something to a target.
+ @param {function} wSendFn - Function that will be called when you wish to write something
+ to a target.
  */
 function MessageWriter(wSendFn) {
   EventEmitter.call(this);
@@ -33,7 +36,8 @@ MessageWriter.prototype.constructor = MessageWriter;
  @abstract
  @memberof MessageWriter
  @param {object} message - The response message
- @param {object} user - that transport method that was given to us by {@link MessageRouter#RouteMessage}.
+ @param {object} user - that transport method that was given to us
+ by {@link MessageRouter#RouteMessage}.
  @return {undefined}
  */
 MessageWriter.prototype.wSendFn = function (message, user) { // eslint-disable-line no-unused-vars
@@ -127,7 +131,8 @@ MessageWriter.prototype.get = function (name, data, cb) {
  @memberof MessageWriter
  @param {string} key - the namespace you want to process your data
  @param {...object} [data] - as many data arguments you want to send right away
- @param {requestCallback} [cb] - If no callback or data is defined, it will return a {@link StreamPromise}
+ @param {requestCallback} [cb] - If no callback or data is defined, it will
+ return a {@link StreamPromise}
  @returns {this|StreamPromise} Returns a {@link StreamPromise} if no callback is defined
  */
 MessageWriter.prototype.pipe = function (name, callback) {

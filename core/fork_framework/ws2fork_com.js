@@ -2,8 +2,8 @@
  Communication between - method calls from the client and app forks.
  - Silk api calls from forks and silk methods.
  */
-var serverAPI = require('./server_api.js'),
-  log = require('../console.js').log;
+var serverAPI = require('./server_api.js');
+var log = require('../console.js').log;
 
 var methods = {
   wflag: false,
@@ -31,10 +31,11 @@ methods.send = function (message) {
 };
 
 methods.removeFork = function (fork, code, signal) {
+  var i;
   console.log(code + ' ' + signal);
 
   // delete methods from this fork
-  for (var i in this.responders) {
+  for (i in this.responders) {
     if (this.responders[i].pid === fork.pid) {
       console.log(i);
       delete this.responders[i];
@@ -61,8 +62,11 @@ methods.addFork = function (fork) {
       case 'electron':
         serverAPI.electronMessage(message, fork);
         break;
+      default:
+        console.log('unknown message command');
     }
-  }.bind(this));
+  });
+
   fork.on('error', function (e) {
     console.log(e);
   });
@@ -93,12 +97,17 @@ methods.call = function (ws, message) {
   if (!this.users[ws.id]) {
     this.users[ws.id] = ws;
     ws.on('close', function () {
+      var i;
+      var fork;
+
       delete this.users[ws.id];
-      for (var i in this.user_reqs[ws.id]) {
-        delete this.requests[this.user_reqs[ws.id][i]];
+      for (i in this.user_reqs[ws.id]) {
+        if (this.user_reqs[ws.id].hasOwnProperty(i)) {
+          delete this.requests[this.user_reqs[ws.id][i]];
+        }
       }
       delete this.user_reqs[ws.id];
-      for (var fork in this.forks) {
+      for (fork in this.forks) {
         if (fork.connected) {
           this.forks[fork].send({
             cmd: 'disconnect',

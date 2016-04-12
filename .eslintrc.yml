@@ -19,6 +19,14 @@ rules:
   consistent-return: 0
   no-param-reassign: 0
   consistent-this: ["error", "self"]
+  block-scoped-var: 0
+  # allow labels when needed
+  no-extra-label: 2
+  no-unused-labels: 2
+  no-label-var: 2
+  no-labels: 0
+  # there are exceptions to this rule
+  new-cap: ["error", {"capIsNewExceptions": ["express.Router"]}]
 
   # Added
   no-path-concat: 2

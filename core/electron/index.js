@@ -1,6 +1,6 @@
-var electron = require('electron'),
-  BrowserWindow = electron.BrowserWindow,
-  app = electron.app;
+var electron = require('electron');
+var BrowserWindow = electron.BrowserWindow;
+var app = electron.app;
 
 app.on('ready', function () {
   var window = new BrowserWindow({ nodeIntegration: false });

@@ -1,6 +1,7 @@
 var logLevel = 0;
 var logLevels = ['debug', 'info', 'warn', 'error'];
 var spinnerMessageLength = 0;
+var log;
 
 process.on('SIGINT', function () {
   // put prompt on line after ^c
@@ -8,21 +9,22 @@ process.on('SIGINT', function () {
   process.exit();
 });
 
-
 // loading spinner
 function Spinner(message) {
+  var interval;
+
   this.step = 0;
   this.pattern = '|/-\\';
-  var interval;
+
   spinnerMessageLength = message.length + 2;
   this.start = function () {
-    var that = this;
-    process.stdout.write(that.pattern[that.step] + message + ' \r');
+    var self = this;
+    process.stdout.write(self.pattern[self.step] + message + ' \r');
     interval = setInterval(function () {
-      process.stdout.write(' ' + that.pattern[that.step] + message + ' \r');
-      that.step += 1;
-      if (that.step === 4) {
-        that.step = 0;
+      process.stdout.write(' ' + self.pattern[self.step] + message + ' \r');
+      self.step += 1;
+      if (self.step === 4) {
+        self.step = 0;
       }
     }, 150);
   };
@@ -31,19 +33,24 @@ function Spinner(message) {
   };
 }
 
-var log = {
+function clearSpinner() {
+  process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + ' \r');
+}
+
+log = {
   debug: function (message) {
     if (logLevels.indexOf('debug') < logLevel) {
       return;
     }
-    process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + ' \r');
+    clearSpinner();
     console.log(message);
   },
   info: function (message) {
     if (logLevels.indexOf('info') < logLevel) {
       return;
     }
-    process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + ' \r');
+
+    clearSpinner();
 
     console.info(message);
   },
@@ -51,7 +58,7 @@ var log = {
     if (logLevels.indexOf('warn') < logLevel) {
       return;
     }
-    process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + ' \r');
+    clearSpinner();
 
     console.warn(message);
   },
@@ -59,7 +66,7 @@ var log = {
     if (logLevels.indexOf('error') < logLevel) {
       return;
     }
-    process.stdout.write((new Array(spinnerMessageLength + 1)).join(' ') + ' \r');
+    clearSpinner();
 
     console.error(message);
   }

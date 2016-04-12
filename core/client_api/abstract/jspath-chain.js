@@ -5,7 +5,7 @@ if (module.exports) {
 }
 
 function PathWrapper(path, subs, ctx) {
-  if (arguments.callee.caller.name !== 'PathWrapper') {
+  if (arguments.callee.caller.name !== 'PathWrapper') { // eslint-disable-line no-caller
     return new PathWrapper(path, subs, ctx);
   }
   if (typeof ctx === 'undefined') {
@@ -47,7 +47,9 @@ PathWrapper.prototype.delete = function (propertyname) {
     throw new Error("Cannot delete what doesn't exist");
   }
   for (i in this.values) {
-    delete this.values[i][propertyname];
+    if (this.values.hasOwnProperty(i)) {
+      delete this.values[i][propertyname];
+    }
   }
   return this;
 };
@@ -59,7 +61,9 @@ PathWrapper.prototype.set = function (propertyname, value) {
     throw new Error("Cannot delete what doesn't exist");
   }
   for (i in this.values) {
-    this.values[i][propertyname] = value;
+    if (this.values.hasOwnProperty(i)) {
+      this.values[i][propertyname] = value;
+    }
   }
   return this;
 };

@@ -1,6 +1,7 @@
 /**
  @constructor
- @param {function} sendFn - Function that will be called when you wish to write something to a target.
+ @param {function} sendFn - Function that will be called when you wish to write something
+ to a target.
  */
 function StreamPromise(sendFn) {
   if (sendFn) this.sendFn = sendFn;
@@ -12,7 +13,8 @@ function StreamPromise(sendFn) {
  Provides a send Function if one wasn't provided initially
  @function
  @memberof StreamPromise
- @param {function} sendFn - Function that will be called when you wish to write something to a target.
+ @param {function} sendFn - Function that will be called when you wish to write something
+ to a target.
  @returns {this} To allow chaining
  */
 StreamPromise.prototype.inherit = function (sendFn) {
@@ -35,7 +37,8 @@ StreamPromise.prototype._write = function (err, data) {
 };
 
 /**
- Allows you to add one or more functions to listen to errors. Will throw the error if no one is listening
+ Allows you to add one or more functions to listen to errors. Will throw the error
+ if no one is listening
  @function
  @memberof StreamPromise
  @param {function} catchFn - Function that will be called when you wish to listen for errors.
