@@ -41,7 +41,7 @@ util.inherits(App, events.EventEmitter);
 App.prototype.loadId = function loadId(next) {
   var self = this;
   db.collections.appId.findOne({ path: self.path }, function (err, data) {
-    if (data === null) {
+    if (data === undefined) {
       console.log('generating id');
       db.collections.appId.insert({ path: self.path }, function (err, document) {
         if (err) {
@@ -122,7 +122,7 @@ App.prototype.installDeps = function installDeps(next) {
         npmi({
           path: self.path
         }, function (err) {
-          if(err) {
+          if (err) {
             console.log('error in npm install:');
             console.log(err);
           }
@@ -188,7 +188,6 @@ App.prototype.start = function start(next) {
   // we first need to link the modules electron provides
   silkElectron.add(self.path);
 
-
   self.fork = childProcess.fork(this.path, [], forkOpts);
   methods.addFork(self.fork);
   setTimeout(function () {
@@ -202,7 +201,7 @@ App.prototype.start = function start(next) {
   });
 };
 
-App.prototype.stop = function start (next) {
+App.prototype.stop = function start(next) {
   var self = this;
   self.fork.disconnect();
   self.fork.kill();
@@ -211,7 +210,7 @@ App.prototype.stop = function start (next) {
   next();
 };
 
-App.prototype.restart = function restart (next) {
+App.prototype.restart = function restart(next) {
   var self = this;
   self.stop(function () {
     self.start(next);

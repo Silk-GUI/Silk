@@ -16,16 +16,20 @@ describe('watchData', function () {
 
   describe('get and set', function () {
     it('should be able to set and get a property', function () {
+      var value;
+
       data.set('testProperty', 'testValue');
-      var value = data.get('testProperty');
+      value = data.get('testProperty');
       expect(value).to.equal('testValue');
     });
     it('should replace value if property exists', function () {
+      var value;
+
       // set initial value
       data.set('testProperty', 'testValue');
       // replace value
       data.set('testProperty', 'newValue');
-      var value = data.get('testProperty');
+      value = data.get('testProperty');
       expect(value).to.equal('newValue');
     });
     it('set and get values that is an object', function () {

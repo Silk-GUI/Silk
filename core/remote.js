@@ -1,7 +1,7 @@
-var domain    = require('domain'),
-    apiData   = require('./api_data.js'),
-    ports     = {},
-    autoStart = false;
+var domain = require('domain');
+var apiData = require('./api_data.js');
+var ports = {};
+var autoStart = false;
 /**
  * Manages localtunnel for one port.
  * @constructor
@@ -9,34 +9,36 @@ var domain    = require('domain'),
  */
 // TODO notify Silk of changes
 function Remote(port) {
+  var remoteDomain = domain.create();
+  var self = this;
+
   this.port = port;
   this.status = 'stopped';
   this.url = null;
-  var remoteDomain = domain.create();
-  var that = this;
+
   this.close = function () {
   };
 
   remoteDomain.on('error', function (err) {
     console.log(err);
     try {
-      that.close();
+      self.close();
     } catch (e) {
       console.log(e);
       // error closing tunnel.
       return;
     }
-    that.status = 'stopped';
-    that.start();
+    self.status = 'stopped';
+    self.start();
   });
 
   this.start = function () {
-    var that = this;
+    var self = this;
     remoteDomain.run(function () {
       var localtunnel = require('localtunnel');
-      //TODO if status is stopped and url is not null try to start with the url.
-      localtunnel(that.port, function (err, tunnel) {
-        if(err) {
+      // TODO if status is stopped and url is not null try to start with the url.
+      localtunnel(self.port, function (err, tunnel) {
+        if (err) {
           console.log(err);
           this.url = null;
           this.status = 'stopped';
@@ -45,24 +47,23 @@ function Remote(port) {
         this.close = tunnel.close;
         this.url = tunnel.url;
         this.status = 'running';
-        apiData.set("remote/url", tunnel.url);
+        apiData.set('remote/url', tunnel.url);
         apiData.set('remote/ports', ports);
-        if(that.port === 3000) {
-          console.log("Go to " + tunnel.url + " to remotely access Silk");
+        if (self.port === 3000) {
+          console.log('Go to ' + tunnel.url + ' to remotely access Silk');
         }
 
-        tunnel.on("error", function (err) {
+        tunnel.on('error', function (err) {
           console.log(err);
-
         });
-        tunnel.on("close", function () {
-          console.log("remote closed");
+        tunnel.on('close', function () {
+          console.log('remote closed');
         });
       });
     });
   };
 
-  if(autoStart === true) {
+  if (autoStart === true) {
     this.start();
   }
 }
@@ -73,33 +74,37 @@ ports[3000] = new Remote(3000);
  * Makes app availalbe outisde this computer.  Starts localtunnel.
  * {number} options - localtunnel options.  Not used yet
  */
-var start = function (port) {
-  if(typeof port === 'number') {
+function start(port) {
+  if (typeof port === 'number') {
     ports[port].start();
   } else {
-    if(typeof port === 'boolean') {
+    if (typeof port === 'boolean') {
       autoStart = true;
     }
     for (port in ports) {
-      ports[port].start();
+      if (ports.hasOwnProperty(port)) {
+        ports[port].start();
+      }
     }
     console.log('started all ports');
   }
-};
+}
 
-var close = function (port) {
-  if(typeof port === 'number') {
+function close(port) {
+  if (typeof port === 'number') {
     ports[port].close();
   } else {
-    if(typeof port === 'boolean') {
+    if (typeof port === 'boolean') {
       autoStart = false;
     }
     for (port in ports) {
-      ports[port].close();
+      if (ports.hasOwnProperty(port)) {
+        ports[port].close();
+      }
     }
     apiData.set('remote/ports', ports);
   }
-};
+}
 
 function addPort(port) {
   ports[port] = new Remote(port);
@@ -109,7 +114,9 @@ function removePort(port) {
   ports[port].close();
   delete ports[port];
 }
+
 apiData.set('remote/start', start);
 apiData.set('remote/close', close);
 apiData.set('remote/ports', ports);
 apiData.set('remote/addPort', addPort);
+apiData.set('remote/removePort', removePort);

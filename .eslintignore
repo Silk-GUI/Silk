@@ -1,7 +1,5 @@
 node_modules
 bower_components
-apps/textEditor/public/js/mousetrap.js
 apps
 window-manager
 roadmap
-*.md

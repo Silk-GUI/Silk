@@ -1,10 +1,17 @@
 // API for apps.  Available to app forks.
-var db           = require(__root + '/core/db.js'),
-    serverAPI    = {},
-    requests     = [],
-    externalApps = db.collection('external_apps'),
-    apiData      = require(__root + '/core/api_data.js'),
-    lodash       = require('lodash');
+var db = require(__root + '/core/db.js');
+var serverAPI = {};
+var externalApps = db.collection('external_apps');
+var apiData = require(__root + '/core/api_data.js');
+
+// handle electron messages
+var electronListeners = [];
+
+function electronMessage(message) {
+  electronListeners.forEach(function (listener) {
+    listener(message);
+  });
+}
 
 function Request(message, fork) {
   this.message = message;
@@ -40,7 +47,7 @@ Request.prototype.exec = function () {
   }
   // only send if something is returned.  If nothing is returned,
   // the api should use send().
-  if (typeof error === "undefined" && typeof result === "undefined") {
+  if (typeof error === 'undefined' && typeof result === 'undefined') {
     // nothing to send
     console.log('nothing returned for ' + this.message.message.method);
     return;
@@ -48,7 +55,7 @@ Request.prototype.exec = function () {
   this.send(error, result);
 };
 
-//API for apps
+// API for apps
 serverAPI['apps/list'] = function (data, message, send) {
   if (message.type === 'listener') {
     apiData.watch('apps/clean', function (prop, oldValue, currentValue) {
@@ -64,7 +71,6 @@ serverAPI['apps/state'] = function (data, message, send) {
 
   var results = [];
   if (message.type === 'listener') {
-
     apiData.watch('apps/list', function (prop, oldValue, currentValue) {
       results = [];
       clean.forEach(function (app) {
@@ -88,7 +94,7 @@ serverAPI['apps/restart'] = function (path, message, send) {
   });
 };
 
-serverAPI['apps/add'] = function (path, message) {
+serverAPI['apps/add'] = function (path) {
   apiData.get('apps/add')(path, function (err) {
     if (err) {
       return;
@@ -105,12 +111,24 @@ serverAPI['apps/start'] = function (path, message, send) {
 
 serverAPI['apps/external/add'] = function (path, message, send) {
   // make sure it isn't already added
-  externalApps.findOne({ path: path }, function (err, data) {
+  externalApps.findOne({ path: path }, function (err) {
     if (err) {
       return send(err);
     }
-    externalApps.insert({ path: path }, function (err, data) {
+    externalApps.insert({ path: path }, function (err) {
       send(err);
+    });
+  });
+};
+
+// API for window manager to communicate with electron apps
+serverAPI['electron/windowRawEvents'] = function (path, message, send) {
+  electronListeners.push(function (message) {
+    send({
+      window: message.window,
+      app: message.app,
+      name: message.name,
+      value: message.value
     });
   });
 };
@@ -143,3 +161,5 @@ module.exports.call = function (message, fork) {
   var request = new Request(message, fork);
   request.exec();
 };
+
+module.exports.electronMessage = electronMessage;
