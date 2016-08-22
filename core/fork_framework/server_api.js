@@ -41,8 +41,6 @@ Request.prototype.exec = function () {
   try {
     result = serverAPI[this.message.message.method](data, message, this.send.bind(this));
   } catch (e) {
-    console.log('caught error');
-    console.log(e.stack);
     error = e;
   }
   // only send if something is returned.  If nothing is returned,
@@ -122,9 +120,9 @@ serverAPI['apps/external/add'] = function (path, message, send) {
 };
 
 // API for window manager to communicate with electron apps
-serverAPI['electron/windowRawEvents'] = function (path, message, send) {
+serverAPI['electron/windowRawEvents'] = function (data, message, send) {
   electronListeners.push(function (message) {
-    send({
+    send(null, {
       window: message.window,
       app: message.app,
       name: message.name,
