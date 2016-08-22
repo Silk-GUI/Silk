@@ -2,6 +2,8 @@ extends: ../.eslintrc.yml
 
 rules:
   vars-on-top: 1
+  # Some chai assertions use expressions
+  no-unused-expressions: 0
 
 globals:
   describe: 1

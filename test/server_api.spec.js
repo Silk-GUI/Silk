@@ -4,6 +4,7 @@ var __root = global.__root = require('../root.js'); // eslint-disable-line no-un
 var serverApi = rewire('../core/fork_framework/server_api.js');
 var apiData = require('../core/api_data.js');
 
+
 describe('server_api', function () {
   var message;
 
@@ -36,7 +37,6 @@ describe('server_api', function () {
           done();
         }
       };
-
       serverApi.call(message, fork);
     });
 
@@ -71,15 +71,24 @@ describe('server_api', function () {
         message.type = 'listener';
 
         serverApi.methods['apps/list'](null, message, function (err, result) {
-          console.log('finished');
           expect(result).to.equal(data);
           done();
         });
 
         data[0] = { abc: 'test' };
-        console.log(data);
         apiData.set('apps/clean', data);
       });
+    });
+  });
+  describe('electron events', function () {
+    it('should notify listeners', function (done) {
+      var origData = { window: 1, app: 'path', name: 'minimize', data: 'true' };
+      serverApi.methods['electron/windowRawEvents'](null, message, function (err, data) {
+        expect(err).to.be.null;
+        expect(data).to.equal(data);
+        done();
+      });
+      serverApi.electronMessage(origData);
     });
   });
 });
