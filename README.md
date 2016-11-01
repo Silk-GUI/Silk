@@ -9,10 +9,9 @@ GUI For Developers and Node OS.
 ### Goals
 - Fast and Lightweight
 - Designed for Developers
-- Modular
+- Modular (most functionality is in apps; swap them, add new ones, removed unused. Eventually they will be installed from NPM)
 - Just work (try to fix problems automatically, or, if unable, explain how to fix them)
-- Enhance your productivity
-- Window Manager's and app's client can run on different computer than server
+- Lightweight remote desktop with the app front end running on your computer
 
 [Roadmap](https://github.com/zodern/Silk/wiki/Roadmap)
 
