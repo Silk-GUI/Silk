@@ -13,7 +13,7 @@ GUI For Developers and Node OS.
 - Just work (try to fix problems automatically, or, if unable, explain how to fix them)
 - Lightweight remote desktop with the app front end running on your computer
 
-[Roadmap](https://github.com/zodern/Silk/wiki/Roadmap)
+[Roadmap](https://github.com/Silk-GUI/Silk/blob/master/roadmap.md)
 
 ## Get started
 ```

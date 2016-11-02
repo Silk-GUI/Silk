@@ -1,32 +1,36 @@
 # Roadmap
 
-## March - May
+## Phase 1
 
 The focus will be on creating the best possible app experience. This will include a new app framework and app manager, 
 installing updates and creating a new communication api to allow apps to communicate with each other. Also, the server api
 will allow more finetuned notifications on changes which will be needed for the new app loader to communicate changes to
 the window manager.
 
-## June
+## Phase 2
 
-The window manager will be improved. All of the styles will be cleaned up and made more consistent. We will add split screen to 
+The window manager will be improved. All of the styles will be cleaned up and made more consistent across apps. We will add split screen to 
 show multiple windows at once. There will be a new app menu that will replace the desktop.
 
 
 ## Todo
 An incomplete list of what needs to be done
 
-Features
+Miscellaneous
 - [ ] tests
+- [ ] publish all apps to NPM
 
 App Loader
 - [ ] Detect added or removed apps
 - [ ] Send to client the remote urls
+- [ ] Install apps into /apps folder using yarn
+- [ ] Check for app updates and install them
 
 Window Manager
 - [ ] maximize/restore windows
 - [ ] drag windows
 - [ ] resize windows
+- [ ] stop apps no longer use
 - [ ] App menu shows open windows
 - [ ] Search apps and titles of open windows in app menu
 - [ ] when remote, use port's remote url for apps on a different port
