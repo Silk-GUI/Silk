@@ -49,7 +49,7 @@ process.title = 'Silk GUI';
 program
   .version(pkg.version)
   .option('-r, --remote', 'Remotely access Silk')
-  .option('-d, --dev', 'Show debug messages')
+  .option('-v, --verbose', 'Shows more messages')
   .option('-o, --open', 'Open Silk in a window');
 
 program
@@ -90,4 +90,4 @@ if (lastArgv === 'silk') {
   run();
 }
 
-logger.logLevel(program.dev ? 0 : 1);
+logger.logLevel(program.verbose ? 0 : 1);
