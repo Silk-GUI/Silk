@@ -44,13 +44,14 @@
     "tty.js": "Silk-GUI/tty.js.git"
   },
   "scripts": {
+    "postinstall": "node ./core/setup/migrate.js",
     "start": "node main.js",
     "lint": "./node_modules/.bin/eslint ./",
     "pretest": "npm run lint",
     "test": "mocha",
     "setup": "node ./core/setup/index.js",
     "setup-force": "node ./core/setup/index.js --force",
-    "prepublish": "node ./core/setup/index.js --force"
+    "prepublishOnly": "node ./core/setup/index.js --force"
   },
   "bin": {
     "silk": "bin.js"
