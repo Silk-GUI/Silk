@@ -7,6 +7,9 @@ var fs = require('fs');
 var jsonFile = require('json-file');
 var ghDownload = require('download-github-repo');
 var path = require('path');
+var rimraf = require('rimraf');
+
+var migrate = require('./migrate.js');
 
 var __root = path.resolve(__dirname, '../../');
 
@@ -22,22 +25,34 @@ try {
 
 function installWM(repo, cb) {
   console.log('installing the window manager');
-
-  ghDownload(repo, __root + '/window-manager', function (err) {
-    console.log('finished');
-    console.log(err);
-    return cb(err);
+  rimraf(path.resolve(__root, 'window-manager'), function (err) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    ghDownload(repo, __root + '/window-manager', function (err) {
+      console.log('finished');
+      console.log(err);
+      return cb(err);
+    });
   });
 }
 function installApps(list, cb) {
   console.log('installing apps into ' + __root + '/apps/');
   async.eachSeries(list, function (item, next) {
     console.log('installing ', item);
-    ghDownload(item, __root + '/apps/' + item.replace('/', '-'), function (err) {
-      if (!err) {
-        console.log('finished');
+    rimraf(path.resolve(__root, 'apps', item.replace('/', '-')), function (err) {
+      if (err) {
+        console.log(err);
+        next(err);
+        return;
       }
-      return next(err);
+      ghDownload(item, __root + '/apps/' + item.replace('/', '-'), function (err) {
+        if (!err) {
+          console.log('finished');
+        }
+        return next(err);
+      });
     });
   }, function (err) {
     if (err) {
@@ -55,7 +70,7 @@ function installApps(list, cb) {
  */
 module.exports = function (cb) {
   var list;
-  cb = cb || function () {};
+  cb = cb || function () { };
 
   console.log('setting up');
   data.writeSync();
@@ -73,6 +88,7 @@ module.exports = function (cb) {
     }
     console.log('installing apps');
     installApps(list.apps, function (err) {
+      migrate();
       return cb(err);
     });
   });

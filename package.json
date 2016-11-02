@@ -22,6 +22,7 @@
     "mkdirp": "^0.5.0",
     "npmi": "^2.0.1",
     "resolve": "^1.1.6",
+    "rimraf": "^2.5.4",
     "rsvp": "latest",
     "silk-electron": "Silk-GUI/silk-electron",
     "sockjs": "~0.3.12",
@@ -44,7 +45,7 @@
     "tty.js": "Silk-GUI/tty.js.git"
   },
   "scripts": {
-    "postinstall": "node ./core/setup/migrate.js",
+    "postinstall": "node ./core/setup/index.js",
     "start": "node main.js",
     "lint": "./node_modules/.bin/eslint ./",
     "pretest": "npm run lint",
