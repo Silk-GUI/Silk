@@ -22,6 +22,7 @@ Miscellaneous
 - [ ] Publish all apps to NPM
 - [ ] Update documentation
 - [ ] Improve website to better explain what Silk is, and it's goals
+- [ ] Update boilerplate app
 
 Core
 - [ ] Use global event emitter

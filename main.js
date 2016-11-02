@@ -18,7 +18,7 @@ var lastArgv;
 
 // if the environment variable is set to 1,
 // this will log the file and line that outputs
-// to the terminalr
+// to the terminal
 if (process.env.TRACE_CONSOLE) {
   ['log', 'warn'].forEach(function (method) {
     var old = console[method];
@@ -26,10 +26,6 @@ if (process.env.TRACE_CONSOLE) {
       var stack = (new Error()).stack.split(/\n/);
       var args;
 
-      // Chrome includes a single "Error" line, FF doesn't.
-      if (stack[0].indexOf('Error') === 0) {
-        stack = stack.slice(1);
-      }
       args = [].slice.apply(arguments)
         .concat([stack[1].trim()]);
       return old.apply(console, args);
@@ -84,12 +80,13 @@ if (lastArgv === 'help' || lastArgv === 'help') {
 // Silk was run with no command, so we do the default
 // Setting a default command appears to be broken in commander.js
 // so we implement it ourselves.
-console.log(lastArgv);
 if (lastArgv === 'silk') {
   run();
 } else if (endedWith(lastArgv, 'main.js')) {
   run();
 } else if (endedWith(lastArgv, path.sep + 'bin' + path.sep + 'silk')) {
+  run();
+} else if (endedWith(lastArgv, 'bin.js')) {
   run();
 }
 
