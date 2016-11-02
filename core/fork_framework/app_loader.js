@@ -20,6 +20,7 @@ var appFolder = _path.resolve(__dirname, '../../apps');
 
 var appLoader = new events.EventEmitter();
 
+
 /**
  * object of all apps
  */
@@ -242,7 +243,7 @@ function App(path, expressApp, urlPath) {
         resolve.sync(dep, { basedir: self.path });
         return next();
       } catch (e) {
-        console.log('installing' + dep + 'for ' + self.name);
+        console.log('installing ' + dep + 'for ' + self.name);
         var options = {
           name: dep,
           version: d[dep],
@@ -291,7 +292,7 @@ function App(path, expressApp, urlPath) {
         if (file) {
           return next();
         }
-        console.log('installing ' + dep);
+        console.log('installing bower dep ' + dep + ' for ' + self.name);
         bower.commands
           .install([dep + '#' + d[dep]], {
             save: false,
@@ -556,7 +557,7 @@ appLoader.add = function (path, expressApp, next) {
       } else {
         // headless apps need to always run
         app.start(function () {
-          console.log('started' + app.path);
+          console.log('started ' + app.name);
         });
       }
       appLoader.emit('added', app);
