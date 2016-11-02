@@ -297,6 +297,8 @@ function App(path, expressApp, urlPath) {
             save: false,
             force: true,
             forceLatest: true
+          }, {
+            cwd: __root
           })
           .on('error', function (err) {
             console.log('error installing bower dependency ' + dep + ' for ' + self.name);
