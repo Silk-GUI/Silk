@@ -19,9 +19,9 @@ function Spinner(message) {
   spinnerMessageLength = message.length + 2;
   this.start = function () {
     var self = this;
-    process.stdout.write(self.pattern[self.step] + message + ' \r');
+    process.stdout.write(self.pattern[self.step] + ' ' + message + ' \r');
     interval = setInterval(function () {
-      process.stdout.write(' ' + self.pattern[self.step] + message + ' \r');
+      process.stdout.write(' ' + self.pattern[self.step] + ' ' + message + ' \r');
       self.step += 1;
       if (self.step === 4) {
         self.step = 0;
