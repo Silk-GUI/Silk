@@ -105,5 +105,7 @@ if (module.parent === null) {
         console.log('finished setting up!');
       });
     }
+  } else {
+    module.exports();
   }
 }
