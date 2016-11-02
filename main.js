@@ -14,7 +14,7 @@ var removeApp = require('./core/commands/remove_app.js');
 var pkg = require('./package.json');
 
 var notifier;
-var lastArgv;
+var command;
 
 // if the environment variable is set to 1,
 // this will log the file and line that outputs
@@ -54,7 +54,7 @@ program
 
 program
   .command('run')
-  .description('Starts silk. Default command.')
+  .description('Starts silk. Default command')
   .action(run);
 
 program
@@ -68,25 +68,21 @@ program
   .action(removeApp);
 
 program
+  .command('help')
+  .action(function () {
+    program.help();
+    process.exit(0);
+  });
+
+
+program
   .parse(process.argv);
 
-lastArgv = process.argv[process.argv.length - 1];
-if (lastArgv === 'help' || lastArgv === 'help') {
-  // silk help or npm start help was run.
-  program.help();
-  process.exit(0);
-}
+command = process.argv.slice(2)[0] || '';
+console.log(command);
 
-// Silk was run with no command, so we do the default
-// Setting a default command appears to be broken in commander.js
-// so we implement it ourselves.
-if (lastArgv === 'silk') {
-  run();
-} else if (endedWith(lastArgv, 'main.js')) {
-  run();
-} else if (endedWith(lastArgv, path.sep + 'bin' + path.sep + 'silk')) {
-  run();
-} else if (endedWith(lastArgv, 'bin.js')) {
+// No command was given, so the default action is done instead: start silk
+if (!command || command.indexOf('-') === 0) {
   run();
 }
 
