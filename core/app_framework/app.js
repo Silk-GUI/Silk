@@ -120,7 +120,11 @@ App.prototype.installDeps = function installDeps(next) {
         });
       } else {
         npmi({
-          path: self.path
+          path: self.path,
+          npmLoad: {
+            loglevel: 'silent',
+            progress: false
+          }
         }, function (err) {
           if (err) {
             console.log('error in npm install:');

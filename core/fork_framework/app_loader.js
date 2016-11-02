@@ -249,7 +249,8 @@ function App(path, expressApp, urlPath) {
           version: d[dep],
           path: self.path,
           npmLoad: {
-            loglevel: 'silent'
+            loglevel: 'silent',
+            progress: false
           }
         };
         npmi(options, function (err) {

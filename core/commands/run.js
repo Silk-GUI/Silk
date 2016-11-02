@@ -23,6 +23,7 @@ function run() {
   // hides spinner and shows url when finished loading;
   function loader() {
     loaded += 1;
+    logger.log.debug('finished loading ', loaded, toLoad);
     if (loaded === toLoad) {
       spinner.stop();
       process.stdout.write('\r ' + url);
