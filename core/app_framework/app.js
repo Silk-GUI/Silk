@@ -42,7 +42,6 @@ App.prototype.loadId = function loadId(next) {
   var self = this;
   db.collections.appId.findOne({ path: self.path }, function (err, data) {
     if (data === undefined) {
-      console.log('generating id');
       db.collections.appId.insert({ path: self.path }, function (err, document) {
         if (err) {
           return console.log(err);
@@ -71,6 +70,7 @@ App.prototype.loadJSON = function loadJSON(next) {
     }
     try {
       j = JSON.parse(contents);
+      j.silk = j.silk || {};
       self.packageJson = j;
       self.name = j.productName || j.name;
       self.title = self.name;
