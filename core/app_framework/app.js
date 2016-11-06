@@ -196,7 +196,7 @@ App.prototype.start = function start(next) {
   methods.addFork(self.fork);
   setTimeout(function () {
     silkElectron.remove(self.path);
-  }, 2000);
+  }, 5000);
   self.fork.on('message', function (message) {
     if (message.cmd === 'ready') {
       self.state = 'running';
