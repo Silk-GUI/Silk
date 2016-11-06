@@ -1,5 +1,6 @@
 var express = require('express');
 var mkdirp = require('mkdirp');
+var _path = require('path');
 
 var appLoader = require('./app_loader.js');
 var db = require(__root + '/core/db.js');
@@ -115,6 +116,7 @@ module.exports.startWindowManager = function (path, expressApp, callback) {
     // TODO: setup should install window manager in a subfolder that is name@githubUser
     path = __root + '/window-manager';
   } else {
+    path = _path.resolve(__root, path);
     console.log('Loading window manager from ' + path);
   }
   app = new appLoader.App(path, expressApp, '/');
