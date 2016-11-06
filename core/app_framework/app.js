@@ -76,6 +76,8 @@ App.prototype.loadJSON = function loadJSON(next) {
       self.title = self.name;
       self.url = j.silk.url;
       self.icon = j.icon || path.join(__root, 'core/public/images/default-logo.png');
+      self.fileSystem = j.silk && j.silk.fileSystem ? j.silk.fileSystem : null;
+      self.isService = j.silk && j.isService;
 
       self.expressApp.get('/icon/' + self.id, function (req, res) {
         res.sendfile(pathUtil.resolve(self.path, self.icon), function () {
@@ -165,7 +167,9 @@ App.prototype.clean = function clean() {
     url: self.url,
     title: self.title,
     path: self.path,
-    icon: '/icon/' + self.id
+    icon: '/icon/' + self.id,
+    fileSystem: self.fileSystem,
+    service: self.isService
   };
 };
 
