@@ -1,10 +1,10 @@
 var express = require('express');
 var SockJS = require('sockjs');
 var program = require('commander');
-var configJson = require('../../config.json');
-var logger = require('../console.js');
-var apiData = require('../api_data.js');
-var forkFramework = require(__root + '/core/fork_framework');
+var configJson = require('../config.json');
+var logger = require('../core/console.js');
+var apiData = require('../core/api_data.js');
+var forkFramework = require('../core/fork_framework');
 
 var app = express();
 var server;
@@ -74,7 +74,7 @@ function run() {
     }
   });
 
-  require('../remote.js');
+  require('../core/remote.js');
 
   if (program.remote) {
     apiData.get('remote/start')(true);

@@ -1,4 +1,4 @@
-var db = require('../db.js');
+var db = require('../core/db.js');
 
 function addApp(path) {
   var externalApps = db.collection('external_apps');

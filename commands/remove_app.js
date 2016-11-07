@@ -1,4 +1,4 @@
-var db = require('../db.js');
+var db = require('../core/db.js');
 
 var externalApps = db.collections.appId;
 

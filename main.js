@@ -1,16 +1,14 @@
 var program = require('commander');
 var updateNotifier = require('update-notifier');
-var path = require('path');
 
 var logger = require('./core/console.js');
-var endedWith = require('./core/util/ended_with.js');
 // TODO: remove global
 var __root = global.__root = require('./root.js'); // eslint-disable-line no-unused-vars
 
 // commands
-var run = require('./core/commands/run.js');
-var addApp = require('./core/commands/add_app.js');
-var removeApp = require('./core/commands/remove_app.js');
+var run = require('./commands/run.js');
+var addApp = require('./commands/add_app.js');
+var removeApp = require('./commands/remove_app.js');
 var pkg = require('./package.json');
 
 var notifier;
